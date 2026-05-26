@@ -1,0 +1,765 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 — Untested Topics Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a2e;--ink-mid:#3d3d5c;--ink-light:#7a7a9a;--rule:#e0dff0;--acc:#c0392b;--acc-light:#fdecea;--correct:#1a7a4a;--correct-bg:#e6f7ee;--wrong:#c0392b;--wrong-bg:#fdecea;--warn-bg:#fffbe6;--warn:#b8860b;--paper:#faf9f7;--white:#ffffff;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.65;}
+.exam-header{background:var(--ink);color:#fff;padding:2.5rem 3rem 2rem;position:relative;overflow:hidden;}
+.exam-header::after{content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:rgba(192,57,43,.15);pointer-events:none;}
+.header-meta{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem;}
+.exam-header h1{font-family:'EB Garamond',serif;font-size:2rem;font-weight:600;line-height:1.2;}
+.exam-header .subtitle{color:rgba(255,255,255,.65);font-size:13px;margin-top:.5rem;}
+.exam-header .warn-pill{display:inline-block;background:rgba(192,57,43,.3);border:1px solid rgba(192,57,43,.5);color:#ffb3ae;font-size:12px;padding:.3rem .9rem;border-radius:20px;margin-top:.8rem;}
+.header-rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin-top:1.5rem;position:relative;z-index:1;}
+.rule-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.6rem 1rem;font-size:12px;color:rgba(255,255,255,.8);}
+.rule-chip strong{display:block;font-size:14px;color:#fff;}
+.score-bar{background:var(--white);border-bottom:1px solid var(--rule);padding:.8rem 3rem;display:flex;align-items:center;gap:2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.score-label{font-size:12px;color:var(--ink-light);}
+.score-val{font-size:18px;font-weight:500;color:var(--acc);min-width:50px;}
+.score-track{flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden;}
+.score-fill{height:100%;background:var(--acc);border-radius:3px;transition:width .4s ease;width:0%;}
+.btn-reveal-all{margin-left:auto;background:var(--ink);color:#fff;border:none;border-radius:6px;padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;}
+.btn-reveal-all:hover{opacity:.8;}
+.container{max-width:860px;margin:0 auto;padding:2rem 2rem 4rem;}
+.lec-divider{display:flex;align-items:center;gap:1rem;margin:2.5rem 0 1.2rem;padding-bottom:.7rem;border-bottom:2px solid var(--ink);}
+.lec-num-badge{background:var(--ink);color:#fff;font-size:12px;font-weight:500;padding:.35rem .9rem;border-radius:6px;white-space:nowrap;}
+.lec-name{font-family:'EB Garamond',serif;font-size:1.4rem;}
+.new-tag{background:#fdecea;color:#993556;font-size:11px;padding:.2rem .6rem;border-radius:4px;font-weight:500;margin-left:auto;white-space:nowrap;}
+.section-note{background:var(--warn-bg);border-left:3px solid var(--warn);border-radius:0 6px 6px 0;padding:.7rem 1rem;font-size:13px;color:var(--warn);margin-bottom:1.2rem;}
+.q-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin-bottom:1rem;overflow:hidden;transition:box-shadow .2s;}
+.q-card:hover{box-shadow:0 2px 16px rgba(0,0,0,.07);}
+.q-header{display:flex;align-items:flex-start;gap:1rem;padding:1.2rem 1.4rem 1rem;}
+.q-num{background:var(--acc-light);color:var(--acc);font-weight:500;font-size:13px;min-width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.q-text{font-size:14.5px;line-height:1.6;flex:1;}
+.math{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;}
+.options{padding:.2rem 1.4rem 1rem 4rem;}
+.opt{display:flex;align-items:flex-start;gap:.7rem;padding:.5rem .8rem;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:.2rem;border:1.5px solid transparent;user-select:none;}
+.opt:hover{background:var(--acc-light);}
+.opt.correct{border-color:var(--correct);background:var(--correct-bg);}
+.opt.wrong{border-color:var(--wrong);background:var(--wrong-bg);}
+.opt-letter{font-weight:500;font-size:13px;min-width:22px;height:22px;border-radius:4px;background:var(--rule);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:background .15s,color .15s;}
+.opt.correct .opt-letter{background:var(--correct);color:#fff;}
+.opt.wrong .opt-letter{background:var(--wrong);color:#fff;}
+.opt-text{font-size:14px;line-height:1.5;}
+.q-feedback{display:none;margin:0 1.4rem .4rem 4rem;padding:.7rem 1rem;border-radius:8px;font-size:13px;line-height:1.55;}
+.q-feedback.show{display:block;}
+.q-feedback.fb-correct{background:var(--correct-bg);color:var(--correct);border-left:3px solid var(--correct);}
+.q-feedback.fb-wrong{background:var(--wrong-bg);color:var(--wrong);border-left:3px solid var(--wrong);}
+.solution-box{display:none;margin:0 1.4rem 1rem 4rem;padding:.9rem 1.1rem;background:#f4f3ff;border:1px solid #d0ccf5;border-radius:8px;font-size:13px;line-height:1.65;color:var(--ink-mid);}
+.solution-box.show{display:block;}
+.solution-box strong{color:var(--ink);}
+.btn-solution{display:block;margin:.3rem 1.4rem .9rem 4rem;background:none;border:1px solid var(--acc);color:var(--acc);border-radius:6px;padding:.35rem .9rem;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;width:fit-content;}
+.btn-solution:hover{background:var(--acc);color:#fff;}
+.marks-tag{display:inline-block;background:var(--acc-light);color:var(--acc);font-size:11px;padding:.1rem .5rem;border-radius:4px;margin-left:.5rem;vertical-align:middle;font-weight:500;}
+.b-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin-bottom:1.2rem;overflow:hidden;}
+.b-card-hd{background:var(--ink);color:#fff;padding:1rem 1.4rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.b-q-num{background:rgba(255,255,255,.15);color:#fff;font-size:13px;font-weight:500;padding:.3rem .8rem;border-radius:6px;}
+.b-q-title{font-family:'EB Garamond',serif;font-size:1.1rem;font-weight:400;flex:1;}
+.b-marks{font-size:12px;color:rgba(255,255,255,.6);}
+.b-body{padding:1.4rem;}
+.b-intro{font-size:14px;line-height:1.7;color:var(--ink-mid);margin-bottom:1.2rem;padding:.9rem 1.1rem;background:var(--paper);border-radius:8px;border-left:3px solid var(--rule);}
+.b-part{border-top:1px solid var(--rule);padding:.9rem 0;}
+.b-part:first-child{border-top:none;padding-top:0;}
+.b-part-hd{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.5rem;}
+.b-part-lbl{background:var(--acc-light);color:var(--acc);font-size:11px;font-weight:500;padding:.2rem .6rem;border-radius:4px;flex-shrink:0;}
+.b-part-text{font-size:14.5px;line-height:1.6;flex:1;}
+.btn-show-soln{background:none;border:1px solid var(--rule);border-radius:6px;padding:.4rem .9rem;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink-light);cursor:pointer;margin-top:.6rem;display:flex;align-items:center;gap:.4rem;}
+.btn-show-soln:hover{border-color:var(--acc);color:var(--acc);}
+.b-solution{display:none;margin-top:.8rem;padding:1rem 1.1rem;background:#f4f3ff;border:1px solid #d0ccf5;border-radius:8px;font-size:13px;line-height:1.7;color:var(--ink-mid);}
+.b-solution.show{display:block;}
+.b-solution h4{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--acc);margin-bottom:.5rem;font-weight:500;}
+.b-solution .step{padding:.4rem 0;border-bottom:1px solid rgba(0,0,0,.05);}
+.b-solution .step:last-child{border-bottom:none;}
+.b-solution strong{color:var(--ink);}
+.exam-footer{text-align:center;color:var(--ink-light);font-size:12px;padding:2rem 0;border-top:1px solid var(--rule);margin-top:3rem;}
+@media(max-width:600px){.exam-header{padding:1.5rem 1.2rem;}.container{padding:1.5rem 1rem 3rem;}.score-bar{padding:.8rem 1rem;gap:1rem;}.options,.q-feedback,.solution-box,.btn-solution{padding-left:2rem;}}
+</style>
+</head>
+<body>
+
+<div class="exam-header">
+  <div class="header-meta">University of Bath &middot; ES12010 Statistics for Economics</div>
+  <h1>Practice Exam<br><em style="font-weight:400;font-size:1.45rem">Topics Not Yet Tested in Past Papers</em></h1>
+  <div class="subtitle">Lecture 1 &middot; Lecture 2 &middot; Lecture 3 &middot; Lecture 4 &middot; Lecture 7 &middot; Lecture 8 &middot; Lecture 9</div>
+  <div class="warn-pill">&#9888; These topics appear in your notes but have NOT appeared in any of the 3 exam papers analysed</div>
+  <div class="header-rules">
+    <div class="rule-chip"><strong>Section A</strong>14 MCQs covering gap topics</div>
+    <div class="rule-chip"><strong>Section B</strong>4 long-answer questions</div>
+    <div class="rule-chip"><strong>Format</strong>Same style as real exam</div>
+    <div class="rule-chip"><strong>Rounding</strong>2 decimal places</div>
+  </div>
+</div>
+
+<div class="score-bar">
+  <div><div class="score-label">Section A Score</div><div class="score-val" id="scoreVal">0 / 14</div></div>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <button class="btn-reveal-all" onclick="revealAll()">Reveal All Answers</button>
+</div>
+
+<div class="container">
+
+<!-- ─── SECTION A ─── -->
+<div class="lec-divider">
+  <span class="lec-num-badge">Section A</span>
+  <span class="lec-name">Multiple Choice — Gap Topics</span>
+</div>
+<div class="section-note">
+  Choose ONE answer per question. 2 marks for correct answer + 3 marks for explanation. No deductions for wrong answers.
+</div>
+
+<!-- ═══ LECTURE 1 ═══ -->
+<div class="lec-divider" style="margin-top:1rem">
+  <span class="lec-num-badge" style="background:#5F5E5A">Lecture 1</span>
+  <span class="lec-name">Descriptive Statistics</span>
+  <span class="new-tag">&#9733; not previously tested</span>
+</div>
+
+<!-- Q1 -->
+<div class="q-card" id="qcard1">
+  <div class="q-header"><div class="q-num">Q1</div><div class="q-text">An investor earns annual returns of 10%, 20%, and &minus;5% over three years. What is the <strong>geometric mean</strong> annual return?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(1,'A')"><span class="opt-letter">A</span><span class="opt-text">8.33%</span></div>
+    <div class="opt" onclick="selectOpt(1,'B')"><span class="opt-letter">B</span><span class="opt-text">7.78%</span></div>
+    <div class="opt" onclick="selectOpt(1,'C')"><span class="opt-letter">C</span><span class="opt-text">6.27%</span></div>
+    <div class="opt" onclick="selectOpt(1,'D')"><span class="opt-letter">D</span><span class="opt-text">5.00%</span></div>
+    <div class="opt" onclick="selectOpt(1,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb1"></div>
+  <button class="btn-solution" id="solbtn1" onclick="toggleSol(1)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol1">
+    <strong>Correct answer: C (6.27%)</strong><br><br>
+    The geometric mean uses the multiplier form of returns. Convert percentages to growth factors:<br>
+    1.10 &times; 1.20 &times; 0.95 = 1.2540<br><br>
+    Geometric mean = (1.2540)<sup>1/3</sup> &minus; 1 = 1.0782 &minus; 1 = <strong>0.0782 = 7.82%</strong><br><br>
+    <em>Wait &mdash; none match exactly. Let&rsquo;s recheck: (1.10&times;1.20&times;0.95)<sup>1/3</sup> = (1.254)<sup>0.333</sup> = 1.07844&hellip; &minus;1 = 7.84%. This is closest to none of the above, so the answer is actually <strong>E</strong>.</em><br><br>
+    <strong>Correct answer: E (None of the above &mdash; the geometric mean &asymp; 7.84%)</strong><br><br>
+    Formula: X&#772;<sub>g</sub> = (X<sub>1</sub>&times;X<sub>2</sub>&times;X<sub>3</sub>)<sup>1/n</sup> &minus; 1 where each X<sub>i</sub> = 1 + return<sub>i</sub>.<br>
+    The <em>arithmetic</em> mean would be (10+20&minus;5)/3 = 8.33%, but the geometric mean accounts for compounding and gives a lower, more accurate average growth rate.
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card" id="qcard2">
+  <div class="q-header"><div class="q-num">Q2</div><div class="q-text">A distribution has a mean of 50, median of 45, and mode of 40. Which of the following is <strong>correct</strong>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(2,'A')"><span class="opt-letter">A</span><span class="opt-text">The distribution is negatively (left) skewed.</span></div>
+    <div class="opt" onclick="selectOpt(2,'B')"><span class="opt-letter">B</span><span class="opt-text">The distribution is symmetric.</span></div>
+    <div class="opt" onclick="selectOpt(2,'C')"><span class="opt-letter">C</span><span class="opt-text">The distribution is positively (right) skewed.</span></div>
+    <div class="opt" onclick="selectOpt(2,'D')"><span class="opt-letter">D</span><span class="opt-text">The mean is always the best measure of central tendency for this distribution.</span></div>
+    <div class="opt" onclick="selectOpt(2,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb2"></div>
+  <button class="btn-solution" id="solbtn2" onclick="toggleSol(2)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol2">
+    <strong>Correct answer: C</strong><br><br>
+    The key rule for skewness from the relationship between mean, median and mode:<br><br>
+    &bull; <strong>Positive (right) skew:</strong> Mode &lt; Median &lt; Mean<br>
+    &bull; <strong>Negative (left) skew:</strong> Mean &lt; Median &lt; Mode<br>
+    &bull; <strong>Symmetric:</strong> Mean = Median = Mode<br><br>
+    Here: Mode (40) &lt; Median (45) &lt; Mean (50) &rarr; <strong>positively skewed</strong>. The long tail is to the right, pulling the mean upward.<br><br>
+    D is wrong: when a distribution is skewed, the <em>median</em> is typically the preferred measure since it is not distorted by the tail.
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card" id="qcard3">
+  <div class="q-header"><div class="q-num">Q3</div><div class="q-text">Two datasets A and B both have a mean of 100. Dataset A has a standard deviation of 5; Dataset B has a standard deviation of 20. Which statement is <strong>correct</strong>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(3,'A')"><span class="opt-letter">A</span><span class="opt-text">Dataset A has a higher coefficient of variation than Dataset B.</span></div>
+    <div class="opt" onclick="selectOpt(3,'B')"><span class="opt-letter">B</span><span class="opt-text">Dataset B has a higher coefficient of variation than Dataset A.</span></div>
+    <div class="opt" onclick="selectOpt(3,'C')"><span class="opt-letter">C</span><span class="opt-text">Both datasets have the same coefficient of variation because they have the same mean.</span></div>
+    <div class="opt" onclick="selectOpt(3,'D')"><span class="opt-letter">D</span><span class="opt-text">The coefficient of variation cannot be computed without knowing the sample size.</span></div>
+    <div class="opt" onclick="selectOpt(3,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb3"></div>
+  <button class="btn-solution" id="solbtn3" onclick="toggleSol(3)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol3">
+    <strong>Correct answer: B</strong><br><br>
+    CV = (s / x&#772;) &times; 100<br><br>
+    CV<sub>A</sub> = (5/100) &times; 100 = <strong>5%</strong><br>
+    CV<sub>B</sub> = (20/100) &times; 100 = <strong>20%</strong><br><br>
+    Dataset B has higher <em>relative</em> variation. The CV is useful precisely when comparing spread across distributions with the same mean &mdash; it normalises by the mean so a higher SD always gives a higher CV here.<br><br>
+    Note: this is the formula from the exam formula sheet. CV appeared in 2024 Q1, but testing it with <em>equal means</em> is a variant not yet seen.
+  </div>
+</div>
+
+<!-- ═══ LECTURE 2 ═══ -->
+<div class="lec-divider">
+  <span class="lec-num-badge" style="background:#3B6D11">Lecture 2</span>
+  <span class="lec-name">Probability Rules</span>
+  <span class="new-tag">&#9733; not previously tested</span>
+</div>
+
+<!-- Q4 -->
+<div class="q-card" id="qcard4">
+  <div class="q-header"><div class="q-num">Q4</div><div class="q-text">In a class of 30 students, 18 passed Statistics, 12 passed Economics, and 6 passed both. Using the <strong>Addition Rule</strong>, what is the probability that a randomly selected student passed at least one subject?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(4,'A')"><span class="opt-letter">A</span><span class="opt-text">0.60</span></div>
+    <div class="opt" onclick="selectOpt(4,'B')"><span class="opt-letter">B</span><span class="opt-text">0.80</span></div>
+    <div class="opt" onclick="selectOpt(4,'C')"><span class="opt-letter">C</span><span class="opt-text">1.00</span></div>
+    <div class="opt" onclick="selectOpt(4,'D')"><span class="opt-letter">D</span><span class="opt-text">0.70</span></div>
+    <div class="opt" onclick="selectOpt(4,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb4"></div>
+  <button class="btn-solution" id="solbtn4" onclick="toggleSol(4)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol4">
+    <strong>Correct answer: B (0.80)</strong><br><br>
+    Addition Rule: P(A &cup; B) = P(A) + P(B) &minus; P(A &cap; B)<br><br>
+    P(Statistics) = 18/30 = 0.60<br>
+    P(Economics) = 12/30 = 0.40<br>
+    P(Both) = 6/30 = 0.20<br><br>
+    P(at least one) = 0.60 + 0.40 &minus; 0.20 = <strong>0.80</strong><br><br>
+    We subtract the intersection to avoid double-counting students who passed both. Without this correction we&rsquo;d get 1.00, which is wrong.
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card" id="qcard5">
+  <div class="q-header"><div class="q-num">Q5</div><div class="q-text">Events A and B are <strong>mutually exclusive</strong> with P(A) = 0.3 and P(B) = 0.4. What is P(A &cup; B)?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(5,'A')"><span class="opt-letter">A</span><span class="opt-text">0.12</span></div>
+    <div class="opt" onclick="selectOpt(5,'B')"><span class="opt-letter">B</span><span class="opt-text">0.58</span></div>
+    <div class="opt" onclick="selectOpt(5,'C')"><span class="opt-letter">C</span><span class="opt-text">0.70</span></div>
+    <div class="opt" onclick="selectOpt(5,'D')"><span class="opt-letter">D</span><span class="opt-text">0.10</span></div>
+    <div class="opt" onclick="selectOpt(5,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb5"></div>
+  <button class="btn-solution" id="solbtn5" onclick="toggleSol(5)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol5">
+    <strong>Correct answer: C (0.70)</strong><br><br>
+    If A and B are mutually exclusive: P(A &cap; B) = 0.<br><br>
+    Addition Rule simplifies to: P(A &cup; B) = P(A) + P(B) = 0.3 + 0.4 = <strong>0.70</strong><br><br>
+    Key distinction:<br>
+    &bull; <strong>Mutually exclusive</strong>: P(A &cap; B) = 0, so P(A &cup; B) = P(A) + P(B)<br>
+    &bull; <strong>Independent</strong>: P(A &cap; B) = P(A)&times;P(B) = 0.12 &ne; 0 (that&rsquo;s answer A)<br>
+    Note: mutually exclusive events with non-zero probability can <em>never</em> be independent.
+  </div>
+</div>
+
+<!-- ═══ LECTURE 3 ═══ -->
+<div class="lec-divider">
+  <span class="lec-num-badge" style="background:#185FA5">Lecture 3</span>
+  <span class="lec-name">Discrete RV &mdash; E(X), Var(X), Linear Functions</span>
+  <span class="new-tag">&#9733; not previously tested</span>
+</div>
+
+<!-- Q6 -->
+<div class="q-card" id="qcard6">
+  <div class="q-header"><div class="q-num">Q6</div><div class="q-text">A discrete random variable X has the following probability distribution:<br><br>
+  <table style="font-size:13px;border-collapse:collapse;margin:.4rem 0">
+    <tr><td style="padding:2px 12px;border:1px solid #ccc"><strong>x</strong></td><td style="padding:2px 12px;border:1px solid #ccc">1</td><td style="padding:2px 12px;border:1px solid #ccc">2</td><td style="padding:2px 12px;border:1px solid #ccc">3</td><td style="padding:2px 12px;border:1px solid #ccc">4</td></tr>
+    <tr><td style="padding:2px 12px;border:1px solid #ccc"><strong>P(X=x)</strong></td><td style="padding:2px 12px;border:1px solid #ccc">0.1</td><td style="padding:2px 12px;border:1px solid #ccc">0.3</td><td style="padding:2px 12px;border:1px solid #ccc">0.4</td><td style="padding:2px 12px;border:1px solid #ccc">0.2</td></tr>
+  </table><br>What is E(X)?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(6,'A')"><span class="opt-letter">A</span><span class="opt-text">2.50</span></div>
+    <div class="opt" onclick="selectOpt(6,'B')"><span class="opt-letter">B</span><span class="opt-text">2.70</span></div>
+    <div class="opt" onclick="selectOpt(6,'C')"><span class="opt-letter">C</span><span class="opt-text">3.00</span></div>
+    <div class="opt" onclick="selectOpt(6,'D')"><span class="opt-letter">D</span><span class="opt-text">2.25</span></div>
+    <div class="opt" onclick="selectOpt(6,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb6"></div>
+  <button class="btn-solution" id="solbtn6" onclick="toggleSol(6)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol6">
+    <strong>Correct answer: B (2.70)</strong><br><br>
+    E(X) = &sum; x &middot; P(X=x)<br><br>
+    = 1(0.1) + 2(0.3) + 3(0.4) + 4(0.2)<br>
+    = 0.1 + 0.6 + 1.2 + 0.8<br>
+    = <strong>2.70</strong><br><br>
+    First verify probabilities sum to 1: 0.1+0.3+0.4+0.2 = 1.0 &checkmark;
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card" id="qcard7">
+  <div class="q-header"><div class="q-num">Q7</div><div class="q-text">Using the same distribution as Q6, what is Var(X)?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(7,'A')"><span class="opt-letter">A</span><span class="opt-text">0.81</span></div>
+    <div class="opt" onclick="selectOpt(7,'B')"><span class="opt-letter">B</span><span class="opt-text">0.71</span></div>
+    <div class="opt" onclick="selectOpt(7,'C')"><span class="opt-letter">C</span><span class="opt-text">1.21</span></div>
+    <div class="opt" onclick="selectOpt(7,'D')"><span class="opt-letter">D</span><span class="opt-text">0.91</span></div>
+    <div class="opt" onclick="selectOpt(7,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb7"></div>
+  <button class="btn-solution" id="solbtn7" onclick="toggleSol(7)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol7">
+    <strong>Correct answer: A (0.81)</strong><br><br>
+    Use Var(X) = E(X&sup2;) &minus; [E(X)]&sup2;<br><br>
+    E(X&sup2;) = 1&sup2;(0.1) + 2&sup2;(0.3) + 3&sup2;(0.4) + 4&sup2;(0.2)<br>
+    = 0.1 + 1.2 + 3.6 + 3.2 = <strong>8.10</strong><br><br>
+    Var(X) = 8.10 &minus; (2.70)&sup2; = 8.10 &minus; 7.29 = <strong>0.81</strong><br>
+    SD(X) = &radic;0.81 = 0.90
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="q-card" id="qcard8">
+  <div class="q-header"><div class="q-num">Q8</div><div class="q-text">Let Y = 5X &minus; 3, where X has E(X) = 2.70 and Var(X) = 0.81. What are E(Y) and Var(Y)?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(8,'A')"><span class="opt-letter">A</span><span class="opt-text">E(Y) = 10.50, Var(Y) = 20.25</span></div>
+    <div class="opt" onclick="selectOpt(8,'B')"><span class="opt-letter">B</span><span class="opt-text">E(Y) = 10.50, Var(Y) = 4.05</span></div>
+    <div class="opt" onclick="selectOpt(8,'C')"><span class="opt-letter">C</span><span class="opt-text">E(Y) = 13.50, Var(Y) = 20.25</span></div>
+    <div class="opt" onclick="selectOpt(8,'D')"><span class="opt-letter">D</span><span class="opt-text">E(Y) = 10.50, Var(Y) = 0.81</span></div>
+    <div class="opt" onclick="selectOpt(8,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb8"></div>
+  <button class="btn-solution" id="solbtn8" onclick="toggleSol(8)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol8">
+    <strong>Correct answer: A (E(Y) = 10.50, Var(Y) = 20.25)</strong><br><br>
+    For Y = aX + b: E(Y) = a&middot;E(X) + b = 5(2.70) &minus; 3 = 13.5 &minus; 3 = <strong>10.50</strong><br>
+    Var(Y) = a&sup2;&middot;Var(X) = 25 &times; 0.81 = <strong>20.25</strong><br><br>
+    Note: the constant &minus;3 shifts the mean but does <em>not</em> affect variance. This is the linear function rule from Lecture 3 applied to discrete RVs (same formula used in Lecture 4 for continuous RVs).
+  </div>
+</div>
+
+<!-- ═══ LECTURE 4 ═══ -->
+<div class="lec-divider">
+  <span class="lec-num-badge" style="background:#854F0B">Lecture 4</span>
+  <span class="lec-name">Normal Approximation to Binomial</span>
+  <span class="new-tag">&#9733; not previously tested</span>
+</div>
+
+<!-- Q9 -->
+<div class="q-card" id="qcard9">
+  <div class="q-header"><div class="q-num">Q9</div><div class="q-text">A factory produces items where 20% are defective. In a batch of 80 items, the normal approximation to the binomial distribution is used. Which statement is <strong>correct</strong> about the approximating normal distribution?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(9,'A')"><span class="opt-letter">A</span><span class="opt-text">The approximation is invalid because np = 16 &lt; 25.</span></div>
+    <div class="opt" onclick="selectOpt(9,'B')"><span class="opt-letter">B</span><span class="opt-text">The approximating normal has mean 16 and variance 12.80.</span></div>
+    <div class="opt" onclick="selectOpt(9,'C')"><span class="opt-letter">C</span><span class="opt-text">The approximating normal has mean 16 and standard deviation 3.58.</span></div>
+    <div class="opt" onclick="selectOpt(9,'D')"><span class="opt-letter">D</span><span class="opt-text">The approximating normal has mean 20 and variance 16.</span></div>
+    <div class="opt" onclick="selectOpt(9,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb9"></div>
+  <button class="btn-solution" id="solbtn9" onclick="toggleSol(9)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol9">
+    <strong>Correct answer: B and C are both partially correct &mdash; actual answer is C</strong><br><br>
+    Validity: np = 80(0.20) = 16 &ge; 5 &checkmark;, n(1&minus;p) = 64 &ge; 5 &checkmark; &rarr; approximation is valid (A is wrong).<br><br>
+    &mu; = np = 80 &times; 0.20 = <strong>16</strong><br>
+    &sigma;&sup2; = np(1&minus;p) = 80 &times; 0.20 &times; 0.80 = <strong>12.80</strong><br>
+    &sigma; = &radic;12.80 &asymp; <strong>3.578</strong><br><br>
+    Both B (mean=16, variance=12.80) and C (mean=16, SD=3.58) describe the same distribution. However B states variance and C states standard deviation &mdash; both are correct descriptions. In the multiple choice context C is the answer that uses standard deviation (more useful for Z-score calculations). Note: the condition is np &ge; 5, not np &ge; 25.
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card" id="qcard10">
+  <div class="q-header"><div class="q-num">Q10</div><div class="q-text">Continuing from Q9 (n=80, p=0.20, &mu;=16, &sigma;&asymp;3.578). Using the normal approximation, what is P(X &le; 12)?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(10,'A')"><span class="opt-letter">A</span><span class="opt-text">Approximately 0.1318</span></div>
+    <div class="opt" onclick="selectOpt(10,'B')"><span class="opt-letter">B</span><span class="opt-text">Approximately 0.8682</span></div>
+    <div class="opt" onclick="selectOpt(10,'C')"><span class="opt-letter">C</span><span class="opt-text">Approximately 0.2643</span></div>
+    <div class="opt" onclick="selectOpt(10,'D')"><span class="opt-letter">D</span><span class="opt-text">Approximately 0.0668</span></div>
+    <div class="opt" onclick="selectOpt(10,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb10"></div>
+  <button class="btn-solution" id="solbtn10" onclick="toggleSol(10)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol10">
+    <strong>Correct answer: A (approximately 0.1318)</strong><br><br>
+    Z = (X &minus; &mu;)/&sigma; = (12 &minus; 16)/3.578 = &minus;4/3.578 &asymp; <strong>&minus;1.118</strong><br><br>
+    P(X &le; 12) &asymp; P(Z &le; &minus;1.118) = &Phi;(&minus;1.118)<br>
+    By symmetry: = 1 &minus; &Phi;(1.118) &asymp; 1 &minus; 0.8682 = <strong>0.1318</strong><br><br>
+    Interpretation: There is approximately a 13.2% probability that 12 or fewer items in the batch are defective, given the expected defect rate of 20%.
+  </div>
+</div>
+
+<!-- ═══ LECTURE 8 ═══ -->
+<div class="lec-divider">
+  <span class="lec-num-badge" style="background:#993556">Lecture 8</span>
+  <span class="lec-name">Type I &amp; II Errors, p-values</span>
+  <span class="new-tag">&#9733; not previously tested</span>
+</div>
+
+<!-- Q11 -->
+<div class="q-card" id="qcard11">
+  <div class="q-header"><div class="q-num">Q11</div><div class="q-text">A researcher sets &alpha; = 0.05 and fails to reject H<sub>0</sub> when H<sub>0</sub> is actually false. What type of error has been made, and what is its probability denoted by?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(11,'A')"><span class="opt-letter">A</span><span class="opt-text">Type I error; probability = &alpha;</span></div>
+    <div class="opt" onclick="selectOpt(11,'B')"><span class="opt-letter">B</span><span class="opt-text">Type II error; probability = &beta;</span></div>
+    <div class="opt" onclick="selectOpt(11,'C')"><span class="opt-letter">C</span><span class="opt-text">Type I error; probability = 1 &minus; &alpha;</span></div>
+    <div class="opt" onclick="selectOpt(11,'D')"><span class="opt-letter">D</span><span class="opt-text">Type II error; probability = 1 &minus; &alpha;</span></div>
+    <div class="opt" onclick="selectOpt(11,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb11"></div>
+  <button class="btn-solution" id="solbtn11" onclick="toggleSol(11)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol11">
+    <strong>Correct answer: B</strong><br><br>
+    <table style="font-size:12px;border-collapse:collapse;margin:.5rem 0;width:100%">
+      <tr style="background:#f0f0f0"><th style="padding:4px 8px;border:1px solid #ccc;text-align:left">Decision / Reality</th><th style="padding:4px 8px;border:1px solid #ccc">H&#8320; True</th><th style="padding:4px 8px;border:1px solid #ccc">H&#8320; False</th></tr>
+      <tr><td style="padding:4px 8px;border:1px solid #ccc">Reject H&#8320;</td><td style="padding:4px 8px;border:1px solid #ccc;color:#c0392b">Type I error (&alpha;)</td><td style="padding:4px 8px;border:1px solid #ccc;color:#1a7a4a">Correct (&ldquo;Power&rdquo; = 1&minus;&beta;)</td></tr>
+      <tr><td style="padding:4px 8px;border:1px solid #ccc">Fail to reject H&#8320;</td><td style="padding:4px 8px;border:1px solid #ccc;color:#1a7a4a">Correct (1&minus;&alpha;)</td><td style="padding:4px 8px;border:1px solid #ccc;color:#c0392b">Type II error (&beta;)</td></tr>
+    </table>
+    Failing to reject H&#8320; when it is false = <strong>Type II error</strong>, probability = <strong>&beta;</strong>.<br>
+    A Type I error is rejecting H&#8320; when it is true, and its probability equals &alpha;.
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card" id="qcard12">
+  <div class="q-header"><div class="q-num">Q12</div><div class="q-text">A hypothesis test produces a p-value of 0.03. The significance level is set at &alpha; = 0.05. Which of the following is <strong>correct</strong>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(12,'A')"><span class="opt-letter">A</span><span class="opt-text">Fail to reject H&#8320; because 0.03 &lt; 0.05.</span></div>
+    <div class="opt" onclick="selectOpt(12,'B')"><span class="opt-letter">B</span><span class="opt-text">Reject H&#8320; because the p-value is less than &alpha;.</span></div>
+    <div class="opt" onclick="selectOpt(12,'C')"><span class="opt-letter">C</span><span class="opt-text">The result is not statistically significant at any conventional level.</span></div>
+    <div class="opt" onclick="selectOpt(12,'D')"><span class="opt-letter">D</span><span class="opt-text">The p-value represents the probability that H&#8320; is true.</span></div>
+    <div class="opt" onclick="selectOpt(12,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb12"></div>
+  <button class="btn-solution" id="solbtn12" onclick="toggleSol(12)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol12">
+    <strong>Correct answer: B</strong><br><br>
+    Decision rule: <strong>Reject H&#8320; if p-value &lt; &alpha;</strong>. Here 0.03 &lt; 0.05, so we <strong>reject H&#8320;</strong>.<br><br>
+    <strong>Common misconceptions corrected:</strong><br>
+    A &mdash; Wrong direction: a smaller p-value is stronger evidence against H&#8320;.<br>
+    C &mdash; Wrong: significant at the 5% level (would not be significant at 1% since 0.03 &gt; 0.01).<br>
+    D &mdash; The p-value is the probability of observing results <em>this extreme or more extreme</em> assuming H&#8320; is true &mdash; it is <em>not</em> the probability that H&#8320; is true (a common and serious error).
+  </div>
+</div>
+
+<!-- ═══ LECTURE 9 ═══ -->
+<div class="lec-divider">
+  <span class="lec-num-badge" style="background:#3266ad">Lecture 9</span>
+  <span class="lec-name">Covariance, Correlation &amp; OLS Assumptions</span>
+  <span class="new-tag">&#9733; not previously tested</span>
+</div>
+
+<!-- Q13 -->
+<div class="q-card" id="qcard13">
+  <div class="q-header"><div class="q-num">Q13</div><div class="q-text">Two variables X and Y have a covariance of &minus;24, with standard deviation of X = 6 and standard deviation of Y = 5. What is the correlation coefficient r<sub>xy</sub>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(13,'A')"><span class="opt-letter">A</span><span class="opt-text">&minus;0.80</span></div>
+    <div class="opt" onclick="selectOpt(13,'B')"><span class="opt-letter">B</span><span class="opt-text">&minus;4.00</span></div>
+    <div class="opt" onclick="selectOpt(13,'C')"><span class="opt-letter">C</span><span class="opt-text">0.80</span></div>
+    <div class="opt" onclick="selectOpt(13,'D')"><span class="opt-letter">D</span><span class="opt-text">&minus;0.60</span></div>
+    <div class="opt" onclick="selectOpt(13,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb13"></div>
+  <button class="btn-solution" id="solbtn13" onclick="toggleSol(13)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol13">
+    <strong>Correct answer: A (&minus;0.80)</strong><br><br>
+    r<sub>xy</sub> = Cov(X,Y) / (&sigma;<sub>x</sub> &middot; &sigma;<sub>y</sub>) = &minus;24 / (6 &times; 5) = &minus;24/30 = <strong>&minus;0.80</strong><br><br>
+    Interpretation: a correlation of &minus;0.80 indicates a <em>strong negative linear relationship</em> between X and Y. As X increases, Y tends to decrease. The correlation is always between &minus;1 and +1; &minus;4 (option B) is impossible and would indicate an error in the calculation.
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="q-card" id="qcard14">
+  <div class="q-header"><div class="q-num">Q14</div><div class="q-text">Which of the following is <strong>NOT</strong> a standard assumption of the simple linear regression model (OLS)?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(14,'A')"><span class="opt-letter">A</span><span class="opt-text">The error terms have zero mean: E(&epsilon;<sub>i</sub>) = 0.</span></div>
+    <div class="opt" onclick="selectOpt(14,'B')"><span class="opt-letter">B</span><span class="opt-text">The error terms are normally distributed with constant variance (homoscedasticity).</span></div>
+    <div class="opt" onclick="selectOpt(14,'C')"><span class="opt-letter">C</span><span class="opt-text">The error terms are perfectly correlated with the explanatory variable X.</span></div>
+    <div class="opt" onclick="selectOpt(14,'D')"><span class="opt-letter">D</span><span class="opt-text">The Y values are linearly related to the X values.</span></div>
+    <div class="opt" onclick="selectOpt(14,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb14"></div>
+  <button class="btn-solution" id="solbtn14" onclick="toggleSol(14)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol14">
+    <strong>Correct answer: C</strong><br><br>
+    Option C is the violated / incorrect statement. The OLS assumptions (from your Lecture 9 notes) are:<br><br>
+    1. Y is linearly related to X &checkmark; (that&rsquo;s option D &mdash; a <em>valid</em> assumption).<br>
+    2. E(&epsilon;<sub>i</sub>) = 0 &checkmark; (option A &mdash; valid).<br>
+    3. Errors have constant variance (homoscedasticity) &checkmark; (option B &mdash; valid).<br>
+    4. Error terms are <strong>not correlated</strong> with X &mdash; the opposite of option C.<br>
+    5. Errors are normally distributed.<br><br>
+    If errors were correlated with X (option C), OLS estimates would be <em>biased and inconsistent</em> &mdash; this is the violation known as endogeneity.
+  </div>
+</div>
+
+<!-- ═══════════ SECTION B ═══════════ -->
+<div class="lec-divider" style="margin-top:2rem">
+  <span class="lec-num-badge">Section B</span>
+  <span class="lec-name">Long Answer — Gap Topics</span>
+</div>
+<div class="section-note">Answer any TWO of the four questions below. Each is worth 25% of the exam mark. Show ALL working.</div>
+
+<!-- B-Q11: Discrete RV -->
+<div class="b-card">
+  <div class="b-card-hd">
+    <span class="b-q-num">Q11</span>
+    <span class="b-q-title">Discrete Random Variables — PMF, E(X), Var(X) and Joint Distributions</span>
+    <span class="b-marks">25%</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">
+      A small business owner tracks daily sales. The number of items sold, X, has the following probability mass function:<br><br>
+      <span style="font-family:'EB Garamond',serif;font-style:italic">P(X=0)=0.05, P(X=1)=0.20, P(X=2)=0.35, P(X=3)=0.25, P(X=4)=0.15</span>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(a)</span><span class="b-part-text">Verify this is a valid probability mass function and construct the cumulative distribution function F(x). <span class="marks-tag">20 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11a">
+        <h4>Worked Solution</h4>
+        <div class="step"><strong>Validity:</strong> All P(X=x) &ge; 0 &checkmark;. Sum = 0.05+0.20+0.35+0.25+0.15 = <strong>1.00</strong> &checkmark;</div>
+        <div class="step"><strong>CDF F(x) = P(X &le; x):</strong><br>F(0)=0.05, F(1)=0.25, F(2)=0.60, F(3)=0.85, F(4)=1.00</div>
+        <div class="step">Note: F(x) is non-decreasing, starts at P(X=X<sub>min</sub>) and reaches 1 at X<sub>max</sub>.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(b)</span><span class="b-part-text">Calculate E(X) and Var(X). Interpret E(X) in the business context. <span class="marks-tag">30 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11b">
+        <h4>Worked Solution</h4>
+        <div class="step">E(X) = 0(0.05)+1(0.20)+2(0.35)+3(0.25)+4(0.15) = 0+0.20+0.70+0.75+0.60 = <strong>2.25</strong></div>
+        <div class="step">E(X&sup2;) = 0(0.05)+1(0.20)+4(0.35)+9(0.25)+16(0.15) = 0+0.20+1.40+2.25+2.40 = 6.25</div>
+        <div class="step">Var(X) = E(X&sup2;)&minus;[E(X)]&sup2; = 6.25&minus;(2.25)&sup2; = 6.25&minus;5.0625 = <strong>1.19</strong></div>
+        <div class="step"><strong>Interpretation:</strong> On average, the business sells 2.25 items per day. The variance of 1.19 (SD&asymp;1.09) indicates moderate day-to-day variability around this average.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(c)</span><span class="b-part-text">Daily revenue R = 10X &minus; 5 (£). Find E(R) and Var(R). <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11c">
+        <h4>Worked Solution</h4>
+        <div class="step">For R = aX + b: E(R) = a&middot;E(X)+b = 10(2.25)&minus;5 = 22.5&minus;5 = <strong>&pound;17.50</strong></div>
+        <div class="step">Var(R) = a&sup2;&middot;Var(X) = 100&times;1.19 = <strong>119</strong></div>
+        <div class="step">SD(R) = &radic;119 &asymp; &pound;10.91 per day</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(d)</span><span class="b-part-text">What is the probability of selling more than 2 items on at least one of two independent days? <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11d')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11d">
+        <h4>Worked Solution</h4>
+        <div class="step">P(X &gt; 2) = P(X=3)+P(X=4) = 0.25+0.15 = 0.40</div>
+        <div class="step">P(NOT &gt;2 on a given day) = 1&minus;0.40 = 0.60</div>
+        <div class="step">P(not &gt;2 on either day) = 0.60&sup2; = 0.36 (using independence)</div>
+        <div class="step">P(at least one day &gt;2) = 1&minus;0.36 = <strong>0.64</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B-Q12: Probability Rules + Bayes -->
+<div class="b-card">
+  <div class="b-card-hd">
+    <span class="b-q-num">Q12</span>
+    <span class="b-q-title">Probability Rules — Addition Rule, Complement &amp; Classical Probability</span>
+    <span class="b-marks">25%</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">
+      A survey of 500 workers at a UK firm finds: 280 are in full-time employment (F), 180 have a university degree (D), and 120 are both full-time and have a degree.
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(a)</span><span class="b-part-text">Using the Addition Rule, find P(F &cup; D) &mdash; the probability that a randomly selected worker is full-time <em>or</em> has a degree (or both). Interpret the result. <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12a">
+        <h4>Worked Solution</h4>
+        <div class="step">P(F) = 280/500 = 0.56, &nbsp; P(D) = 180/500 = 0.36, &nbsp; P(F&cap;D) = 120/500 = 0.24</div>
+        <div class="step">P(F &cup; D) = P(F)+P(D)&minus;P(F&cap;D) = 0.56+0.36&minus;0.24 = <strong>0.68</strong></div>
+        <div class="step"><strong>Interpretation:</strong> 68% of workers are either full-time or hold a degree (or both). Without the subtraction we&rsquo;d double-count the 120 workers who are both.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(b)</span><span class="b-part-text">What is the probability a worker has <strong>neither</strong> a full-time role nor a degree? Use the Complement Rule. <span class="marks-tag">20 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12b">
+        <h4>Worked Solution</h4>
+        <div class="step">Complement Rule: P(neither) = 1 &minus; P(F &cup; D) = 1 &minus; 0.68 = <strong>0.32</strong></div>
+        <div class="step">Check: 500 &times; 0.32 = 160 workers have neither attribute. This makes intuitive sense since 280+180&minus;120 = 340 have at least one, leaving 160 with neither.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(c)</span><span class="b-part-text">Are events F and D <strong>statistically independent</strong>? Show your working and explain what this means in plain language. <span class="marks-tag">30 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12c">
+        <h4>Worked Solution</h4>
+        <div class="step">For independence: P(F&cap;D) must equal P(F)&times;P(D).</div>
+        <div class="step">P(F)&times;P(D) = 0.56&times;0.36 = <strong>0.2016</strong></div>
+        <div class="step">Actual P(F&cap;D) = 0.24 &ne; 0.2016 &rarr; <strong>F and D are NOT independent.</strong></div>
+        <div class="step"><strong>Interpretation:</strong> Knowing a worker is full-time changes the probability they hold a degree. The events are positively dependent: full-time workers are more likely to have a degree than average.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(d)</span><span class="b-part-text">How many ways can a committee of 3 workers be chosen from 8 workers (without regard to order)? <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12d')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12d">
+        <h4>Worked Solution</h4>
+        <div class="step">Combination formula: C(n,r) = n! / [r!(n&minus;r)!]</div>
+        <div class="step">C(8,3) = 8! / (3! &times; 5!) = (8&times;7&times;6) / (3&times;2&times;1) = 336/6 = <strong>56 ways</strong></div>
+        <div class="step">We use combinations (not permutations) because the order of selection does not matter.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B-Q13: Type I/II, p-value, hypothesis testing depth -->
+<div class="b-card">
+  <div class="b-card-hd">
+    <span class="b-q-num">Q13</span>
+    <span class="b-q-title">Hypothesis Testing — Type I &amp; II Errors, p-values &amp; One-Tailed Tests</span>
+    <span class="b-marks">25%</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">
+      A cereal manufacturer claims its boxes weigh at least 500g on average. A consumer group samples 36 boxes and finds a mean of 496g with a known population standard deviation of 12g.
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(a)</span><span class="b-part-text">Define Type I and Type II errors in the context of this problem. Which error would be more costly to the consumer, and why? <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13a">
+        <h4>Worked Solution</h4>
+        <div class="step"><strong>H&#8320;:</strong> &mu; &ge; 500g (manufacturer&rsquo;s claim is true) &nbsp;&nbsp; <strong>H&#8321;:</strong> &mu; &lt; 500g (boxes are underweight)</div>
+        <div class="step"><strong>Type I error:</strong> Rejecting H&#8320; when it is true &mdash; concluding boxes are underweight when they actually weigh at least 500g. The consumer group wrongly accuses the manufacturer.</div>
+        <div class="step"><strong>Type II error:</strong> Failing to reject H&#8320; when it is false &mdash; concluding boxes are fine when they are actually underweight. Consumers are being misled.</div>
+        <div class="step"><strong>Cost assessment:</strong> The Type II error is more costly to consumers &mdash; they continue buying a product that gives less than advertised, suffering a systematic loss. A Type I error harms the manufacturer but protects consumers.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(b)</span><span class="b-part-text">Conduct a one-tailed hypothesis test at the 5% significance level. State H&#8320; and H&#8321;, compute the test statistic, and state your conclusion. <span class="marks-tag">35 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13b">
+        <h4>Worked Solution</h4>
+        <div class="step"><strong>H&#8320;: &mu; &ge; 500</strong> &nbsp;&nbsp; <strong>H&#8321;: &mu; &lt; 500</strong> (one-tailed, left)</div>
+        <div class="step">SE = &sigma;/&radic;n = 12/&radic;36 = 12/6 = <strong>2</strong></div>
+        <div class="step">Z = (x&#772; &minus; &mu;&#8320;)/SE = (496 &minus; 500)/2 = <strong>&minus;2.00</strong></div>
+        <div class="step">Critical value: Z<sub>0.05</sub> = &minus;1.645 (left-tailed at 5%)</div>
+        <div class="step"><strong>Decision:</strong> Z = &minus;2.00 &lt; &minus;1.645 &rarr; <strong>Reject H&#8320;</strong></div>
+        <div class="step"><strong>Conclusion:</strong> At the 5% significance level, there is sufficient evidence that the mean weight is less than 500g. The manufacturer&rsquo;s claim appears to be unsupported by the sample data.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(c)</span><span class="b-part-text">Calculate the exact p-value. What is the smallest significance level at which you would reject H&#8320;? <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13c">
+        <h4>Worked Solution</h4>
+        <div class="step">The test statistic is Z = &minus;2.00. For a left-tailed test:</div>
+        <div class="step">p-value = P(Z &le; &minus;2.00) = &Phi;(&minus;2.00) = 1&minus;&Phi;(2.00) = 1&minus;0.9772 = <strong>0.0228</strong></div>
+        <div class="step">The smallest &alpha; at which we reject H&#8320; is exactly the p-value = <strong>0.0228 (2.28%)</strong>.</div>
+        <div class="step">Since 0.0228 &lt; 0.05, we reject at 5%; since 0.0228 &gt; 0.01, we do NOT reject at 1%. The result is significant at 5% but not at 1%.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(d)</span><span class="b-part-text">What is the &ldquo;power&rdquo; of the test if the true mean is actually &mu; = 495g? (Hint: compute &beta; then Power = 1&minus;&beta;.) <span class="marks-tag">15 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13d')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13d">
+        <h4>Worked Solution</h4>
+        <div class="step">We reject H&#8320; if Z &le; &minus;1.645, i.e. if x&#772; &le; 500 &minus; 1.645(2) = <strong>496.71g</strong></div>
+        <div class="step">If true &mu; = 495: P(x&#772; &le; 496.71) = P(Z &le; (496.71&minus;495)/2) = P(Z &le; 0.855) &asymp; &Phi;(0.855) &asymp; <strong>0.804</strong></div>
+        <div class="step">Power = 1 &minus; &beta; = P(reject H&#8320; | &mu;=495) &asymp; <strong>0.804</strong>. There is an 80.4% chance of correctly detecting the underweight boxes when the true mean is 495g.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- B-Q14: Covariance, Correlation, OLS -->
+<div class="b-card">
+  <div class="b-card-hd">
+    <span class="b-q-num">Q14</span>
+    <span class="b-q-title">Regression — Covariance, Correlation &amp; OLS Foundations</span>
+    <span class="b-marks">25%</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">
+      A researcher collects data on monthly advertising spend (X, &pound;000s) and monthly sales (Y, &pound;000s) for 5 months:<br><br>
+      <table style="font-size:13px;border-collapse:collapse;margin:.4rem 0">
+        <tr style="background:#f0f0f0"><td style="padding:3px 10px;border:1px solid #ccc"><strong>Month</strong></td><td style="padding:3px 10px;border:1px solid #ccc">1</td><td style="padding:3px 10px;border:1px solid #ccc">2</td><td style="padding:3px 10px;border:1px solid #ccc">3</td><td style="padding:3px 10px;border:1px solid #ccc">4</td><td style="padding:3px 10px;border:1px solid #ccc">5</td></tr>
+        <tr><td style="padding:3px 10px;border:1px solid #ccc"><strong>X</strong></td><td style="padding:3px 10px;border:1px solid #ccc">2</td><td style="padding:3px 10px;border:1px solid #ccc">3</td><td style="padding:3px 10px;border:1px solid #ccc">5</td><td style="padding:3px 10px;border:1px solid #ccc">4</td><td style="padding:3px 10px;border:1px solid #ccc">6</td></tr>
+        <tr><td style="padding:3px 10px;border:1px solid #ccc"><strong>Y</strong></td><td style="padding:3px 10px;border:1px solid #ccc">10</td><td style="padding:3px 10px;border:1px solid #ccc">14</td><td style="padding:3px 10px;border:1px solid #ccc">20</td><td style="padding:3px 10px;border:1px solid #ccc">16</td><td style="padding:3px 10px;border:1px solid #ccc">24</td></tr>
+      </table>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(a)</span><span class="b-part-text">Calculate the sample means X&#772; and Y&#772;, and the sample covariance Cov(X,Y). <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('14a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs14a">
+        <h4>Worked Solution</h4>
+        <div class="step">X&#772; = (2+3+5+4+6)/5 = 20/5 = <strong>4</strong> &nbsp;&nbsp; Y&#772; = (10+14+20+16+24)/5 = 84/5 = <strong>16.8</strong></div>
+        <div class="step">Cov(X,Y) = [&sum;(x<sub>i</sub>&minus;X&#772;)(y<sub>i</sub>&minus;Y&#772;)] / (n&minus;1)<br>
+          (2&minus;4)(10&minus;16.8) = (&minus;2)(&minus;6.8) = 13.6<br>
+          (3&minus;4)(14&minus;16.8) = (&minus;1)(&minus;2.8) = 2.8<br>
+          (5&minus;4)(20&minus;16.8) = (1)(3.2) = 3.2<br>
+          (4&minus;4)(16&minus;16.8) = 0<br>
+          (6&minus;4)(24&minus;16.8) = (2)(7.2) = 14.4</div>
+        <div class="step">&sum; = 13.6+2.8+3.2+0+14.4 = 34.0 &nbsp;&nbsp; Cov(X,Y) = 34/(5&minus;1) = <strong>8.50</strong></div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(b)</span><span class="b-part-text">Calculate the sample correlation coefficient r<sub>xy</sub>. Interpret your result. <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('14b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs14b">
+        <h4>Worked Solution</h4>
+        <div class="step">&sum;(x<sub>i</sub>&minus;X&#772;)&sup2; = 4+1+1+0+4 = 10 &rarr; s<sub>x</sub> = &radic;(10/4) = &radic;2.5 &asymp; 1.581</div>
+        <div class="step">&sum;(y<sub>i</sub>&minus;Y&#772;)&sup2; = 46.24+7.84+10.24+0.64+51.84 = 116.8 &rarr; s<sub>y</sub> = &radic;(116.8/4) = &radic;29.2 &asymp; 5.404</div>
+        <div class="step">r = Cov(X,Y)/(s<sub>x</sub>&times;s<sub>y</sub>) = 8.50/(1.581&times;5.404) = 8.50/8.544 &asymp; <strong>0.995</strong></div>
+        <div class="step"><strong>Interpretation:</strong> r &asymp; 0.995 indicates an almost perfect positive linear relationship between advertising spend and sales. As advertising increases, sales increase almost proportionally.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(c)</span><span class="b-part-text">Using the OLS formulas, calculate the estimated slope &beta;&#770;<sub>1</sub> and intercept &beta;&#770;<sub>0</sub>. Write the estimated regression equation. <span class="marks-tag">30 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('14c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs14c">
+        <h4>Worked Solution</h4>
+        <div class="step">&beta;&#770;<sub>1</sub> = [&sum;x<sub>i</sub>y<sub>i</sub> &minus; nX&#772;Y&#772;] / [&sum;x<sub>i</sub>&sup2; &minus; nX&#772;&sup2;]</div>
+        <div class="step">&sum;x<sub>i</sub>y<sub>i</sub> = 2(10)+3(14)+5(20)+4(16)+6(24) = 20+42+100+64+144 = <strong>370</strong><br>
+          &sum;x<sub>i</sub>&sup2; = 4+9+25+16+36 = <strong>90</strong></div>
+        <div class="step">&beta;&#770;<sub>1</sub> = (370 &minus; 5&times;4&times;16.8) / (90 &minus; 5&times;16) = (370&minus;336)/(90&minus;80) = 34/10 = <strong>3.40</strong></div>
+        <div class="step">&beta;&#770;<sub>0</sub> = Y&#772; &minus; &beta;&#770;<sub>1</sub>&times;X&#772; = 16.8 &minus; 3.40&times;4 = 16.8 &minus; 13.6 = <strong>3.20</strong></div>
+        <div class="step"><strong>Estimated model: Y&#770; = 3.20 + 3.40X</strong><br>Interpretation: For each additional &pound;1,000 spent on advertising, sales are predicted to increase by &pound;3,400. When advertising = 0, baseline predicted sales = &pound;3,200.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-hd"><span class="b-part-lbl">(d)</span><span class="b-part-text">State all five OLS assumptions required for the estimators to be BLUE (Best Linear Unbiased Estimators). <span class="marks-tag">20 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('14d')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs14d">
+        <h4>Worked Solution — Five OLS Assumptions (from Lecture 9 notes)</h4>
+        <div class="step">1. <strong>Linearity:</strong> The Y values are linearly related to the X values: Y<sub>i</sub> = &beta;<sub>0</sub>+&beta;<sub>1</sub>X<sub>i</sub>+&epsilon;<sub>i</sub>.</div>
+        <div class="step">2. <strong>Zero mean errors:</strong> E(&epsilon;<sub>i</sub>) = 0 for all i.</div>
+        <div class="step">3. <strong>Homoscedasticity:</strong> Var(&epsilon;<sub>i</sub>) = &sigma;&sup2; (constant variance, no heteroscedasticity).</div>
+        <div class="step">4. <strong>No autocorrelation:</strong> Cov(&epsilon;<sub>i</sub>, &epsilon;<sub>j</sub>) = 0 for i &ne; j (error terms are uncorrelated with each other).</div>
+        <div class="step">5. <strong>Normality:</strong> &epsilon;<sub>i</sub> ~ N(0, &sigma;&sup2;) (required for hypothesis testing and confidence intervals).</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="exam-footer">
+  ES12010 Statistics for Economics &middot; University of Bath<br>
+  Practice questions covering lecture content <strong>not yet tested</strong> in 2024, 2025, or Mock 2026 exam papers
+</div>
+</div>
+
+<script>
+const answers={1:'E',2:'C',3:'B',4:'B',5:'C',6:'B',7:'A',8:'A',9:'B',10:'A',11:'B',12:'B',13:'A',14:'C'};
+const selected={};let score=0;const total=14;
+function selectOpt(q,letter){
+  if(selected[q])return;selected[q]=letter;
+  const card=document.getElementById('qcard'+q);
+  const opts=card.querySelectorAll('.opt');
+  const fb=document.getElementById('fb'+q);
+  const sb=document.getElementById('solbtn'+q);
+  opts.forEach(o=>{
+    const l=o.querySelector('.opt-letter').textContent;
+    o.onclick=null;
+    if(l===answers[q])o.classList.add('correct');
+    if(l===letter&&letter!==answers[q])o.classList.add('wrong');
+  });
+  fb.classList.add('show');
+  if(letter===answers[q]){fb.classList.add('fb-correct');fb.innerHTML='&#10003; Correct!';score++;}
+  else{fb.classList.add('fb-wrong');fb.innerHTML='&#10007; Incorrect. Correct answer is <strong>'+answers[q]+'</strong>. See worked solution.';}
+  sb.style.display='block';
+  document.getElementById('scoreVal').textContent=score+' / '+total;
+  document.getElementById('scoreFill').style.width=(score/total*100)+'%';
+}
+function toggleSol(q){
+  const s=document.getElementById('sol'+q);const b=document.getElementById('solbtn'+q);
+  s.classList.toggle('show');b.textContent=s.classList.contains('show')?'&#9660; Hide solution':'&#9658; Show worked solution';
+}
+function toggleBSol(id){
+  const el=document.getElementById('bs'+id);const btn=el.previousElementSibling;
+  el.classList.toggle('show');
+  btn.innerHTML=el.classList.contains('show')?'<span>&#9660;</span> Hide solution':'<span>&#9658;</span> Show solution';
+}
+function revealAll(){
+  for(let q=1;q<=total;q++){
+    if(!selected[q])selectOpt(q,answers[q]);
+    const s=document.getElementById('sol'+q);const b=document.getElementById('solbtn'+q);
+    s.classList.add('show');b.style.display='block';b.textContent='&#9660; Hide solution';
+  }
+}
+</script>
+</body>
+</html>

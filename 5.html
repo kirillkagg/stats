@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 5 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #131b2e; --ink2: #2e3a50; --ink3: #5a6678;
+    --rule: #bbc8d8; --rule2: #dce6f0;
+    --page: #f6f9fc; --cream: #eef3f9;
+    --accent: #1a4a8a; --gold: #2070c8;
+    --correct: #145a32; --correct-bg: #edfaf2;
+    --mark-bg: #f0f6ff; --shadow: rgba(20,30,50,0.09);
+    --tab-bg: #1a4a8a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); color: var(--ink); font-family: 'EB Garamond', Georgia, serif; font-size: 17px; line-height: 1.78; }
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* PROGRESS */
+  .progress-wrap { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 2px solid var(--rule2); padding: 10px 24px; display: flex; align-items: center; gap: 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink3); }
+  .progress-bar { flex: 1; height: 5px; background: var(--rule2); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); border-radius: 3px; transition: width 0.4s; width: 0%; }
+  .score-display { font-weight: 600; color: var(--ink); min-width: 110px; text-align: right; font-family: 'DM Mono', monospace; font-size: 12px; }
+  .lec-badge { background: var(--accent); color: white; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 2px; letter-spacing: 0.06em; }
+
+  /* HEADER */
+  .exam-header { border-top: 4px solid var(--accent); padding: 28px 0 20px; margin-bottom: 32px; border-bottom: 1px solid var(--rule); }
+  .exam-header::after { content: ''; display: block; border-bottom: 2px solid var(--accent); margin-top: 20px; }
+  .header-grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+  .uni-name { font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 500; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ink3); margin-bottom: 5px; }
+  .exam-title { font-size: 25px; font-weight: 600; line-height: 1.25; margin-bottom: 3px; }
+  .exam-subtitle { font-size: 15px; color: var(--ink3); font-style: italic; }
+  .exam-meta { text-align: right; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink2); line-height: 1.85; }
+
+  /* INSTRUCTIONS */
+  .instructions { background: var(--cream); border-left: 4px solid var(--gold); padding: 16px 20px; margin-bottom: 40px; border-radius: 0 4px 4px 0; }
+  .instructions p { font-size: 15px; color: var(--ink2); margin-bottom: 5px; }
+  .instructions p:last-child { margin-bottom: 0; }
+
+  /* SECTION HEADERS */
+  .section-header { display: flex; align-items: center; gap: 14px; margin: 48px 0 22px; }
+  .section-tab { background: var(--tab-bg); color: white; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; padding: 5px 16px; border-radius: 2px; }
+  .section-desc { font-size: 14px; color: var(--ink3); font-style: italic; font-family: 'DM Sans', sans-serif; }
+
+  /* QUESTION CARDS */
+  .q-card { border: 1px solid var(--rule2); border-radius: 5px; margin-bottom: 22px; overflow: hidden; transition: box-shadow 0.2s; background: white; }
+  .q-card:hover { box-shadow: 0 5px 20px var(--shadow); }
+  .q-head { display: flex; align-items: center; gap: 12px; padding: 15px 20px 13px; border-bottom: 1px solid var(--rule2); background: var(--cream); flex-wrap: wrap; }
+  .q-num { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); min-width: 32px; }
+  .q-marks { margin-left: auto; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--ink3); background: white; border: 1px solid var(--rule2); padding: 2px 10px; border-radius: 20px; white-space: nowrap; }
+  .q-body { padding: 18px 20px; }
+  .q-text { font-size: 16.5px; color: var(--ink); margin-bottom: 16px; line-height: 1.72; }
+
+  /* OPTIONS */
+  .options { list-style: none; }
+  .options li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 14px; margin-bottom: 5px; border: 1px solid var(--rule2); border-radius: 4px; cursor: pointer; transition: background 0.14s, border-color 0.14s; font-size: 16px; line-height: 1.5; background: white; }
+  .options li:hover { background: var(--cream); border-color: var(--rule); }
+  .options li.selected { background: #e8f0fc; border-color: #4a7fd4; }
+  .options li.correct { background: var(--correct-bg); border-color: #27ae60; color: #145a32; }
+  .options li.wrong { background: #fff0f0; border-color: #c0392b; color: #8b1a1a; }
+  .opt-letter { font-family: 'DM Mono', monospace; font-size: 12.5px; font-weight: 500; color: var(--ink3); min-width: 22px; padding-top: 2px; flex-shrink: 0; }
+  .options li.correct .opt-letter { color: #145a32; }
+  .options li.wrong .opt-letter { color: #8b1a1a; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 3px; border: 1.5px solid; cursor: pointer; transition: all 0.14s; letter-spacing: 0.01em; }
+  .btn-check { border-color: #2060b8; color: #2060b8; background: white; }
+  .btn-check:hover { background: #2060b8; color: white; }
+  .btn-reveal { border-color: var(--accent); color: var(--accent); background: white; }
+  .btn-reveal:hover { background: var(--accent); color: white; }
+  .btn-reset { border-color: var(--rule); color: var(--ink3); background: white; }
+  .btn-reset:hover { background: var(--cream); }
+
+  /* SOLUTION BLOCKS */
+  .solution-block { display: none; margin-top: 14px; background: var(--correct-bg); border: 1px solid #a8dbc0; border-radius: 4px; padding: 16px 18px; }
+  .solution-block.visible { display: block; }
+  .solution-title { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--correct); margin-bottom: 10px; }
+  .solution-step { font-size: 15.5px; color: var(--ink2); line-height: 1.82; margin-bottom: 9px; }
+  .solution-step:last-child { margin-bottom: 0; }
+  .math-block { display: block; font-family: 'DM Mono', monospace; font-size: 13.5px; background: rgba(20,90,50,0.06); border-left: 3px solid #27ae60; padding: 10px 14px; margin: 9px 0; border-radius: 0 3px 3px 0; color: #0a3d1f; white-space: pre-wrap; line-height: 2.0; }
+  .final-ans { font-family: 'DM Mono', monospace; font-size: 14.5px; font-weight: 500; color: var(--correct); background: rgba(20,90,50,0.1); padding: 3px 10px; border-radius: 3px; display: inline-block; }
+  .mark-note { font-size: 14px; color: var(--ink3); border: 1px dashed #2070c8; padding: 10px 14px; border-radius: 3px; margin-top: 10px; background: var(--mark-bg); line-height: 1.72; }
+  .warn-box { font-size: 14px; color: #6b3a00; border: 1px solid #e8a840; padding: 10px 14px; border-radius: 3px; margin: 10px 0; background: #fffbf0; line-height: 1.72; }
+
+  /* SECTION B */
+  .part-block { border: 1px solid var(--rule2); border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+  .part-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: var(--cream); border-bottom: 1px solid var(--rule2); }
+  .part-label { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); }
+  .part-body { padding: 16px 20px; background: white; }
+  .part-text { font-size: 16.5px; color: var(--ink); line-height: 1.78; margin-bottom: 12px; }
+  .subpart { padding: 10px 0 4px; border-top: 1px dashed var(--rule2); margin-top: 10px; }
+  .subpart:first-of-type { border-top: none; margin-top: 0; }
+  .subpart-label { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold); margin-bottom: 6px; font-weight: 500; }
+  .subpart-text { font-size: 16.5px; color: var(--ink); line-height: 1.75; }
+
+  /* FORMULA BOX */
+  .formula-box { background: #f0f4ff; border: 1px solid #c0d0ee; border-radius: 4px; padding: 12px 16px; margin: 10px 0; font-family: 'DM Mono', monospace; font-size: 14px; color: #1a3060; line-height: 1.9; white-space: pre-wrap; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 12px 0; font-family: 'DM Sans', sans-serif; }
+  .data-table th { background: var(--accent); color: white; padding: 8px 14px; text-align: left; font-weight: 500; font-size: 13px; }
+  .data-table td { padding: 8px 14px; border-bottom: 1px solid var(--rule2); color: var(--ink2); }
+  .data-table tr:nth-child(even) td { background: var(--cream); }
+  .data-table .total-row td { font-weight: 600; color: var(--ink); background: var(--cream); border-top: 2px solid var(--rule); }
+
+  /* MISC */
+  .divider { border: none; border-top: 1px solid var(--rule2); margin: 36px 0; }
+  .final-score { display: none; text-align: center; padding: 36px; background: white; border: 2px solid var(--rule2); border-radius: 6px; margin-top: 32px; }
+  .final-score.visible { display: block; }
+  .score-number { font-size: 58px; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+  .score-label { font-size: 18px; color: var(--ink3); font-style: italic; }
+  ul.body-list { margin: 10px 0 10px 24px; }
+  ul.body-list li { font-size: 16.5px; line-height: 2.0; }
+  .topic-tag { font-family: 'DM Sans', sans-serif; font-size: 11px; background: #dde8f5; color: #1a4a8a; border: 1px solid #b0c8e8; padding: 2px 9px; border-radius: 20px; }
+  .key-formula { display: inline-block; font-family: 'DM Mono', monospace; font-size: 14px; background: #e8f0fc; color: var(--accent); border: 1px solid #b0c8e8; padding: 3px 10px; border-radius: 3px; margin: 2px 4px; }
+</style>
+</head>
+<body>
+
+<!-- STICKY PROGRESS BAR -->
+<div class="progress-wrap">
+  <span class="lec-badge">Lecture 5</span>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="score-display" id="scoreDisplay">0 / 6 answered</span>
+  <button class="btn btn-reset" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<div class="page-wrap">
+
+  <!-- EXAM HEADER -->
+  <div class="exam-header">
+    <div class="header-grid">
+      <div>
+        <div class="uni-name">University of Bath — Department of Economics</div>
+        <div class="exam-title">ES12010: Statistics for Economics</div>
+        <div class="exam-subtitle">Lecture 5 Practice Exam — Sampling &amp; Sampling Distributions</div>
+      </div>
+      <div class="exam-meta">
+        <div style="background:var(--accent);color:white;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:3px 12px;border-radius:2px;margin-bottom:6px;display:inline-block;letter-spacing:0.06em">Practice Paper</div>
+        <div>Suggested time: 2 hours</div>
+        <div>Total marks: 100</div>
+        <div>Statistical tables provided</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instructions">
+    <p><strong>Instructions:</strong> Answer all 6 questions in Section A (50 marks) and any ONE question in Section B (50 marks).</p>
+    <p>Section A: Select ONE answer per question. Each carries <strong>5 marks</strong> — 2 marks for the correct option and 3 marks for a clear written explanation justifying your answer.</p>
+    <p>Section B: Show all working and state all formulas before substituting. Marks are awarded for method as well as numerical answers. Round to two decimal places.</p>
+    <p style="color:var(--accent);font-style:italic;">Interactive: click an option to select, then "Check Answer" for feedback. "Show worked explanation" reveals the full mark scheme.</p>
+  </div>
+
+  <!-- Key Formulae Reference -->
+  <div style="background:white;border:1px solid var(--rule2);border-radius:4px;padding:14px 20px;margin-bottom:36px;">
+    <div style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;">Key Formulae — Lecture 5</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:14px;">
+      <span class="key-formula">E(X̄) = μ</span>
+      <span class="key-formula">Var(X̄) = σ²/n</span>
+      <span class="key-formula">σ_X̄ = σ/√n</span>
+      <span class="key-formula">Z = (X̄ − μ) / σ_X̄</span>
+      <span class="key-formula">E(p̂) = P</span>
+      <span class="key-formula">σ_p̂ = √[P(1−P)/n]</span>
+      <span class="key-formula">Z = (p̂ − P) / σ_p̂</span>
+      <span class="key-formula">χ²_(n−1) = (n−1)S²/σ²</span>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION A ═══ -->
+  <div class="section-header">
+    <span class="section-tab">Section A</span>
+    <span class="section-desc">Multiple-choice — answer all 6 questions</span>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q1</span>
+      <span style="flex:1">Properties of the sampling distribution of the sample mean</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">Which of the following statements about the sample mean X̄ is correct?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Sampling Distribution of X̄ — Properties (Slides 16–18)</small>
+      </div>
+      <ul class="options" id="opts1">
+        <li onclick="selectOpt(1,'A')"><span class="opt-letter">A.</span>X̄ is always normally distributed, regardless of sample size or population shape.</li>
+        <li onclick="selectOpt(1,'B')"><span class="opt-letter">B.</span>The variance of X̄ equals the population variance σ².</li>
+        <li onclick="selectOpt(1,'C')"><span class="opt-letter">C.</span>The variance of X̄ equals σ²/n, which decreases as sample size n increases.</li>
+        <li onclick="selectOpt(1,'D')"><span class="opt-letter">D.</span>The expected value of X̄ is equal to σ², the population variance.</li>
+        <li onclick="selectOpt(1,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(1,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol1')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol1">
+        <div class="solution-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: C</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> The two fundamental properties of the sampling distribution of X̄ are:</div>
+        <span class="math-block">E(X̄) = μ          [X̄ is an unbiased estimator of the population mean]
+Var(X̄) = σ²/n     [variance of X̄ equals population variance divided by n]</span>
+        <div class="solution-step">Option C is correct: Var(X̄) = σ²/n shrinks as n increases — this is the mathematical basis for why larger samples yield more precise estimates. The standard deviation of X̄ (the standard error) is σ_X̄ = σ/√n.</div>
+        <div class="solution-step">Why the others fail:</div>
+        <div class="solution-step">• <strong>A:</strong> X̄ is normally distributed only if the population is normal OR n is large enough (by the CLT). It is not always normal.</div>
+        <div class="solution-step">• <strong>B:</strong> Var(X̄) = σ²/n ≠ σ² (unless n = 1).</div>
+        <div class="solution-step">• <strong>D:</strong> E(X̄) = μ (the population mean), not σ².</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> This is a high-frequency MCQ topic. Know both properties — E(X̄) and Var(X̄) — and be able to explain what they mean for statistical inference.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q2</span>
+      <span style="flex:1">Standard error of the sample mean — calculation</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A population has mean μ = 120 and standard deviation σ = 18. A random sample of size n = 81 is drawn. What is the standard error of the sample mean?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Standard Error (Slides 18, 26–27)</small>
+      </div>
+      <ul class="options" id="opts2">
+        <li onclick="selectOpt(2,'A')"><span class="opt-letter">A.</span>18</li>
+        <li onclick="selectOpt(2,'B')"><span class="opt-letter">B.</span>9</li>
+        <li onclick="selectOpt(2,'C')"><span class="opt-letter">C.</span>2</li>
+        <li onclick="selectOpt(2,'D')"><span class="opt-letter">D.</span>0.22</li>
+        <li onclick="selectOpt(2,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(2,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol2')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol2">
+        <div class="solution-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: C (Standard Error = 2)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong></div>
+        <span class="math-block">σ_X̄ = σ / √n = 18 / √81 = 18 / 9 = 2</span>
+        <div class="solution-step">The standard error measures the typical amount by which a sample mean deviates from the true population mean. With n = 81, √81 = 9, reducing σ = 18 by a factor of 9 to give SE = 2.</div>
+        <div class="solution-step">Option A (18) ignores the division by √n entirely — this is the population standard deviation, not the SE. Option B (9) is √81 alone (the denominator). Option D (0.22) mistakes the formula, dividing σ by n rather than √n.</div>
+        <div class="solution-step">Key insight: to halve the standard error you must <em>quadruple</em> the sample size, since SE ∝ 1/√n. Going from n = 81 to n = 324 would reduce SE from 2 to 1.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Always apply σ_X̄ = σ/√n, not σ/n. The square root is the most commonly omitted step.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q3</span>
+      <span style="flex:1">Sampling distribution — probability calculation (CLT)</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A large population has mean μ = 50 and standard deviation σ = 8. A random sample of n = 64 is taken. What is the probability that the sample mean is less than or equal to 51.5?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Z-transform of X̄ / CLT (Slides 26–36)</small>
+      </div>
+      <ul class="options" id="opts3">
+        <li onclick="selectOpt(3,'A')"><span class="opt-letter">A.</span>0.0668</li>
+        <li onclick="selectOpt(3,'B')"><span class="opt-letter">B.</span>0.4332</li>
+        <li onclick="selectOpt(3,'C')"><span class="opt-letter">C.</span>0.9332</li>
+        <li onclick="selectOpt(3,'D')"><span class="opt-letter">D.</span>0.5000</li>
+        <li onclick="selectOpt(3,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(3,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol3')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol3">
+        <div class="solution-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: C (0.9332)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> Since n = 64 ≥ 25, we apply the CLT: X̄ ~ N(μ, σ²/n).</div>
+        <span class="math-block">Step 1 — Standard error:
+σ_X̄ = σ / √n = 8 / √64 = 8 / 8 = 1.0
+
+Step 2 — Standardise:
+Z = (X̄ − μ) / σ_X̄ = (51.5 − 50) / 1.0 = 1.50
+
+Step 3 — Look up Z-table:
+P(X̄ ≤ 51.5) = P(Z ≤ 1.50) = Φ(1.50) = 0.9332</span>
+        <div class="solution-step">Option A (0.0668) = P(Z > 1.50) — the upper tail, not the lower. Option B (0.4332) = Φ(1.50) − 0.5 — a table-reading error. Option D (0.5000) would only be correct if X̄ = μ = 50.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Always show the three steps explicitly: (1) compute SE, (2) compute Z, (3) look up the table. Examiners award process marks even if you misread the table slightly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q4</span>
+      <span style="flex:1">Central Limit Theorem — conceptual statements</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">Consider the following statements about the Central Limit Theorem (CLT). Which combination is correct?
+        <br><br>
+        <em>(i)</em> The CLT can be applied to both discrete and continuous random variables.<br>
+        <em>(ii)</em> The CLT requires the population to be normally distributed before it can be applied.<br>
+        <em>(iii)</em> The CLT states that the sampling distribution of X̄ approaches a normal distribution as n increases, regardless of the population's shape.<br>
+        <em>(iv)</em> The CLT is fundamental to statistical inference because it allows us to make conclusions about population parameters using sample data alone.<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Central Limit Theorem (Slides 31–38)</small>
+      </div>
+      <ul class="options" id="opts4">
+        <li onclick="selectOpt(4,'A')"><span class="opt-letter">A.</span>(i) and (ii) only.</li>
+        <li onclick="selectOpt(4,'B')"><span class="opt-letter">B.</span>(i), (iii), and (iv) only.</li>
+        <li onclick="selectOpt(4,'C')"><span class="opt-letter">C.</span>(ii) and (iii) only.</li>
+        <li onclick="selectOpt(4,'D')"><span class="opt-letter">D.</span>All of the above.</li>
+        <li onclick="selectOpt(4,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(4,'B')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol4')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol4">
+        <div class="solution-title">✓ Correct Answer: B — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: B — statements (i), (iii), and (iv)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation, statement by statement:</strong></div>
+        <div class="solution-step">• <strong>(i) TRUE:</strong> The CLT applies whether the underlying population is discrete (e.g., Binomial, Poisson) or continuous (e.g., Uniform, Exponential). The type of the distribution does not restrict its applicability.</div>
+        <div class="solution-step">• <strong>(ii) FALSE:</strong> This is the key misconception. The CLT's power is precisely that it does <em>not</em> require the population to be normal — it states that normality of X̄ emerges from large n regardless of the population distribution. If the population is normal, X̄ is normal for any n, but this is a special case, not a requirement.</div>
+        <div class="solution-step">• <strong>(iii) TRUE:</strong> This is the formal statement of the CLT. For most non-normal distributions, n &gt; 25 is sufficient for the approximation to be reliable.</div>
+        <div class="solution-step">• <strong>(iv) TRUE:</strong> The CLT is the cornerstone of classical inference (confidence intervals, hypothesis tests) precisely because it gives us the sampling distribution of X̄ without needing to know the exact population distribution.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Statement (ii) is the deliberate trap in this question and appears in most exam years. The CLT is powerful <em>because</em> it bypasses the need for a normal population assumption.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q5</span>
+      <span style="flex:1">Sampling distribution of the sample proportion</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">The true proportion of adults who support a new environmental policy is P = 0.60. A random sample of n = 100 adults is drawn. What is the probability that the sample proportion p̂ exceeds 0.65?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Sampling Distribution of p̂ (Slides 39–42)</small>
+      </div>
+      <ul class="options" id="opts5">
+        <li onclick="selectOpt(5,'A')"><span class="opt-letter">A.</span>0.8461</li>
+        <li onclick="selectOpt(5,'B')"><span class="opt-letter">B.</span>0.3461</li>
+        <li onclick="selectOpt(5,'C')"><span class="opt-letter">C.</span>0.1539</li>
+        <li onclick="selectOpt(5,'D')"><span class="opt-letter">D.</span>0.6922</li>
+        <li onclick="selectOpt(5,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(5,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol5')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol5">
+        <div class="solution-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: C (0.1539)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong></div>
+        <span class="math-block">Step 0 — Check normal approximation condition:
+n·P·(1−P) = 100 × 0.60 × 0.40 = 24 > 5  ✓
+
+Step 1 — Standard error of p̂:
+σ_p̂ = √[P(1−P)/n] = √[0.60 × 0.40 / 100]
+     = √0.0024 = 0.04899
+
+Step 2 — Standardise:
+Z = (p̂ − P) / σ_p̂ = (0.65 − 0.60) / 0.04899 = 1.02
+
+Step 3 — Table look-up:
+P(p̂ > 0.65) = P(Z > 1.02) = 1 − Φ(1.02)
+             = 1 − 0.8461 = 0.1539</span>
+        <div class="solution-step">Option A (0.8461) = Φ(1.02) — the complement, i.e. P(p̂ ≤ 0.65). A classic sign error: "exceeds" means the upper tail. Option D (0.6922) ≈ P(−1.02 ≤ Z ≤ 1.02) — a two-tailed probability.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Always check the condition nP(1−P) &gt; 5 before applying the normal approximation to p̂. State this check explicitly — it earns marks and demonstrates understanding of when the approximation is valid.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q6</span>
+      <span style="flex:1">Sampling distribution of sample variance — chi-squared</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A process produces items whose quality follows a normal distribution with population variance σ² = 2.25. A random sample of n = 20 batches is chosen. The probability that the sample variance S² exceeds 4.05 is:<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Chi-squared distribution / Sample Variance (Slides 43–48)</small>
+      </div>
+      <ul class="options" id="opts6">
+        <li onclick="selectOpt(6,'A')"><span class="opt-letter">A.</span>Between 0.025 and 0.05.</li>
+        <li onclick="selectOpt(6,'B')"><span class="opt-letter">B.</span>Between 0.01 and 0.025.</li>
+        <li onclick="selectOpt(6,'C')"><span class="opt-letter">C.</span>Less than 0.01.</li>
+        <li onclick="selectOpt(6,'D')"><span class="opt-letter">D.</span>Greater than 0.05.</li>
+        <li onclick="selectOpt(6,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(6,'B')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol6')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol6">
+        <div class="solution-title">✓ Correct Answer: B — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: B — between 0.01 and 0.025</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> When sampling from a normal population, the statistic (n−1)S²/σ² follows a chi-squared distribution with n−1 degrees of freedom:</div>
+        <span class="math-block">χ²_(n−1) = (n−1)S²/σ²
+
+Given: n = 20, σ² = 2.25, S² = 4.05, d.f. = 19
+
+χ² = (20−1) × 4.05 / 2.25 = 19 × 1.80 = 34.20</span>
+        <div class="solution-step">From the chi-squared table with 19 degrees of freedom:</div>
+        <span class="math-block">χ²_(19, 0.025) = 32.852   →  P(χ² > 32.852) = 0.025
+χ²_(19, 0.010) = 36.191   →  P(χ² > 36.191) = 0.010
+
+Since 32.852 < 34.20 < 36.191:
+P(S² > 4.05) = P(χ² > 34.20) is between 0.010 and 0.025</span>
+        <div class="solution-step">This indicates that a sample variance this extreme is unlikely (probability 1–2.5%) if the true population variance is 2.25, suggesting potential concern that the actual variability exceeds specifications.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> You must convert S² to the chi-squared statistic before using the table. The chi-squared distribution is right-skewed and does not have symmetric tails — never use the Z-table for variance inference.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL MCQ SCORE -->
+  <div class="final-score" id="finalScore">
+    <div class="score-number" id="finalScoreNum">—</div>
+    <div class="score-label">Section A MCQ score (options only)</div>
+    <p style="margin-top:16px;font-size:15px;color:var(--ink3);">Add 3 marks per question for each written explanation you can justify clearly. Section A maximum = 30 marks.</p>
+  </div>
+
+  <!-- ═══ SECTION B ═══ -->
+  <hr class="divider">
+  <div class="section-header">
+    <span class="section-tab">Section B</span>
+    <span class="section-desc">Long-answer questions — answer any ONE of the following two questions</span>
+  </div>
+
+  <!-- ══ B Q7 ══ -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q7</span>
+      <span style="flex:1">Sampling Distribution of X̄, Standard Error &amp; Central Limit Theorem</span>
+      <span class="q-marks">50 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">This question tests your understanding of the sampling distribution of the sample mean, the standard error, the CLT, and probability calculations. <strong>Show all working and state all formulae.</strong></div>
+
+      <!-- B7a -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(a) Standard Error &amp; Sample Size</span><span class="q-marks">25 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">Why does sample size play such an important role in reducing the standard error of the mean? Using the formula σ_X̄ = σ/√n, explain what the implications are for statistical inference of increasing the sample size from n = 25 to n = 100 and then to n = 400, given a population with σ = 20.</div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB7a')">Show model answer</button>
+          </div>
+          <div class="solution-block" id="solB7a">
+            <div class="solution-title">✓ Model Answer — Part (a)</div>
+            <div class="solution-step"><strong>The standard error formula:</strong> σ_X̄ = σ/√n measures the typical deviation of the sample mean from the true population mean. It is the standard deviation of the <em>sampling distribution</em> of X̄.</div>
+            <span class="math-block">n = 25:  σ_X̄ = 20/√25  = 20/5  = 4.0
+n = 100: σ_X̄ = 20/√100 = 20/10 = 2.0
+n = 400: σ_X̄ = 20/√400 = 20/20 = 1.0</span>
+            <div class="solution-step"><strong>Why the square root?</strong> The variance of X̄ is Var(X̄) = σ²/n, which decreases linearly with n. Taking the square root introduces the √n denominator — a diminishing returns relationship. To halve the SE you must quadruple n, not double it. This has practical cost implications for survey design and data collection.</div>
+            <div class="solution-step"><strong>Implications for inference:</strong></div>
+            <div class="solution-step">1. <em>Precision:</em> A smaller SE means the sample mean is a more reliable estimate of μ. With n = 400 vs n = 25, our estimate is four times more precise.</div>
+            <div class="solution-step">2. <em>Confidence intervals:</em> The width of a CI is proportional to SE. Larger n → narrower CI → more informative interval estimates.</div>
+            <div class="solution-step">3. <em>Hypothesis testing:</em> The test statistic Z = (X̄ − μ)/σ_X̄ becomes larger (in absolute value) for the same deviation (X̄ − μ) as n increases. Larger n increases the power of the test, making it easier to detect a true effect.</div>
+            <div class="solution-step">4. <em>The normal approximation (CLT):  </em> Larger n also ensures the CLT applies, so the distribution of X̄ becomes approximately normal even if the population is not, enabling the use of Z-based methods.</div>
+            <div class="solution-step">5. <em>Practical trade-off:</em> While larger n always reduces SE, there are diminishing returns. The benefit of increasing n from 25 to 100 (SE falls by half) is larger than increasing from 100 to 400 (SE again halves). The marginal gain in precision must be weighed against the cost of collecting more data.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> Formula stated and applied numerically 6 marks + mathematical explanation of √n relationship 5 marks + each of five implications 2–3 marks = 25 marks. Credit any well-reasoned economic application.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B7b -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(b) Normal Population — Probability Calculation</span><span class="q-marks">25 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A large population of quarterly GDP growth rates follows a normal distribution with mean μ = 0.8% and standard deviation σ = 1.5%. A random sample of n = 25 quarters is drawn.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [5 marks]</div>
+            <div class="subpart-text">State the exact sampling distribution of X̄, giving the mean and variance. Why is no large-sample condition needed here?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [10 marks]</div>
+            <div class="subpart-text">Find P(X̄ ≤ 1.1%). Show all working including the standardisation step.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [10 marks]</div>
+            <div class="subpart-text">Find P(0.5% ≤ X̄ ≤ 1.4%). Sketch the relevant region under the standard normal curve and label all Z values.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB7b')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB7b">
+            <div class="solution-title">✓ Worked Solution — Part (b)</div>
+            <div class="solution-step"><strong>(i) Sampling distribution:</strong> Since the population is normal, X̄ is <em>exactly</em> normally distributed for any n:</div>
+            <span class="math-block">X̄ ~ N(μ, σ²/n) = N(0.8,  1.5²/25) = N(0.8,  0.09)
+σ_X̄ = √(σ²/n) = 1.5/√25 = 1.5/5 = 0.30</span>
+            <div class="solution-step">No large-sample CLT condition is required because linear combinations of independent normal random variables are also normally distributed. Normality of X̄ follows directly from the normality of the population — it holds exactly for <em>any</em> sample size, not just asymptotically.</div>
+            <div class="solution-step"><strong>(ii) P(X̄ ≤ 1.1%):</strong></div>
+            <span class="math-block">Z = (X̄ − μ) / σ_X̄ = (1.1 − 0.8) / 0.30 = 0.30 / 0.30 = 1.00
+
+P(X̄ ≤ 1.1) = P(Z ≤ 1.00) = Φ(1.00) = 0.8413</span>
+            <div class="solution-step"><strong>(iii) P(0.5 ≤ X̄ ≤ 1.4):</strong></div>
+            <span class="math-block">Z₁ = (0.5 − 0.8) / 0.30 = −0.30/0.30 = −1.00
+Z₂ = (1.4 − 0.8) / 0.30 =  0.60/0.30 =  2.00
+
+P(0.5 ≤ X̄ ≤ 1.4) = P(−1.00 ≤ Z ≤ 2.00)
+                   = Φ(2.00) − Φ(−1.00)
+                   = 0.9772 − 0.1587 = 0.8185</span>
+            <div class="solution-step">Sketch: bell curve centred at 0, with the shaded region between Z = −1.00 and Z = 2.00. The region is not symmetric about 0 because the upper bound (Z = 2.00) is further from the centre than the lower bound (Z = −1.00).</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Distribution stated 3 + reason 2 = 5. (ii) SE 2 + Z 4 + table correct 4 = 10. (iii) Both Z values 4 + table subtraction 4 + sketch/labels 2 = 10.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B7c -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(c) CLT Application — Non-Normal Population</span><span class="q-marks">25 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A large retail company records daily online sales. The distribution of daily sales is highly right-skewed (many small days, occasional large days) with mean μ = £12,000 and standard deviation σ = £4,800. A random sample of n = 64 trading days is selected.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [5 marks]</div>
+            <div class="subpart-text">Can the Central Limit Theorem be applied? Justify your answer and state the approximate sampling distribution of X̄.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [10 marks]</div>
+            <div class="subpart-text">Find P(X̄ > £13,200). Interpret the result in plain language.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [10 marks]</div>
+            <div class="subpart-text">Find the value c such that P(X̄ > c) = 0.025. What does this value represent in the context of the retailer's performance monitoring?</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB7c')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB7c">
+            <div class="solution-title">✓ Worked Solution — Part (c)</div>
+            <div class="solution-step"><strong>(i) Justification of CLT:</strong></div>
+            <div class="solution-step">The population is highly right-skewed (not normal), so normality of X̄ is not automatic. However, n = 64 > 25, which is the standard threshold for the CLT to yield a reliable normal approximation for most distributions. Therefore, by the CLT:</div>
+            <span class="math-block">σ_X̄ = σ/√n = 4800/√64 = 4800/8 = 600
+
+X̄ ≈ N(12000, 600²) = N(12000, 360000)</span>
+            <div class="solution-step"><strong>(ii) P(X̄ > £13,200):</strong></div>
+            <span class="math-block">Z = (13200 − 12000) / 600 = 1200 / 600 = 2.00
+
+P(X̄ > 13200) = P(Z > 2.00) = 1 − Φ(2.00)
+              = 1 − 0.9772 = 0.0228</span>
+            <div class="solution-step">Interpretation: There is only a 2.28% probability that a random sample of 64 trading days would yield a mean daily sales figure above £13,200, if the true population mean is £12,000. Observing such a high average would be unusual and might prompt the retailer to investigate whether trading conditions have improved.</div>
+            <div class="solution-step"><strong>(iii) Find c such that P(X̄ > c) = 0.025:</strong></div>
+            <span class="math-block">P(X̄ > c) = 0.025  →  P(Z > z) = 0.025
+From Z-table:  z = 1.96  [standard 97.5th percentile]
+
+Reverse transform:
+c = μ + z × σ_X̄ = 12000 + 1.96 × 600
+  = 12000 + 1176 = £13,176</span>
+            <div class="solution-step">Context: c = £13,176 is the 97.5th percentile of the sampling distribution of mean daily sales. If the retailer observes a sample mean above this value, there is only a 2.5% probability it arose by chance under the assumption μ = £12,000. This threshold could serve as an upper control limit in statistical process control — a signal that something unusual (positive or negative) may be driving sales.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) n > 25 justification 2 + σ_X̄ 2 + distribution stated 1 = 5. (ii) Z 4 + table 4 + interpretation 2 = 10. (iii) Z = 1.96 stated 3 + reverse transform 5 + context 2 = 10.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ B Q8 ══ -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q8</span>
+      <span style="flex:1">Inferential Statistics, Sample Proportion &amp; Sample Variance</span>
+      <span class="q-marks">50 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">This question covers descriptive vs inferential statistics, the sampling distribution of the sample proportion, and the chi-squared distribution for sample variance inference. <strong>Show all working.</strong></div>
+
+      <!-- B8a -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(a) Inferential Statistics &amp; the CLT</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [7 marks]</div>
+            <div class="subpart-text">Distinguish between descriptive statistics and inferential statistics. Provide one economic example of each. Why is statistical inference necessary?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [8 marks]</div>
+            <div class="subpart-text">Why is the Central Limit Theorem described as one of the most important results in statistics? Discuss its conditions and explain why the requirement n > 25 is practically useful for economists.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB8a')">Show model answer</button>
+          </div>
+          <div class="solution-block" id="solB8a">
+            <div class="solution-title">✓ Model Answer — Part (a)</div>
+            <div class="solution-step"><strong>(i) Descriptive vs Inferential Statistics:</strong></div>
+            <div class="solution-step"><em>Descriptive statistics</em> collect, summarise, and present data numerically and graphically — they describe what is observed in the data without drawing conclusions beyond it. Economic example: calculating the UK's mean GDP growth over the last decade; computing the Gini coefficient from a census.</div>
+            <div class="solution-step"><em>Inferential statistics</em> use sample data to draw conclusions (inferences) about a population. They involve estimation and hypothesis testing. Economic example: using a sample of 500 firms to test whether average productivity has increased since a policy change; using survey data to estimate the national unemployment rate with a confidence interval.</div>
+            <div class="solution-step">Inference is necessary because measuring the entire population is usually impossible (cost, time, destructive testing). Random samples allow reliable generalisation provided sampling is properly conducted.</div>
+            <div class="solution-step"><strong>(ii) Importance of the CLT:</strong></div>
+            <div class="solution-step">The CLT states: given a population with mean μ and variance σ², the sampling distribution of X̄ based on a random sample of size n approaches N(μ, σ²/n) as n → ∞, <em>regardless of the population's distribution</em>. Formally:</div>
+            <span class="math-block">Z = (X̄ − μ) / (σ/√n)  →  N(0,1)  as  n → ∞</span>
+            <div class="solution-step">It is "important" because: (1) it removes the need to know the exact population distribution — an enormous simplification; (2) it provides the theoretical foundation for Z-tests, t-tests, and confidence intervals; (3) it explains why normal-based methods work well in practice even when populations are not normal.</div>
+            <div class="solution-step">The n > 25 rule is practical for economists: real economic data (income, prices, returns) are often skewed, fat-tailed, or otherwise non-normal. The rule tells analysts that with modest sample sizes routinely achievable in surveys or datasets, the CLT approximation is valid enough for reliable inference — without requiring millions of observations.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Each definition 2 + example 1 + reason for inference 2 = 7. (ii) Formal statement 2 + three importance points 3 + n > 25 context 3 = 8.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B8b -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(b) Sampling Distribution of Sample Proportion</span><span class="q-marks">20 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">An economist believes that 35% of consumers in a city prefer online shopping to in-store shopping. A random sample of n = 200 consumers is surveyed.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [4 marks]</div>
+            <div class="subpart-text">Verify that the normal approximation to p̂ is appropriate. State the sampling distribution of p̂, giving its mean and standard error.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [8 marks]</div>
+            <div class="subpart-text">Find P(0.30 ≤ p̂ ≤ 0.40). Show all standardisation steps.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [8 marks]</div>
+            <div class="subpart-text">Find the probability that the sample proportion exceeds 0.42. Interpret the result: if the survey returned p̂ = 0.42, should the economist revise the belief that P = 0.35?</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB8b')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB8b">
+            <div class="solution-title">✓ Worked Solution — Part (b)</div>
+            <div class="solution-step"><strong>(i) Check and distribution:</strong></div>
+            <span class="math-block">Condition: n·P·(1−P) = 200 × 0.35 × 0.65 = 45.5 > 5  ✓
+
+E(p̂) = P = 0.35
+σ_p̂ = √[P(1−P)/n] = √[0.35 × 0.65 / 200]
+     = √[0.0011375] = 0.03373
+
+p̂ ≈ N(0.35, 0.03373²)</span>
+            <div class="solution-step"><strong>(ii) P(0.30 ≤ p̂ ≤ 0.40):</strong></div>
+            <span class="math-block">Z₁ = (0.30 − 0.35) / 0.03373 = −0.05 / 0.03373 = −1.48
+Z₂ = (0.40 − 0.35) / 0.03373 =  0.05 / 0.03373 =  1.48
+
+P(0.30 ≤ p̂ ≤ 0.40) = P(−1.48 ≤ Z ≤ 1.48)
+                     = Φ(1.48) − Φ(−1.48)
+                     = 0.9306 − 0.0694 = 0.8612</span>
+            <div class="solution-step">There is approximately an 86.1% probability that the sample proportion falls within 5 percentage points of the true population proportion of 0.35.</div>
+            <div class="solution-step"><strong>(iii) P(p̂ > 0.42) and interpretation:</strong></div>
+            <span class="math-block">Z = (0.42 − 0.35) / 0.03373 = 0.07 / 0.03373 = 2.075 ≈ 2.08
+
+P(p̂ > 0.42) = P(Z > 2.08) = 1 − Φ(2.08)
+             = 1 − 0.9812 = 0.0188</span>
+            <div class="solution-step"><em>Interpretation:</em> If the true population proportion were P = 0.35, there would be only a 1.88% probability of obtaining a sample proportion as high as 0.42 in a sample of 200. This is below conventional significance levels (5% and even 2%). The economist has reasonable grounds to revise their belief — p̂ = 0.42 constitutes statistically meaningful evidence that the true proportion of online-preference consumers may be higher than 0.35. However, formal hypothesis testing would be needed to draw this conclusion rigorously.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Condition check 2 + distribution stated 2 = 4. (ii) Each Z value 2 + subtraction method 2 + final answer 2 = 8. (iii) Z + table 5 + interpretation 3 = 8.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B8c -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(c) Sampling Distribution of Sample Variance — Chi-Squared</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">The number of hours per week spent on revision by economics students follows a normal distribution with a population standard deviation of σ = 4.5 hours. A random sample of n = 30 students is taken.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [4 marks]</div>
+            <div class="subpart-text">State the distribution of (n−1)S²/σ². What are the degrees of freedom? Why do we use n−1 rather than n?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">Is the probability more than 0.95 that the sample standard deviation S exceeds 3.5 hours? Show all calculations.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [6 marks]</div>
+            <div class="subpart-text">Find the value K such that P(S² > K) = 0.05. Interpret this value: what would it tell a university if the observed S² from a sample of 30 students exceeded K?</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB8c')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB8c">
+            <div class="solution-title">✓ Worked Solution — Part (c)</div>
+            <div class="solution-step"><strong>(i) Distribution:</strong></div>
+            <span class="math-block">(n−1)S²/σ²  ~  χ²_(n−1)
+
+Degrees of freedom = n − 1 = 30 − 1 = 29</span>
+            <div class="solution-step">We use n−1 (not n) because one degree of freedom is "used up" in estimating the population mean with X̄. The n deviations (Xᵢ − X̄) are subject to the constraint that they sum to zero — so only n−1 of them are free to vary independently. This makes S² an unbiased estimator of σ²: E(S²) = σ².</div>
+            <div class="solution-step"><strong>(ii) P(S > 3.5) — i.e., P(S² > 12.25):</strong></div>
+            <span class="math-block">χ² = (n−1)S²/σ² = 29 × 3.5² / 4.5²
+         = 29 × 12.25 / 20.25
+         = 355.25 / 20.25 ≈ 17.54
+
+From chi-squared table with d.f. = 29:
+χ²_(29, 0.95) = 17.71   →  P(χ² < 17.71) = 0.95
+                         →  P(χ² > 17.71) = 0.05
+
+Our χ² = 17.54 < 17.71, so P(χ² > 17.54) is slightly above 0.05.
+P(S > 3.5) = P(χ² > 17.54) ≈ 0.953  >  0.95  ✓</span>
+            <div class="solution-step">Yes — the probability is <strong>more than 0.95</strong> that S exceeds 3.5 hours.</div>
+            <div class="solution-step"><strong>(iii) Find K where P(S² > K) = 0.05:</strong></div>
+            <span class="math-block">P(S² > K) = 0.05  →  P(χ² > (n−1)K/σ²) = 0.05
+
+From table: χ²_(29, 0.05) = 42.557  [upper 5% critical value]
+
+(n−1)K/σ² = 42.557
+29 × K / 20.25 = 42.557
+K = 42.557 × 20.25 / 29 = 861.78 / 29 ≈ 29.72
+
+So K ≈ 29.72  (sample variance), giving s = √29.72 ≈ 5.45 hours</span>
+            <div class="solution-step"><em>Interpretation:</em> K = 29.72 is the upper 5% critical value of the sampling distribution of S² when σ² = 20.25. If the university observed S² &gt; 29.72 from a sample of 30 students, there is strong statistical evidence (at the 5% significance level) that the true population variance exceeds σ² = 20.25 — i.e., that revision hours vary more widely than expected. This could prompt investigation into whether certain students are severely under-revising, and whether support interventions are needed.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Distribution stated 2 + degrees of freedom 1 + n−1 explanation 1 = 4. (ii) χ² calculation 3 + compare with critical value 2 = 5. (iii) Critical value identified 2 + K calculated 3 + interpretation 1 = 6.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+  const answers = {}, checked = {};
+  const correct = { 1:'C', 2:'C', 3:'C', 4:'B', 5:'C', 6:'B' };
+
+  function selectOpt(q, letter) {
+    if (checked[q]) return;
+    document.querySelectorAll('#opts'+q+' li').forEach(o => o.classList.remove('selected'));
+    const idx = ['A','B','C','D','E'].indexOf(letter);
+    if (idx >= 0) document.querySelectorAll('#opts'+q+' li')[idx].classList.add('selected');
+    answers[q] = letter;
+  }
+
+  function checkAnswer(q, ans) {
+    if (!answers[q]) { alert('Please select an answer first.'); return; }
+    checked[q] = true;
+    const opts = document.querySelectorAll('#opts'+q+' li');
+    const letters = ['A','B','C','D','E'];
+    opts.forEach((o, i) => {
+      o.classList.remove('selected');
+      if (letters[i] === ans) o.classList.add('correct');
+      else if (letters[i] === answers[q]) o.classList.add('wrong');
+      o.style.cursor = 'default';
+    });
+    updateProgress();
+  }
+
+  function toggleSolution(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('visible');
+  }
+
+  function updateProgress() {
+    const done = Object.keys(checked).length;
+    const score = Object.keys(checked).filter(q => answers[q] === correct[q]).length;
+    document.getElementById('progressFill').style.width = (done/6*100)+'%';
+    document.getElementById('scoreDisplay').textContent = score+'/'+done+' correct';
+    if (done === 6) {
+      document.getElementById('finalScore').classList.add('visible');
+      document.getElementById('finalScoreNum').textContent = score+'/6';
+    }
+  }
+
+  function resetAll() {
+    for (const k in answers) delete answers[k];
+    for (const k in checked) delete checked[k];
+    for (let q = 1; q <= 6; q++) {
+      document.querySelectorAll('#opts'+q+' li').forEach(o => {
+        o.classList.remove('selected','correct','wrong');
+        o.style.cursor = 'pointer';
+      });
+      const s = document.getElementById('sol'+q);
+      if (s) s.classList.remove('visible');
+    }
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('scoreDisplay').textContent = '0 / 6 answered';
+    document.getElementById('finalScore').classList.remove('visible');
+  }
+</script>
+</body>
+</html>

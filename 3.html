@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 3 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2744;
+    --navy-mid: #253460;
+    --blue: #2d6be4;
+    --blue-light: #e8effe;
+    --gold: #c8922a;
+    --gold-light: #fdf3e3;
+    --red: #c0392b;
+    --red-light: #fdf0ee;
+    --green: #1a7a4a;
+    --green-light: #eaf7ef;
+    --ink: #1c1c2e;
+    --muted: #5a5e72;
+    --border: #d4d8e8;
+    --bg: #f7f8fc;
+    --white: #ffffff;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--serif);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  /* ── Header ── */
+  .exam-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 2.5rem 3rem 2rem;
+    border-bottom: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+  .exam-header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: rgba(200,146,42,0.08);
+  }
+  .exam-header .badge {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: #fff;
+    padding: 3px 12px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+  .exam-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .exam-header .subtitle {
+    font-size: 15px;
+    font-style: italic;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 20px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+    max-width: 680px;
+  }
+  .meta-item {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+  }
+  .meta-item .label { font-family: var(--sans); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+  .meta-item .value { font-family: var(--sans); font-size: 14px; font-weight: 600; color: #fff; }
+
+  /* ── Instructions box ── */
+  .instructions {
+    background: var(--gold-light);
+    border-left: 4px solid var(--gold);
+    padding: 18px 24px;
+    margin: 24px auto;
+    max-width: 860px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #5a3d10;
+  }
+  .instructions strong { font-weight: 600; }
+  .instructions ul { padding-left: 18px; margin-top: 8px; }
+  .instructions li { margin-bottom: 4px; }
+
+  /* ── Layout ── */
+  .content { max-width: 860px; margin: 0 auto; padding: 0 24px 60px; }
+
+  /* ── Section divider ── */
+  .section-divider {
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 20px;
+    margin: 36px 0 24px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-divider h2 {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .section-divider .marks-badge {
+    font-family: var(--sans);
+    font-size: 12px;
+    background: rgba(255,255,255,0.15);
+    padding: 3px 12px;
+    border-radius: 20px;
+  }
+
+  /* ── Question card ── */
+  .q-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .q-card:hover { box-shadow: 0 4px 20px rgba(26,39,68,0.08); }
+
+  .q-header {
+    padding: 14px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .q-number {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--navy);
+    color: #fff;
+    min-width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+  }
+  .q-header p { font-size: 15.5px; line-height: 1.6; color: var(--ink); padding-top: 2px; }
+  .q-header p em { font-style: italic; color: var(--muted); font-size: 14px; }
+
+  /* ── MCQ options ── */
+  .options { padding: 14px 20px; display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .option:hover { background: var(--blue-light); border-color: var(--blue); }
+  .option.selected { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .option.correct { background: var(--green-light); border-color: var(--green); color: #0e4a2a; }
+  .option.wrong { background: var(--red-light); border-color: var(--red); color: #7a1c14; }
+  .option-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 22px;
+    padding-top: 1px;
+    color: inherit;
+    opacity: 0.7;
+  }
+  .option.selected .option-label,
+  .option.correct .option-label,
+  .option.wrong .option-label { opacity: 1; font-weight: 700; }
+
+  /* ── Math display ── */
+  .math-block {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    background: #f1f3fa;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 8px 0;
+    color: var(--navy-mid);
+    overflow-x: auto;
+  }
+  .inline-math {
+    font-family: var(--mono);
+    font-size: 13.5px;
+    background: #f1f3fa;
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--navy-mid);
+  }
+
+  /* ── Check / Reveal button ── */
+  .q-footer { padding: 10px 20px 16px; display: flex; gap: 10px; }
+  .btn-check {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: var(--blue);
+    color: #fff;
+    transition: all 0.15s;
+  }
+  .btn-check:hover { background: #1e55c4; }
+  .btn-reveal {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 18px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .btn-reveal:hover { background: var(--bg); color: var(--ink); }
+
+  /* ── Explanation box ── */
+  .explanation {
+    margin: 0 20px 16px;
+    background: var(--green-light);
+    border-left: 3px solid var(--green);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #0e3d27;
+    display: none;
+  }
+  .explanation.visible { display: block; }
+  .explanation strong { font-weight: 600; color: #0b3020; }
+
+  /* ── Section B long questions ── */
+  .b-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .b-card-header {
+    background: var(--navy-mid);
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .b-card-header h3 { font-family: var(--sans); font-size: 15px; font-weight: 600; }
+  .b-card-header .total-marks {
+    font-family: var(--sans);
+    font-size: 12px;
+    background: rgba(255,255,255,0.15);
+    padding: 3px 12px;
+    border-radius: 20px;
+  }
+  .b-intro {
+    padding: 16px 20px;
+    font-size: 15.5px;
+    line-height: 1.7;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfd;
+  }
+  .b-part {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .b-part:last-child { border-bottom: none; }
+  .b-part-label {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .b-part p { font-size: 15px; line-height: 1.7; margin-bottom: 8px; }
+  .marks-tag {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--blue-light);
+    color: var(--blue);
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-left: 6px;
+  }
+  .hint-box {
+    margin-top: 10px;
+    background: var(--gold-light);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    color: #5a3d10;
+    font-family: var(--sans);
+    line-height: 1.6;
+    display: none;
+  }
+  .hint-box.visible { display: block; }
+  .btn-hint {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--gold);
+    margin-top: 10px;
+    transition: all 0.15s;
+  }
+  .btn-hint:hover { background: var(--gold-light); }
+
+  /* ── Table ── */
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 14px; }
+  th { background: var(--navy); color: #fff; font-family: var(--sans); font-weight: 600; padding: 8px 14px; text-align: center; font-size: 13px; }
+  td { border: 1px solid var(--border); padding: 7px 14px; text-align: center; }
+  tr:nth-child(even) td { background: #f7f8fc; }
+
+  /* ── Score bar ── */
+  .score-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    margin: 24px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .score-number {
+    font-family: var(--sans);
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--navy);
+    min-width: 80px;
+  }
+  .score-number span { font-size: 16px; font-weight: 400; color: var(--muted); }
+  .score-bar-wrap { flex: 1; min-width: 180px; }
+  .score-label { font-family: var(--sans); font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .score-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .score-bar-fill { height: 100%; background: var(--blue); border-radius: 4px; transition: width 0.6s ease; width: 0%; }
+  .btn-score {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 22px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-score:hover { background: var(--navy-mid); }
+
+  /* ── Topic chip ── */
+  .topic-chip {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    background: var(--blue-light);
+    color: var(--blue);
+  }
+  .topic-chip.poisson { background: #f0e8ff; color: #5b2d8e; }
+  .topic-chip.bivar { background: #e8fff3; color: #1a7a4a; }
+  .topic-chip.binomial { background: #fff4e0; color: #8a5200; }
+  .topic-chip.cdf { background: #ffe8ec; color: #9a1c30; }
+  .topic-chip.cov { background: #e0f4ff; color: #0a5e8a; }
+  .topic-chip.portfolio { background: #f5ffe0; color: #4a6a00; }
+
+  /* ── Footer ── */
+  .exam-footer {
+    text-align: center;
+    padding: 20px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .exam-header { padding: 1.5rem 1.5rem 1.2rem; }
+    .content { padding: 0 14px 40px; }
+    .q-header { flex-direction: column; gap: 8px; }
+    .meta-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="exam-header">
+  <div class="badge">Practice Exam</div>
+  <h1>ES12010: Statistics for Economics</h1>
+  <p class="subtitle">Lecture 3 — Discrete Random Variables &amp; Probability Distributions</p>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="label">Duration</div><div class="value">2 Hours</div></div>
+    <div class="meta-item"><div class="label">Section A</div><div class="value">10 MCQs · 50%</div></div>
+    <div class="meta-item"><div class="label">Section B</div><div class="value">2 of 4 Qs · 50%</div></div>
+    <div class="meta-item"><div class="label">Calculator</div><div class="value">Required</div></div>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- Instructions -->
+  <div class="instructions">
+    <strong>Exam Instructions:</strong>
+    <ul>
+      <li>Section A: Answer all 10 MCQs. Select ONE answer only — multiple selections = wrong. No marks deducted for wrong answers.</li>
+      <li>Each MCQ is worth 5 marks: <strong>2 marks</strong> for the correct answer + <strong>3 marks</strong> for your written explanation.</li>
+      <li>Section B: Answer any <strong>TWO</strong> of the four questions. Each carries 25% of the overall mark.</li>
+      <li>Round all numerical answers to <strong>two decimal places</strong>.</li>
+    </ul>
+  </div>
+
+  <!-- ══ SECTION A ══ -->
+  <div class="section-divider">
+    <h2>SECTION A — Multiple Choice Questions</h2>
+    <span class="marks-badge">50% of total mark</span>
+  </div>
+
+  <!-- Score panel -->
+  <div class="score-panel">
+    <div>
+      <div style="font-family:var(--sans);font-size:13px;color:var(--muted);margin-bottom:4px;">Section A score</div>
+      <div class="score-number" id="scoreNum">—<span> / 10</span></div>
+    </div>
+    <div class="score-bar-wrap">
+      <div class="score-label" id="scoreLabel">Answer questions then click "Calculate Score"</div>
+      <div class="score-bar-bg"><div class="score-bar-fill" id="scoreBar"></div></div>
+    </div>
+    <button class="btn-score" onclick="calcScore()">Calculate Score</button>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card" id="q1">
+    <div class="q-header">
+      <div class="q-number">Q1</div>
+      <div>
+        <div class="topic-chip">Discrete RV</div>
+        <p>A fair die is rolled once. Let <span class="inline-math">X</span> be the number shown. Which of the following correctly describes <span class="inline-math">X</span>?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q1','A')"><span class="option-label">A.</span><span><span class="inline-math">X</span> is a continuous random variable because it can take values between 1 and 6.</span></div>
+      <div class="option" onclick="select(this,'q1','B')"><span class="option-label">B.</span><span><span class="inline-math">X</span> is a discrete random variable with <span class="inline-math">P(X = x) = 1/6</span> for <span class="inline-math">x = 1, 2, 3, 4, 5, 6</span>.</span></div>
+      <div class="option" onclick="select(this,'q1','C')"><span class="option-label">C.</span><span><span class="inline-math">X</span> is a discrete random variable with <span class="inline-math">E(X) = 3</span>.</span></div>
+      <div class="option" onclick="select(this,'q1','D')"><span class="option-label">D.</span><span>Both A and C are correct.</span></div>
+      <div class="option" onclick="select(this,'q1','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer">
+      <button class="btn-check" onclick="reveal('q1')">Show Answer</button>
+    </div>
+    <div class="explanation" id="q1-exp">
+      <strong>Answer: B.</strong> <span class="inline-math">X</span> takes countable values {1,2,3,4,5,6} with equal probability 1/6 — making it a discrete random variable. Note that <span class="inline-math">E(X) = (1+2+3+4+5+6)/6 = 3.5</span>, not 3, so option C is wrong. A discrete variable does not take fractional values between integers, ruling out A.
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card" id="q2">
+    <div class="q-header">
+      <div class="q-number">Q2</div>
+      <div>
+        <div class="topic-chip cdf">CDF</div>
+        <p>The probability distribution of a discrete random variable <span class="inline-math">X</span> is given below.</p>
+        <table style="margin:10px 0;font-size:13.5px;max-width:380px;">
+          <tr><th>x</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+          <tr><td>P(X = x)</td><td>0.10</td><td>0.30</td><td>0.40</td><td>0.20</td></tr>
+        </table>
+        <p>What is <span class="inline-math">P(1 ≤ X ≤ 3)</span>?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q2','A')"><span class="option-label">A.</span><span>0.40</span></div>
+      <div class="option" onclick="select(this,'q2','B')"><span class="option-label">B.</span><span>0.70</span></div>
+      <div class="option" onclick="select(this,'q2','C')"><span class="option-label">C.</span><span>0.90</span></div>
+      <div class="option" onclick="select(this,'q2','D')"><span class="option-label">D.</span><span>0.60</span></div>
+      <div class="option" onclick="select(this,'q2','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q2')">Show Answer</button></div>
+    <div class="explanation" id="q2-exp">
+      <strong>Answer: C.</strong> <span class="inline-math">P(1 ≤ X ≤ 3) = P(X=1) + P(X=2) + P(X=3) = 0.30 + 0.40 + 0.20 = 0.90</span>. This is equivalent to <span class="inline-math">1 − P(X=0) = 1 − 0.10 = 0.90</span>. This question tests both direct summation and the use of the cumulative distribution function (CDF).
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card" id="q3">
+    <div class="q-header">
+      <div class="q-number">Q3</div>
+      <div>
+        <div class="topic-chip">Mean &amp; Variance</div>
+        <p>A discrete random variable <span class="inline-math">X</span> has <span class="inline-math">E(X) = 2</span> and <span class="inline-math">E(X²) = 8</span>. What is <span class="inline-math">Var(X)</span>?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q3','A')"><span class="option-label">A.</span><span>8</span></div>
+      <div class="option" onclick="select(this,'q3','B')"><span class="option-label">B.</span><span>4</span></div>
+      <div class="option" onclick="select(this,'q3','C')"><span class="option-label">C.</span><span>6</span></div>
+      <div class="option" onclick="select(this,'q3','D')"><span class="option-label">D.</span><span>2</span></div>
+      <div class="option" onclick="select(this,'q3','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q3')">Show Answer</button></div>
+    <div class="explanation" id="q3-exp">
+      <strong>Answer: B.</strong> Using the computational formula: <span class="inline-math">Var(X) = E(X²) − [E(X)]² = 8 − (2)² = 8 − 4 = 4</span>. This is the shortcut version of the variance formula and is frequently tested. The standard deviation would be <span class="inline-math">σ = √4 = 2</span>.
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card" id="q4">
+    <div class="q-header">
+      <div class="q-number">Q4</div>
+      <div>
+        <div class="topic-chip binomial">Binomial</div>
+        <p>A multiple-choice test has 8 questions, each with 4 options (only one correct). A student guesses every answer at random. What is the probability that the student gets <em>exactly 3 correct</em>?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q4','A')"><span class="option-label">A.</span><span>0.2076</span></div>
+      <div class="option" onclick="select(this,'q4','B')"><span class="option-label">B.</span><span>0.3115</span></div>
+      <div class="option" onclick="select(this,'q4','C')"><span class="option-label">C.</span><span>0.1468</span></div>
+      <div class="option" onclick="select(this,'q4','D')"><span class="option-label">D.</span><span>0.0038</span></div>
+      <div class="option" onclick="select(this,'q4','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q4')">Show Answer</button></div>
+    <div class="explanation" id="q4-exp">
+      <strong>Answer: A.</strong> Here <span class="inline-math">n = 8</span>, <span class="inline-math">x = 3</span>, <span class="inline-math">P = 0.25</span> (one correct out of four options).<br>
+      <span class="inline-math">P(X=3) = C(8,3) × (0.25)³ × (0.75)⁵ = 56 × 0.015625 × 0.23730 ≈ 0.2076</span>. Recall: <span class="inline-math">C(8,3) = 8!/(3!·5!) = 56</span>.
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card" id="q5">
+    <div class="q-header">
+      <div class="q-number">Q5</div>
+      <div>
+        <div class="topic-chip binomial">Binomial</div>
+        <p>According to a survey, 30% of university students own a car. If 10 students are selected at random, what are the <em>mean</em> and <em>standard deviation</em> of the number who own a car?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q5','A')"><span class="option-label">A.</span><span>Mean = 3, Standard Deviation = 2.10</span></div>
+      <div class="option" onclick="select(this,'q5','B')"><span class="option-label">B.</span><span>Mean = 3, Standard Deviation = 1.45</span></div>
+      <div class="option" onclick="select(this,'q5','C')"><span class="option-label">C.</span><span>Mean = 7, Standard Deviation = 1.45</span></div>
+      <div class="option" onclick="select(this,'q5','D')"><span class="option-label">D.</span><span>Mean = 3, Standard Deviation = 2.10 and Variance = 4.41</span></div>
+      <div class="option" onclick="select(this,'q5','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q5')">Show Answer</button></div>
+    <div class="explanation" id="q5-exp">
+      <strong>Answer: B.</strong> For a Binomial distribution: <span class="inline-math">μ = np = 10 × 0.30 = 3</span>. <span class="inline-math">σ² = np(1−p) = 10 × 0.30 × 0.70 = 2.10</span>. <span class="inline-math">σ = √2.10 ≈ 1.45</span>. Option A incorrectly uses the variance (2.10) as the standard deviation. Option D is wrong because the variance is 2.10, not 4.41.
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card" id="q6">
+    <div class="q-header">
+      <div class="q-number">Q6</div>
+      <div>
+        <div class="topic-chip poisson">Poisson</div>
+        <p>Records show that on average, 3 customers arrive at a bank per 10-minute period. Using the Poisson distribution, what is the probability that <em>exactly 5 customers</em> arrive in a 10-minute period?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q6','A')"><span class="option-label">A.</span><span>0.1008</span></div>
+      <div class="option" onclick="select(this,'q6','B')"><span class="option-label">B.</span><span>0.0940</span></div>
+      <div class="option" onclick="select(this,'q6','C')"><span class="option-label">C.</span><span>0.1500</span></div>
+      <div class="option" onclick="select(this,'q6','D')"><span class="option-label">D.</span><span>0.0216</span></div>
+      <div class="option" onclick="select(this,'q6','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q6')">Show Answer</button></div>
+    <div class="explanation" id="q6-exp">
+      <strong>Answer: A.</strong> <span class="inline-math">λ = 3</span>, <span class="inline-math">x = 5</span>.<br>
+      <span class="inline-math">P(X=5) = (e⁻³ × 3⁵) / 5! = (0.04979 × 243) / 120 = 12.0988 / 120 ≈ 0.1008</span>. For the Poisson distribution, mean = variance = λ = 3, so <span class="inline-math">σ = √3 ≈ 1.73</span>.
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-card" id="q7">
+    <div class="q-header">
+      <div class="q-number">Q7</div>
+      <div>
+        <div class="topic-chip poisson">Poisson Approx.</div>
+        <p>The probability that a randomly selected component is defective is 0.002. A batch of 800 components is inspected. Using the Poisson approximation to the Binomial, what is the probability that <em>at most 1</em> component is defective?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q7','A')"><span class="option-label">A.</span><span>0.5249</span></div>
+      <div class="option" onclick="select(this,'q7','B')"><span class="option-label">B.</span><span>0.8088</span></div>
+      <div class="option" onclick="select(this,'q7','C')"><span class="option-label">C.</span><span>0.2707</span></div>
+      <div class="option" onclick="select(this,'q7','D')"><span class="option-label">D.</span><span>0.9384</span></div>
+      <div class="option" onclick="select(this,'q7','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q7')">Show Answer</button></div>
+    <div class="explanation" id="q7-exp">
+      <strong>Answer: B.</strong> <span class="inline-math">λ = np = 800 × 0.002 = 1.6</span>. The Poisson approximation applies here because <span class="inline-math">n</span> is large and <span class="inline-math">P</span> is small.<br>
+      <span class="inline-math">P(X=0) = e⁻¹·⁶ = 0.2019</span><br>
+      <span class="inline-math">P(X=1) = e⁻¹·⁶ × 1.6¹/1! = 0.2019 × 1.6 = 0.3230</span><br>
+      <span class="inline-math">P(X ≤ 1) = 0.2019 + 0.3230 = 0.5249</span>. Wait — let me recheck: 0.2019 + 0.3230 ≈ 0.5249, which is option A. <em>Correct answer is A.</em>
+      <br><br><strong>Revised: Answer: A.</strong> <span class="inline-math">P(X ≤ 1) = P(X=0) + P(X=1) = e⁻¹·⁶ + e⁻¹·⁶ × 1.6 = e⁻¹·⁶(1 + 1.6) = 0.2019 × 2.6 ≈ 0.5249</span>.
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-card" id="q8">
+    <div class="q-header">
+      <div class="q-number">Q8</div>
+      <div>
+        <div class="topic-chip bivar">Joint Distribution</div>
+        <p>The joint probability distribution of <span class="inline-math">X</span> and <span class="inline-math">Y</span> is given below. Are <span class="inline-math">X</span> and <span class="inline-math">Y</span> statistically independent?</p>
+        <table style="margin:10px 0;font-size:13px;max-width:380px;">
+          <tr><th>X \ Y</th><th>Y = 0</th><th>Y = 1</th><th>P(X=x)</th></tr>
+          <tr><td>X = 0</td><td>0.20</td><td>0.30</td><td>0.50</td></tr>
+          <tr><td>X = 1</td><td>0.20</td><td>0.30</td><td>0.50</td></tr>
+          <tr><td>P(Y=y)</td><td>0.40</td><td>0.60</td><td>1.00</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q8','A')"><span class="option-label">A.</span><span>Yes, because the joint probabilities equal the products of the marginal probabilities.</span></div>
+      <div class="option" onclick="select(this,'q8','B')"><span class="option-label">B.</span><span>No, because the covariance between X and Y is non-zero.</span></div>
+      <div class="option" onclick="select(this,'q8','C')"><span class="option-label">C.</span><span>Yes, because <span class="inline-math">P(X=0) = P(X=1) = 0.5</span>.</span></div>
+      <div class="option" onclick="select(this,'q8','D')"><span class="option-label">D.</span><span>No, because the conditional distribution of Y given X is not defined.</span></div>
+      <div class="option" onclick="select(this,'q8','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q8')">Show Answer</button></div>
+    <div class="explanation" id="q8-exp">
+      <strong>Answer: A.</strong> Two random variables are independent if and only if their joint distribution equals the product of their marginal distributions for all values. Check: <span class="inline-math">P(X=0, Y=0) = 0.20 = P(X=0) × P(Y=0) = 0.5 × 0.4 = 0.20</span> ✓. Similarly for all four cells. Since the condition holds for every combination, X and Y are statistically independent.
+    </div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="q-card" id="q9">
+    <div class="q-header">
+      <div class="q-number">Q9</div>
+      <div>
+        <div class="topic-chip cov">Covariance &amp; Correlation</div>
+        <p>Two investments have the following properties: <span class="inline-math">E(X) = 5</span>, <span class="inline-math">E(Y) = 8</span>, <span class="inline-math">Var(X) = 4</span>, <span class="inline-math">Var(Y) = 9</span>, and <span class="inline-math">Cov(X, Y) = −3</span>. What is the variance of the portfolio <span class="inline-math">W = X + Y</span>?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q9','A')"><span class="option-label">A.</span><span>13</span></div>
+      <div class="option" onclick="select(this,'q9','B')"><span class="option-label">B.</span><span>7</span></div>
+      <div class="option" onclick="select(this,'q9','C')"><span class="option-label">C.</span><span>19</span></div>
+      <div class="option" onclick="select(this,'q9','D')"><span class="option-label">D.</span><span>10</span></div>
+      <div class="option" onclick="select(this,'q9','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q9')">Show Answer</button></div>
+    <div class="explanation" id="q9-exp">
+      <strong>Answer: B.</strong> <span class="inline-math">Var(X + Y) = Var(X) + Var(Y) + 2·Cov(X,Y) = 4 + 9 + 2×(−3) = 13 − 6 = 7</span>. The negative covariance reduces portfolio variance — this is the fundamental benefit of diversification. <span class="inline-math">E(W) = E(X) + E(Y) = 5 + 8 = 13</span>.
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="q-card" id="q10">
+    <div class="q-header">
+      <div class="q-number">Q10</div>
+      <div>
+        <div class="topic-chip portfolio">Functions of RVs</div>
+        <p>Let <span class="inline-math">X</span> be a random variable with <span class="inline-math">E(X) = 4</span> and <span class="inline-math">Var(X) = 9</span>. Define <span class="inline-math">Y = 3X − 2</span>. Which of the following is correct?</p>
+      </div>
+    </div>
+    <div class="options">
+      <div class="option" onclick="select(this,'q10','A')"><span class="option-label">A.</span><span><span class="inline-math">E(Y) = 10</span> and <span class="inline-math">Var(Y) = 27</span></span></div>
+      <div class="option" onclick="select(this,'q10','B')"><span class="option-label">B.</span><span><span class="inline-math">E(Y) = 10</span> and <span class="inline-math">Var(Y) = 81</span></span></div>
+      <div class="option" onclick="select(this,'q10','C')"><span class="option-label">C.</span><span><span class="inline-math">E(Y) = 14</span> and <span class="inline-math">Var(Y) = 81</span></span></div>
+      <div class="option" onclick="select(this,'q10','D')"><span class="option-label">D.</span><span><span class="inline-math">E(Y) = 10</span> and <span class="inline-math">Var(Y) = 25</span></span></div>
+      <div class="option" onclick="select(this,'q10','E')"><span class="option-label">E.</span><span>None of the above.</span></div>
+    </div>
+    <div class="q-footer"><button class="btn-check" onclick="reveal('q10')">Show Answer</button></div>
+    <div class="explanation" id="q10-exp">
+      <strong>Answer: B.</strong> For linear functions of a random variable <span class="inline-math">Y = aX + b</span>:<br>
+      <span class="inline-math">E(Y) = a·E(X) + b = 3×4 + (−2) = 12 − 2 = 10</span> ✓<br>
+      <span class="inline-math">Var(Y) = a²·Var(X) = 3² × 9 = 9 × 9 = 81</span>. Constants added/subtracted do NOT affect variance — only the multiplicative constant is squared. Option A incorrectly multiplies variance by 3 instead of 3².
+    </div>
+  </div>
+
+  <!-- ══ SECTION B ══ -->
+  <div class="section-divider">
+    <h2>SECTION B — Answer any TWO of the four questions</h2>
+    <span class="marks-badge">Each question = 25%</span>
+  </div>
+
+  <!-- Q11 -->
+  <div class="b-card">
+    <div class="b-card-header">
+      <h3>Q11 — Discrete Random Variables: Properties &amp; Distributions</h3>
+      <span class="total-marks">100 marks</span>
+    </div>
+    <div class="b-intro">
+      A game at a fairground involves rolling two fair dice and recording the <em>absolute difference</em> between the two numbers shown. Let <span class="inline-math">X</span> denote this absolute difference.
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (a)</div>
+      <p>Construct the complete probability distribution table for <span class="inline-math">X</span>, showing all possible values and their corresponding probabilities. Verify that your probabilities sum to 1. <span class="marks-tag">[25 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h11a')">Show hint</button>
+      <div class="hint-box" id="h11a">List all 36 equally likely outcomes (pairs of dice). For each pair <span class="inline-math">(i,j)</span> compute <span class="inline-math">|i − j|</span>. Possible values of X are {0, 1, 2, 3, 4, 5}. Count how many pairs give each value and divide by 36.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (b)</div>
+      <p>Calculate the expected value <span class="inline-math">E(X)</span> and variance <span class="inline-math">Var(X)</span> of the absolute difference. Show all working. <span class="marks-tag">[30 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h11b')">Show hint</button>
+      <div class="hint-box" id="h11b">Use: <span class="inline-math">E(X) = Σ x·P(X=x)</span> and <span class="inline-math">Var(X) = E(X²) − [E(X)]²</span> where <span class="inline-math">E(X²) = Σ x²·P(X=x)</span>.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (c)</div>
+      <p>A player wins £4 for each unit of <span class="inline-math">X</span> and pays a fixed entry fee of £3. Let <span class="inline-math">W = 4X − 3</span> be the net winnings. Calculate <span class="inline-math">E(W)</span> and <span class="inline-math">Var(W)</span>. Is the game fair? Explain. <span class="marks-tag">[25 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h11c')">Show hint</button>
+      <div class="hint-box" id="h11c">Use the linear transformation rules: <span class="inline-math">E(aX + b) = a·E(X) + b</span> and <span class="inline-math">Var(aX + b) = a²·Var(X)</span>. A game is fair if <span class="inline-math">E(W) = 0</span>.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (d)</div>
+      <p>Calculate and interpret the cumulative distribution function <span class="inline-math">F(x) = P(X ≤ x)</span> for all values of <span class="inline-math">X</span>. Hence find <span class="inline-math">P(1 ≤ X ≤ 3)</span> using the CDF. <span class="marks-tag">[20 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h11d')">Show hint</button>
+      <div class="hint-box" id="h11d">The CDF is defined as <span class="inline-math">F(x) = P(X ≤ x) = Σ P(X = k)</span> for all <span class="inline-math">k ≤ x</span>. Then <span class="inline-math">P(1 ≤ X ≤ 3) = F(3) − F(0)</span>.</div>
+    </div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="b-card">
+    <div class="b-card-header">
+      <h3>Q12 — Binomial Distribution</h3>
+      <span class="total-marks">100 marks</span>
+    </div>
+    <div class="b-intro">
+      A factory produces electronic components, and it is known that 15% of all components produced are defective. A quality control inspector randomly selects a sample of 12 components.
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (a)</div>
+      <p>State clearly the conditions required for a Binomial distribution to apply. Verify that this scenario satisfies those conditions. <span class="marks-tag">[20 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h12a')">Show hint</button>
+      <div class="hint-box" id="h12a">The four Binomial conditions: (1) fixed number of trials <span class="inline-math">n</span>, (2) each trial results in success or failure, (3) constant probability of success <span class="inline-math">P</span>, (4) trials are independent.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (b)</div>
+      <p>Find the probability that: <br>
+      (i) exactly 2 components are defective. <span class="marks-tag">[15 marks]</span><br>
+      (ii) at most 2 components are defective. <span class="marks-tag">[15 marks]</span><br>
+      (iii) more than 3 components are defective. <span class="marks-tag">[15 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h12b')">Show hint</button>
+      <div class="hint-box" id="h12b">Use <span class="inline-math">P(X=x) = C(n,x)·P^x·(1−P)^(n−x)</span> with <span class="inline-math">n=12</span>, <span class="inline-math">P=0.15</span>. For (iii): <span class="inline-math">P(X > 3) = 1 − P(X ≤ 3)</span>.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (c)</div>
+      <p>Calculate the mean, variance, and standard deviation of the number of defective components. Briefly interpret the mean in the context of the problem. <span class="marks-tag">[20 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h12c')">Show hint</button>
+      <div class="hint-box" id="h12c"><span class="inline-math">μ = np</span>, <span class="inline-math">σ² = np(1−p)</span>, <span class="inline-math">σ = √(np(1−p))</span>.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (d)</div>
+      <p>The Bernoulli distribution is a special case of the Binomial. Derive the mean and variance of a Bernoulli random variable from first principles. How does this relate to the Binomial result in part (c)? <span class="marks-tag">[15 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h12d')">Show hint</button>
+      <div class="hint-box" id="h12d">A Bernoulli variable <span class="inline-math">X</span> takes value 1 with probability <span class="inline-math">P</span> and 0 with probability <span class="inline-math">1−P</span>. Compute <span class="inline-math">E(X) = 0·(1−P) + 1·P = P</span>. For variance, use <span class="inline-math">E(X²) − [E(X)]²</span>.</div>
+    </div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="b-card">
+    <div class="b-card-header">
+      <h3>Q13 — Poisson Distribution &amp; Approximation</h3>
+      <span class="total-marks">100 marks</span>
+    </div>
+    <div class="b-intro">
+      A call centre receives an average of 6 calls per hour. Assume that calls arrive independently and the number of calls follows a Poisson distribution.
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (a)</div>
+      <p>Describe the key properties of the Poisson distribution. Under what conditions can it be used to approximate the Binomial distribution? <span class="marks-tag">[25 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h13a')">Show hint</button>
+      <div class="hint-box" id="h13a">Key properties: λ is the mean rate, mean = variance = λ, counts non-negative integers. Approximation condition: <span class="inline-math">n</span> large (> 20) and <span class="inline-math">P</span> small (< 0.05), with <span class="inline-math">λ = nP</span> remaining moderate.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (b)</div>
+      <p>Calculate the probability that in a 30-minute period:<br>
+      (i) exactly 4 calls are received. <span class="marks-tag">[15 marks]</span><br>
+      (ii) fewer than 3 calls are received. <span class="marks-tag">[15 marks]</span><br>
+      (iii) at least 2 calls are received. <span class="marks-tag">[15 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h13b')">Show hint</button>
+      <div class="hint-box" id="h13b">In 30 minutes the rate is <span class="inline-math">λ = 6 × 0.5 = 3</span>. Use <span class="inline-math">P(X=x) = e^(−λ)·λ^x / x!</span>. For (iii): <span class="inline-math">P(X ≥ 2) = 1 − P(X=0) − P(X=1)</span>.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (c)</div>
+      <p>The probability that a caller is put on hold is 0.004. Using the Poisson approximation to the Binomial, find the probability that in a sample of 500 calls, at most 3 callers are put on hold. <span class="marks-tag">[30 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h13c')">Show hint</button>
+      <div class="hint-box" id="h13c">Check conditions: <span class="inline-math">n = 500</span> (large), <span class="inline-math">P = 0.004</span> (small) → Poisson applies. <span class="inline-math">λ = nP = 500 × 0.004 = 2</span>. Compute <span class="inline-math">P(X ≤ 3) = P(0) + P(1) + P(2) + P(3)</span>.</div>
+    </div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="b-card">
+    <div class="b-card-header">
+      <h3>Q14 — Joint Distributions, Covariance &amp; Portfolio Analysis</h3>
+      <span class="total-marks">100 marks</span>
+    </div>
+    <div class="b-intro">
+      An investor holds two assets, A and B. The returns (in %) per £1,000 invested under three economic scenarios are shown below. Scenarios are equally likely.
+      <table style="margin:14px 0;font-size:13.5px;max-width:420px;">
+        <tr><th>Scenario</th><th>Probability</th><th>Return A (%)</th><th>Return B (%)</th></tr>
+        <tr><td>Boom</td><td>1/3</td><td>15</td><td>5</td></tr>
+        <tr><td>Normal</td><td>1/3</td><td>8</td><td>8</td></tr>
+        <tr><td>Recession</td><td>1/3</td><td>−2</td><td>12</td></tr>
+      </table>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (a)</div>
+      <p>Calculate the expected return <span class="inline-math">E(A)</span> and <span class="inline-math">E(B)</span>, and the variance <span class="inline-math">Var(A)</span> and <span class="inline-math">Var(B)</span> for each asset. <span class="marks-tag">[25 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h14a')">Show hint</button>
+      <div class="hint-box" id="h14a">Use <span class="inline-math">E(X) = Σ x·P(x)</span> and <span class="inline-math">Var(X) = Σ (x − μ)²·P(x)</span> or equivalently <span class="inline-math">E(X²) − [E(X)]²</span>.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (b)</div>
+      <p>Compute the covariance <span class="inline-math">Cov(A, B)</span> and the correlation coefficient <span class="inline-math">ρ(A, B)</span>. Interpret both values. <span class="marks-tag">[25 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h14b')">Show hint</button>
+      <div class="hint-box" id="h14b"><span class="inline-math">Cov(A,B) = E(AB) − E(A)·E(B)</span> where <span class="inline-math">E(AB) = Σ a·b·P(scenario)</span>. Then <span class="inline-math">ρ = Cov(A,B) / (σ_A · σ_B)</span>. Correlation ranges between −1 and +1.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (c)</div>
+      <p>An investor places 60% of their wealth in Asset A and 40% in Asset B, so the portfolio return is <span class="inline-math">P = 0.6A + 0.4B</span>. Calculate <span class="inline-math">E(P)</span> and <span class="inline-math">Var(P)</span>. <span class="marks-tag">[30 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h14c')">Show hint</button>
+      <div class="hint-box" id="h14c">Use: <span class="inline-math">E(P) = 0.6·E(A) + 0.4·E(B)</span>. For variance: <span class="inline-math">Var(P) = (0.6)²·Var(A) + (0.4)²·Var(B) + 2·(0.6)·(0.4)·Cov(A,B)</span>. This is the key portfolio variance formula from the lecture.</div>
+    </div>
+
+    <div class="b-part">
+      <div class="b-part-label">Part (d)</div>
+      <p>Compare <span class="inline-math">Var(P)</span> with <span class="inline-math">Var(A)</span> and <span class="inline-math">Var(B)</span>. What does the sign of <span class="inline-math">Cov(A,B)</span> suggest about the benefit of combining these two assets in a portfolio? <span class="marks-tag">[20 marks]</span></p>
+      <button class="btn-hint" onclick="toggleHint('h14d')">Show hint</button>
+      <div class="hint-box" id="h14d">A negative covariance means the assets tend to move in opposite directions — when one falls, the other rises. This reduces overall portfolio risk (variance) below what either asset has individually. This is the principle of diversification.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="exam-footer">
+  ES12010 Statistics for Economics · Lecture 3 Practice Exam · University of Bath · Dr Imran Shah<br>
+  Topics: Discrete RVs · PMF &amp; CDF · Binomial · Poisson · Joint Distributions · Covariance · Portfolio Analysis
+</div>
+
+<script>
+  const answers = { q1:'B', q2:'C', q3:'B', q4:'A', q5:'B', q6:'A', q7:'A', q8:'A', q9:'B', q10:'B' };
+  const selected = {};
+
+  function select(el, qid, letter) {
+    const opts = el.closest('.options').querySelectorAll('.option');
+    opts.forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selected[qid] = letter;
+  }
+
+  function reveal(qid) {
+    const card = document.getElementById(qid);
+    const exp = document.getElementById(qid + '-exp');
+    const correct = answers[qid];
+    const opts = card.querySelectorAll('.option');
+    opts.forEach(opt => {
+      const lbl = opt.querySelector('.option-label').textContent.replace('.','').trim();
+      if (lbl === correct) opt.classList.add('correct');
+      else if (selected[qid] && lbl === selected[qid]) opt.classList.add('wrong');
+    });
+    exp.classList.add('visible');
+    card.querySelector('.btn-check').textContent = 'Answer shown';
+    card.querySelector('.btn-check').disabled = true;
+    card.querySelector('.btn-check').style.opacity = '0.5';
+  }
+
+  function toggleHint(id) {
+    const box = document.getElementById(id);
+    const btn = box.previousElementSibling;
+    box.classList.toggle('visible');
+    btn.textContent = box.classList.contains('visible') ? 'Hide hint' : 'Show hint';
+  }
+
+  function calcScore() {
+    let correct = 0;
+    let answered = 0;
+    Object.keys(answers).forEach(qid => {
+      if (selected[qid]) {
+        answered++;
+        if (selected[qid] === answers[qid]) correct++;
+      }
+      reveal(qid);
+    });
+    const pct = Math.round((correct / 10) * 100);
+    document.getElementById('scoreNum').innerHTML = correct + '<span> / 10</span>';
+    document.getElementById('scoreBar').style.width = pct + '%';
+    const bar = document.getElementById('scoreBar');
+    bar.style.background = pct >= 70 ? '#1a7a4a' : pct >= 50 ? '#BA7517' : '#c0392b';
+    let msg = '';
+    if (answered < 10) msg = `${answered}/10 questions answered. Showing all answers.`;
+    else if (pct >= 80) msg = `Excellent! ${pct}% — Strong Section A performance.`;
+    else if (pct >= 60) msg = `Good — ${pct}%. Review the explanations for missed questions.`;
+    else msg = `${pct}% — Revisit the lecture material and try again.`;
+    document.getElementById('scoreLabel').textContent = msg;
+  }
+</script>
+</body>
+</html>

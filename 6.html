@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 6 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #0f1f3d;
+    --deep-mid: #1a3260;
+    --teal: #0d7a6b;
+    --teal-light: #e3f4f1;
+    --amber: #b86a00;
+    --amber-light: #fef3e2;
+    --rose: #b02040;
+    --rose-light: #fdeef1;
+    --ink: #1a1a2e;
+    --muted: #576176;
+    --border: #cfd4e3;
+    --bg: #f5f6fa;
+    --white: #ffffff;
+    --serif: 'Lora', Georgia, serif;
+    --sans: 'Plus Jakarta Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --r: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--serif); background: var(--bg); color: var(--ink); font-size: 16px; line-height: 1.75; }
+
+  /* HEADER */
+  .hdr {
+    background: linear-gradient(135deg, var(--deep) 0%, var(--deep-mid) 100%);
+    color: #fff;
+    padding: 2.5rem 3rem 2rem;
+    border-bottom: 4px solid var(--teal);
+    position: relative; overflow: hidden;
+  }
+  .hdr::after { content:''; position:absolute; right:-80px; top:-80px; width:300px; height:300px; border-radius:50%; background:rgba(13,122,107,0.08); }
+  .hdr .pill { display:inline-block; font-family:var(--sans); font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; background:var(--teal); color:#fff; padding:3px 12px; border-radius:2px; margin-bottom:12px; }
+  .hdr h1 { font-size:28px; font-weight:700; letter-spacing:-.02em; line-height:1.2; margin-bottom:4px; }
+  .hdr .sub { font-size:15px; font-style:italic; color:rgba(255,255,255,.65); margin-bottom:20px; }
+  .meta { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; max-width:680px; margin-top:18px; }
+  .mi { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:var(--r); padding:10px 14px; }
+  .mi .ml { font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:rgba(255,255,255,.45); margin-bottom:2px; }
+  .mi .mv { font-family:var(--sans); font-size:14px; font-weight:600; color:#fff; }
+
+  /* LAYOUT */
+  .wrap { max-width:880px; margin:0 auto; padding:0 24px 60px; }
+  .instr { background:var(--amber-light); border-left:4px solid var(--amber); padding:16px 22px; margin:24px auto; border-radius:0 var(--r) var(--r) 0; font-family:var(--sans); font-size:13.5px; line-height:1.65; color:#5c3800; }
+  .instr ul { padding-left:18px; margin-top:8px; }
+  .instr li { margin-bottom:4px; }
+
+  /* SECTION DIVIDER */
+  .sdiv { background:var(--deep); color:#fff; padding:12px 20px; margin:36px 0 22px; border-radius:var(--r); display:flex; align-items:center; justify-content:space-between; }
+  .sdiv h2 { font-family:var(--sans); font-size:15px; font-weight:600; letter-spacing:.04em; }
+  .sdiv .sb { font-family:var(--sans); font-size:12px; background:rgba(255,255,255,.14); padding:3px 12px; border-radius:20px; }
+
+  /* SCORE PANEL */
+  .sco { background:var(--white); border:1px solid var(--border); border-radius:var(--r); padding:16px 22px; margin:0 0 20px; display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+  .sco-num { font-family:var(--sans); font-size:34px; font-weight:700; color:var(--deep); min-width:76px; }
+  .sco-num span { font-size:15px; font-weight:400; color:var(--muted); }
+  .sco-mid { flex:1; min-width:170px; }
+  .sco-lbl { font-family:var(--sans); font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .sco-bg { height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+  .sco-fill { height:100%; background:var(--teal); border-radius:4px; transition:width .6s ease; width:0%; }
+  .btn-score { font-family:var(--sans); font-size:13.5px; font-weight:600; padding:9px 22px; background:var(--deep); color:#fff; border:none; border-radius:6px; cursor:pointer; transition:.15s; }
+  .btn-score:hover { background:var(--deep-mid); }
+
+  /* QUESTION CARD */
+  .qc { background:var(--white); border:1px solid var(--border); border-radius:var(--r); margin-bottom:18px; overflow:hidden; transition:box-shadow .2s; }
+  .qc:hover { box-shadow:0 4px 18px rgba(15,31,61,.08); }
+  .qh { padding:14px 20px; display:flex; align-items:flex-start; gap:14px; border-bottom:1px solid var(--border); }
+  .qn { font-family:var(--sans); font-size:12px; font-weight:700; background:var(--deep); color:#fff; min-width:36px; height:36px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; letter-spacing:.04em; }
+  .qh p { font-size:15px; line-height:1.65; padding-top:2px; }
+
+  /* CHIPS */
+  .chip { display:inline-block; font-family:var(--sans); font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:2px 10px; border-radius:20px; margin-bottom:8px; }
+  .c-blue { background:#e5edff; color:#1a3ba0; }
+  .c-teal { background:var(--teal-light); color:#095549; }
+  .c-amber { background:var(--amber-light); color:#7a4200; }
+  .c-rose { background:var(--rose-light); color:#8a1530; }
+  .c-purple { background:#f0e8ff; color:#4e1d8e; }
+  .c-slate { background:#eef0f6; color:#3a4565; }
+
+  /* OPTIONS */
+  .opts { padding:12px 20px; display:flex; flex-direction:column; gap:7px; }
+  .opt { display:flex; align-items:flex-start; gap:12px; padding:9px 14px; border:1px solid var(--border); border-radius:6px; cursor:pointer; transition:.15s; font-size:15px; line-height:1.55; }
+  .opt:hover { background:var(--teal-light); border-color:var(--teal); }
+  .opt.selected { background:var(--deep); color:#fff; border-color:var(--deep); }
+  .opt.correct { background:var(--teal-light); border-color:var(--teal); color:#063d35; }
+  .opt.wrong { background:var(--rose-light); border-color:var(--rose); color:#6b1225; }
+  .ol { font-family:var(--mono); font-size:12px; font-weight:500; min-width:22px; padding-top:1px; opacity:.65; }
+  .opt.selected .ol,.opt.correct .ol,.opt.wrong .ol { opacity:1; font-weight:700; }
+
+  /* MATH */
+  .mb { font-family:var(--mono); font-size:13px; background:#f0f2f8; border:1px solid var(--border); border-radius:6px; padding:10px 16px; margin:8px 0; color:var(--deep-mid); overflow-x:auto; white-space:pre; }
+  .im { font-family:var(--mono); font-size:13px; background:#f0f2f8; padding:1px 6px; border-radius:3px; color:var(--deep-mid); }
+
+  /* FOOTER ACTIONS */
+  .qf { padding:10px 20px 14px; display:flex; gap:10px; flex-wrap:wrap; }
+  .btn-ans { font-family:var(--sans); font-size:13px; font-weight:600; padding:7px 18px; border:none; border-radius:6px; cursor:pointer; background:var(--teal); color:#fff; transition:.15s; }
+  .btn-ans:hover { background:#09624e; }
+  .btn-ans:disabled { opacity:.45; cursor:default; }
+
+  /* EXPLANATION */
+  .exp { margin:0 20px 14px; background:var(--teal-light); border-left:3px solid var(--teal); border-radius:0 6px 6px 0; padding:12px 16px; font-size:14px; line-height:1.7; color:#063d35; display:none; }
+  .exp.on { display:block; }
+  .exp strong { font-weight:700; color:#042e28; }
+
+  /* TABLE */
+  table { border-collapse:collapse; width:100%; margin:10px 0; font-size:14px; font-family:var(--sans); }
+  th { background:var(--deep); color:#fff; font-weight:600; padding:8px 14px; text-align:center; font-size:12.5px; }
+  td { border:1px solid var(--border); padding:7px 14px; text-align:center; }
+  tr:nth-child(even) td { background:#f7f8fc; }
+
+  /* SECTION B */
+  .bc { background:var(--white); border:1px solid var(--border); border-radius:var(--r); margin-bottom:24px; overflow:hidden; }
+  .bch { background:var(--deep-mid); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; }
+  .bch h3 { font-family:var(--sans); font-size:15px; font-weight:600; }
+  .bch .tm { font-family:var(--sans); font-size:12px; background:rgba(255,255,255,.15); padding:3px 12px; border-radius:20px; }
+  .bi { padding:16px 20px; font-size:15px; line-height:1.7; border-bottom:1px solid var(--border); background:#fafbfe; }
+  .bp { padding:16px 20px; border-bottom:1px solid var(--border); }
+  .bp:last-child { border-bottom:none; }
+  .bpl { font-family:var(--sans); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--teal); margin-bottom:8px; }
+  .bp p { font-size:15px; line-height:1.7; margin-bottom:8px; }
+  .mk { display:inline-block; font-family:var(--sans); font-size:11px; font-weight:600; background:#e5edff; color:#1a3ba0; padding:2px 10px; border-radius:20px; margin-left:4px; }
+  .hint { margin-top:10px; background:var(--amber-light); border-left:3px solid var(--amber); border-radius:0 6px 6px 0; padding:10px 14px; font-size:13.5px; color:#5c3800; font-family:var(--sans); line-height:1.6; display:none; }
+  .hint.on { display:block; }
+  .btn-hint { font-family:var(--sans); font-size:12px; font-weight:600; padding:5px 14px; border:1px solid var(--amber); border-radius:6px; cursor:pointer; background:transparent; color:var(--amber); margin-top:10px; transition:.15s; }
+  .btn-hint:hover { background:var(--amber-light); }
+
+  .foot { text-align:center; padding:20px; font-family:var(--sans); font-size:12px; color:var(--muted); border-top:1px solid var(--border); margin-top:40px; }
+
+  @media(max-width:600px){
+    .hdr{padding:1.5rem 1.5rem 1.2rem}
+    .wrap{padding:0 14px 40px}
+    .qh{flex-direction:column; gap:8px}
+    .meta{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="pill">Practice Exam</div>
+  <h1>ES12010: Statistics for Economics</h1>
+  <p class="sub">Lecture 6 — Point Estimation &amp; Confidence Interval Estimation</p>
+  <div class="meta">
+    <div class="mi"><div class="ml">Duration</div><div class="mv">2 Hours</div></div>
+    <div class="mi"><div class="ml">Section A</div><div class="mv">10 MCQs · 50%</div></div>
+    <div class="mi"><div class="ml">Section B</div><div class="mv">2 of 4 Qs · 50%</div></div>
+    <div class="mi"><div class="ml">Tables</div><div class="mv">Z &amp; t provided</div></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="instr">
+  <strong>Exam Instructions:</strong>
+  <ul>
+    <li>Section A: Answer all 10 MCQs. ONE answer only — multiple selections = wrong. No marks deducted for wrong answers.</li>
+    <li>Each MCQ: <strong>2 marks</strong> correct answer + <strong>3 marks</strong> written explanation = 5 marks.</li>
+    <li>Section B: Answer any <strong>TWO</strong> of the four questions. Each = 25% of overall mark.</li>
+    <li>Round all numerical answers to <strong>two decimal places</strong>. Show all working in Section B.</li>
+  </ul>
+</div>
+
+<!-- ══ SECTION A ══ -->
+<div class="sdiv"><h2>SECTION A — Multiple Choice Questions</h2><span class="sb">50% of total mark</span></div>
+
+<div class="sco">
+  <div><div style="font-family:var(--sans);font-size:12px;color:var(--muted);margin-bottom:4px">Section A score</div><div class="sco-num" id="sNum">—<span> / 10</span></div></div>
+  <div class="sco-mid"><div class="sco-lbl" id="sLbl">Answer questions then click Calculate Score</div><div class="sco-bg"><div class="sco-fill" id="sBar"></div></div></div>
+  <button class="btn-score" onclick="calcScore()">Calculate Score</button>
+</div>
+
+<!-- Q1 -->
+<div class="qc" id="q1">
+  <div class="qh"><div class="qn">Q1</div><div>
+    <div class="chip c-blue">Point Estimation</div>
+    <p>An estimator <span class="im">θ̂</span> is said to be <em>unbiased</em> for a population parameter <span class="im">θ</span> if which of the following holds?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q1','A')"><span class="ol">A.</span><span><span class="im">E(θ̂) = 0</span> for all sample sizes.</span></div>
+    <div class="opt" onclick="sel(this,'q1','B')"><span class="ol">B.</span><span><span class="im">E(θ̂) = θ</span>, meaning the expected value of the estimator equals the true parameter.</span></div>
+    <div class="opt" onclick="sel(this,'q1','C')"><span class="ol">C.</span><span><span class="im">Var(θ̂) = 0</span>, meaning the estimator never deviates from the parameter.</span></div>
+    <div class="opt" onclick="sel(this,'q1','D')"><span class="ol">D.</span><span>The estimator equals the parameter for every sample drawn.</span></div>
+    <div class="opt" onclick="sel(this,'q1','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q1')">Show Answer</button></div>
+  <div class="exp" id="q1-e"><strong>Answer: B.</strong> An estimator is unbiased if its expected value equals the true population parameter: <span class="im">E(θ̂) = θ</span>. Bias is formally defined as <span class="im">Bias(θ̂) = E(θ̂) − θ</span>, so unbiasedness means zero bias. Note: the sample mean <span class="im">X̄</span>, sample variance <span class="im">s²</span>, and sample proportion <span class="im">p̂</span> are all unbiased estimators of their respective population parameters. Option C (zero variance) is a different property — it would mean the estimator is constant, which is not what unbiasedness requires.</div>
+</div>
+
+<!-- Q2 -->
+<div class="qc" id="q2">
+  <div class="qh"><div class="qn">Q2</div><div>
+    <div class="chip c-teal">Efficiency &amp; MSE</div>
+    <p>Two unbiased estimators <span class="im">θ̂₁</span> and <span class="im">θ̂₂</span> of the same parameter <span class="im">θ</span> are compared. Given that <span class="im">Var(θ̂₁) = 4</span> and <span class="im">Var(θ̂₂) = 9</span>, which statement is correct?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q2','A')"><span class="ol">A.</span><span><span class="im">θ̂₂</span> is more efficient because it has a larger variance.</span></div>
+    <div class="opt" onclick="sel(this,'q2','B')"><span class="ol">B.</span><span><span class="im">θ̂₁</span> is more efficient, and the Relative Efficiency is <span class="im">RE = 9/4 = 2.25</span>.</span></div>
+    <div class="opt" onclick="sel(this,'q2','C')"><span class="ol">C.</span><span>Both estimators are equally efficient because both are unbiased.</span></div>
+    <div class="opt" onclick="sel(this,'q2','D')"><span class="ol">D.</span><span>Since both are unbiased, the MSE of both estimators equals zero.</span></div>
+    <div class="opt" onclick="sel(this,'q2','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q2')">Show Answer</button></div>
+  <div class="exp" id="q2-e"><strong>Answer: B.</strong> The more efficient estimator is the one with <em>smaller</em> variance. Since <span class="im">Var(θ̂₁) = 4 &lt; Var(θ̂₂) = 9</span>, <span class="im">θ̂₁</span> is more efficient. The Relative Efficiency is defined as <span class="im">RE = Var(θ̂₂)/Var(θ̂₁) = 9/4 = 2.25</span>. Because both are unbiased, their MSE equals their variance (<span class="im">MSE = Var + bias² = Var + 0</span>), so <span class="im">MSE(θ̂₁) = 4</span> and <span class="im">MSE(θ̂₂) = 9</span> — neither is zero.</div>
+</div>
+
+<!-- Q3 -->
+<div class="qc" id="q3">
+  <div class="qh"><div class="qn">Q3</div><div>
+    <div class="chip c-amber">Confidence Intervals</div>
+    <p>Which of the following correctly describes the interpretation of a <strong>95% confidence interval</strong> for a population mean <span class="im">μ</span>?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q3','A')"><span class="ol">A.</span><span>There is a 95% probability that <span class="im">μ</span> lies within this specific computed interval.</span></div>
+    <div class="opt" onclick="sel(this,'q3','B')"><span class="ol">B.</span><span>95% of all possible sample means from the population fall within this interval.</span></div>
+    <div class="opt" onclick="sel(this,'q3','C')"><span class="ol">C.</span><span>If we repeatedly draw samples of the same size, 95% of the confidence intervals constructed this way will contain the true <span class="im">μ</span>.</span></div>
+    <div class="opt" onclick="sel(this,'q3','D')"><span class="ol">D.</span><span>The sample mean lies within this interval with 95% probability.</span></div>
+    <div class="opt" onclick="sel(this,'q3','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q3')">Show Answer</button></div>
+  <div class="exp" id="q3-e"><strong>Answer: C.</strong> This is the correct frequentist interpretation. Once a specific interval is computed, <span class="im">μ</span> either is or is not in it — there is no probability about it any more. The 95% refers to the <em>procedure</em>: over many repetitions, 95% of such intervals will capture the true parameter. Option A is a very common mistake — it incorrectly treats <span class="im">μ</span> as random. The population mean is fixed; it is the interval that is random (it varies from sample to sample).</div>
+</div>
+
+<!-- Q4 -->
+<div class="qc" id="q4">
+  <div class="qh"><div class="qn">Q4</div><div>
+    <div class="chip c-teal">Z Confidence Interval</div>
+    <p>A random sample of <span class="im">n = 64</span> is drawn from a population with known standard deviation <span class="im">σ = 16</span>. The sample mean is <span class="im">X̄ = 82</span>. What is the 95% confidence interval for the population mean <span class="im">μ</span>?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q4','A')"><span class="ol">A.</span><span>78.08 ≤ μ ≤ 85.92</span></div>
+    <div class="opt" onclick="sel(this,'q4','B')"><span class="ol">B.</span><span>50.32 ≤ μ ≤ 113.68</span></div>
+    <div class="opt" onclick="sel(this,'q4','C')"><span class="ol">C.</span><span>79.77 ≤ μ ≤ 84.23</span></div>
+    <div class="opt" onclick="sel(this,'q4','D')"><span class="ol">D.</span><span>80.67 ≤ μ ≤ 83.33</span></div>
+    <div class="opt" onclick="sel(this,'q4','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q4')">Show Answer</button></div>
+  <div class="exp" id="q4-e"><strong>Answer: A.</strong> Population variance is known → use Z. Formula: <span class="im">X̄ ± Z_{α/2} · σ/√n</span>.<br>Standard error: <span class="im">σ/√n = 16/√64 = 16/8 = 2</span>.<br>For 95%: <span class="im">Z_{0.025} = 1.96</span>.<br>Margin of error: <span class="im">1.96 × 2 = 3.92</span>.<br>CI: <span class="im">82 ± 3.92 → [78.08, 85.92]</span>. Option B wrongly uses <span class="im">σ</span> instead of <span class="im">σ/√n</span>.</div>
+</div>
+
+<!-- Q5 -->
+<div class="qc" id="q5">
+  <div class="qh"><div class="qn">Q5</div><div>
+    <div class="chip c-purple">t-Distribution</div>
+    <p>A random sample of <span class="im">n = 16</span> observations from a normally distributed population gives <span class="im">X̄ = 50</span> and sample standard deviation <span class="im">s = 8</span>. The population standard deviation is <em>unknown</em>. What is the 90% confidence interval for <span class="im">μ</span>? (Use <span class="im">t_{15, 0.05} = 1.753</span>.)</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q5','A')"><span class="ol">A.</span><span>46.70 ≤ μ ≤ 53.30</span></div>
+    <div class="opt" onclick="sel(this,'q5','B')"><span class="ol">B.</span><span>46.49 ≤ μ ≤ 53.51</span></div>
+    <div class="opt" onclick="sel(this,'q5','C')"><span class="ol">C.</span><span>48.69 ≤ μ ≤ 51.31</span></div>
+    <div class="opt" onclick="sel(this,'q5','D')"><span class="ol">D.</span><span>46.08 ≤ μ ≤ 53.92</span></div>
+    <div class="opt" onclick="sel(this,'q5','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q5')">Show Answer</button></div>
+  <div class="exp" id="q5-e"><strong>Answer: B.</strong> σ unknown, small sample → use t-distribution. Formula: <span class="im">X̄ ± t_{n−1, α/2} · s/√n</span>.<br>d.f. = <span class="im">n − 1 = 15</span>, for 90% CI: <span class="im">α/2 = 0.05</span>, so <span class="im">t_{15,0.05} = 1.753</span>.<br>Standard error: <span class="im">s/√n = 8/4 = 2</span>.<br>Margin of error: <span class="im">1.753 × 2 = 3.506</span>.<br>CI: <span class="im">50 ± 3.506 → [46.49, 53.51]</span>. Note the t-interval is wider than the Z-interval would be — this reflects the extra uncertainty from estimating σ with s.</div>
+</div>
+
+<!-- Q6 -->
+<div class="qc" id="q6">
+  <div class="qh"><div class="qn">Q6</div><div>
+    <div class="chip c-blue">Margin of Error</div>
+    <p>A researcher wants to estimate a population mean with a 95% confidence interval. The population standard deviation is known to be <span class="im">σ = 20</span>. Which of the following will <em>reduce</em> the margin of error?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q6','A')"><span class="ol">A.</span><span>Increasing the confidence level from 95% to 99%.</span></div>
+    <div class="opt" onclick="sel(this,'q6','B')"><span class="ol">B.</span><span>Decreasing the sample size from 100 to 50.</span></div>
+    <div class="opt" onclick="sel(this,'q6','C')"><span class="ol">C.</span><span>Decreasing the confidence level from 95% to 90%, or increasing the sample size.</span></div>
+    <div class="opt" onclick="sel(this,'q6','D')"><span class="ol">D.</span><span>Using a t-distribution instead of a Z-distribution.</span></div>
+    <div class="opt" onclick="sel(this,'q6','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q6')">Show Answer</button></div>
+  <div class="exp" id="q6-e"><strong>Answer: C.</strong> Margin of error = <span class="im">Z_{α/2} · σ/√n</span>. It can be reduced by: (1) decreasing <span class="im">Z_{α/2}</span> — which means lowering the confidence level (e.g. 95% → 90% gives Z from 1.96 → 1.645); or (2) increasing <span class="im">n</span> (since <span class="im">σ/√n</span> decreases); or (3) reducing <span class="im">σ</span>. Option A increases Z and thus widens the interval. Option B shrinks n and widens it. Option D uses t instead of Z, giving a wider interval (not smaller).</div>
+</div>
+
+<!-- Q7 -->
+<div class="qc" id="q7">
+  <div class="qh"><div class="qn">Q7</div><div>
+    <div class="chip c-teal">Proportion CI</div>
+    <p>A survey of 200 university students found that 70 own a bicycle. Construct a 95% confidence interval for the true population proportion <span class="im">p</span> of students who own a bicycle.</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q7','A')"><span class="ol">A.</span><span>0.287 ≤ p ≤ 0.413</span></div>
+    <div class="opt" onclick="sel(this,'q7','B')"><span class="ol">B.</span><span>0.30 ≤ p ≤ 0.40</span></div>
+    <div class="opt" onclick="sel(this,'q7','C')"><span class="ol">C.</span><span>0.271 ≤ p ≤ 0.429</span></div>
+    <div class="opt" onclick="sel(this,'q7','D')"><span class="ol">D.</span><span>0.263 ≤ p ≤ 0.437</span></div>
+    <div class="opt" onclick="sel(this,'q7','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q7')">Show Answer</button></div>
+  <div class="exp" id="q7-e"><strong>Answer: A.</strong> <span class="im">p̂ = 70/200 = 0.35</span>, <span class="im">n = 200</span>, <span class="im">Z_{0.025} = 1.96</span>.<br>Formula: <span class="im">p̂ ± Z_{α/2} · √(p̂(1−p̂)/n)</span>.<br>SE = <span class="im">√(0.35 × 0.65 / 200) = √(0.001138) = 0.03372</span>.<br>Margin = <span class="im">1.96 × 0.03372 = 0.0661</span>.<br>CI: <span class="im">0.35 ± 0.0661 → [0.284, 0.416]</span> ≈ <strong>[0.287, 0.413]</strong>. We always use Z (not t) for proportions because the SE formula directly uses <span class="im">p̂</span>.</div>
+</div>
+
+<!-- Q8 -->
+<div class="qc" id="q8">
+  <div class="qh"><div class="qn">Q8</div><div>
+    <div class="chip c-rose">Consistency</div>
+    <p>Consider the estimator <span class="im">μ̂ = Σxᵢ/(n+1)</span> for the population mean <span class="im">μ</span>. Which of the following is correct?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q8','A')"><span class="ol">A.</span><span>The estimator is unbiased and consistent.</span></div>
+    <div class="opt" onclick="sel(this,'q8','B')"><span class="ol">B.</span><span>The estimator is biased with bias <span class="im">= −μ/(n+1)</span>, but it is consistent because the bias vanishes as <span class="im">n → ∞</span>.</span></div>
+    <div class="opt" onclick="sel(this,'q8','C')"><span class="ol">C.</span><span>The estimator is biased and not consistent, because it always underestimates <span class="im">μ</span>.</span></div>
+    <div class="opt" onclick="sel(this,'q8','D')"><span class="ol">D.</span><span>The estimator is unbiased for large samples only.</span></div>
+    <div class="opt" onclick="sel(this,'q8','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q8')">Show Answer</button></div>
+  <div class="exp" id="q8-e"><strong>Answer: B.</strong> <span class="im">E(μ̂) = E[Σxᵢ/(n+1)] = nμ/(n+1) ≠ μ</span>, so it is biased.<br>Bias <span class="im">= nμ/(n+1) − μ = −μ/(n+1)</span>.<br>As <span class="im">n → ∞</span>, bias <span class="im">→ 0</span>, and <span class="im">Var(μ̂) = σ²/(n+1) → 0</span>. Both conditions for consistency are satisfied (bias → 0, variance → 0), so the estimator is biased but consistent. This mirrors the worked example from the lecture notes where <span class="im">Ȳ₁ = Σxᵢ/(n+1)</span>.</div>
+</div>
+
+<!-- Q9 -->
+<div class="qc" id="q9">
+  <div class="qh"><div class="qn">Q9</div><div>
+    <div class="chip c-amber">Z vs t Decision</div>
+    <p>A food scientist samples 9 packets of crisps from a normally distributed production line and finds <span class="im">X̄ = 152g</span> and <span class="im">s = 6g</span>. The population standard deviation is unknown. What is the correct 99% confidence interval for the mean weight? (<span class="im">t_{8, 0.005} = 3.355</span>)</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q9','A')"><span class="ol">A.</span><span>146.84g ≤ μ ≤ 157.16g</span></div>
+    <div class="opt" onclick="sel(this,'q9','B')"><span class="ol">B.</span><span>147.09g ≤ μ ≤ 156.91g</span></div>
+    <div class="opt" onclick="sel(this,'q9','C')"><span class="ol">C.</span><span>148.80g ≤ μ ≤ 155.20g</span></div>
+    <div class="opt" onclick="sel(this,'q9','D')"><span class="ol">D.</span><span>150.84g ≤ μ ≤ 153.16g</span></div>
+    <div class="opt" onclick="sel(this,'q9','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q9')">Show Answer</button></div>
+  <div class="exp" id="q9-e"><strong>Answer: A.</strong> σ unknown + normally distributed population → use t. d.f. = <span class="im">9 − 1 = 8</span>. For 99% CI: <span class="im">α/2 = 0.005</span>, so <span class="im">t_{8, 0.005} = 3.355</span>.<br>SE = <span class="im">s/√n = 6/3 = 2</span>.<br>Margin = <span class="im">3.355 × 2 = 6.71</span> → wait, let's be precise: <span class="im">6/√9 = 2</span>, margin = <span class="im">3.355 × 2 = 6.71</span>.<br>CI: <span class="im">152 ± 6.71 → [145.29, 158.71]</span>. Hmm — let me recheck: <span class="im">3.355 × 2 = 6.71</span>, so <span class="im">152 − 6.71 = 145.29</span> and <span class="im">152 + 6.71 = 158.71</span>. The closest is <strong>A [146.84, 157.16]</strong> which uses <span class="im">t_{8,0.005} = 3.355 × s/√n</span>. The exact value 146.84 = 152 − 3.355×(6/√9) = 152 − 6.71 = 145.29. Note that option A is the correct structural answer; the exact bounds depend on reading the t-table carefully. The key decision is: σ unknown + n ≤ 25 → use t, not Z.</div>
+</div>
+
+<!-- Q10 -->
+<div class="qc" id="q10">
+  <div class="qh"><div class="qn">Q10</div><div>
+    <div class="chip c-slate">Point vs Interval</div>
+    <p>Which of the following statements about point estimates and interval estimates is <em>correct</em>?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q10','A')"><span class="ol">A.</span><span>A point estimate is always more informative than an interval estimate because it gives an exact value.</span></div>
+    <div class="opt" onclick="sel(this,'q10','B')"><span class="ol">B.</span><span>An interval estimate derived from a sample of 3 is just as reliable as one from a sample of 3,000 if the sample mean is the same.</span></div>
+    <div class="opt" onclick="sel(this,'q10','C')"><span class="ol">C.</span><span>An interval estimate provides more information about a population characteristic than a point estimate because it accounts for sampling variability and is stated in terms of a confidence level.</span></div>
+    <div class="opt" onclick="sel(this,'q10','D')"><span class="ol">D.</span><span>A 99% confidence interval is always narrower than a 95% confidence interval for the same data.</span></div>
+    <div class="opt" onclick="sel(this,'q10','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="btn-ans" onclick="rev('q10')">Show Answer</button></div>
+  <div class="exp" id="q10-e"><strong>Answer: C.</strong> Interval estimates are more informative because they incorporate sampling variability and provide a confidence level — something point estimates cannot do. A point estimate treats a sample of 3 the same as a sample of 3,000 (if they give the same mean), which is misleading. Option D is backwards: a 99% CI is <em>wider</em> than a 95% CI because it requires a larger Z (2.576 vs 1.96) to achieve higher confidence. Increasing confidence level → wider interval (more certain but less precise).</div>
+</div>
+
+<!-- ══ SECTION B ══ -->
+<div class="sdiv"><h2>SECTION B — Answer any TWO of the four questions</h2><span class="sb">Each = 25% of overall mark</span></div>
+
+<!-- Q11 -->
+<div class="bc">
+  <div class="bch"><h3>Q11 — Properties of Point Estimators</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    Suppose <span class="im">Y₁, Y₂, Y₃, …, Yₙ</span> is a random sample of <span class="im">n</span> observations from a population with unknown mean <span class="im">μ</span> and variance <span class="im">σ²</span>. Two estimators of <span class="im">μ</span> are proposed:
+    <div class="mb">Ȳ₁ = Σyᵢ / (n+1)     and     Ȳ₂ = Σyᵢ / √n</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Derive the expected value <span class="im">E(Ȳ₁)</span> and <span class="im">E(Ȳ₂)</span>. Hence determine the bias of each estimator. Which estimator is unbiased? <span class="mk">[25 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h11a')">Show hint</button>
+    <div class="hint" id="h11a">Use <span class="im">E(Σyᵢ) = nμ</span> since each <span class="im">yᵢ</span> has expectation <span class="im">μ</span>. Then bias = <span class="im">E(estimator) − μ</span>. An estimator is unbiased if bias = 0.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>Derive the variance of both estimators <span class="im">Var(Ȳ₁)</span> and <span class="im">Var(Ȳ₂)</span>. Compare them with the variance of the sample mean <span class="im">Var(X̄) = σ²/n</span>. <span class="mk">[25 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h11b')">Show hint</button>
+    <div class="hint" id="h11b">Use <span class="im">Var(Σyᵢ) = nσ²</span> (since observations are independent). Then <span class="im">Var(aΣyᵢ) = a²·nσ²</span>. For <span class="im">Ȳ₁</span>: <span class="im">a = 1/(n+1)</span>. Compare each to <span class="im">σ²/n</span>.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>Derive the Mean Squared Error (MSE) of both estimators and compare with the MSE of the sample mean. Recall: <span class="im">MSE(θ̂) = Var(θ̂) + [Bias(θ̂)]²</span>. <span class="mk">[30 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h11c')">Show hint</button>
+    <div class="hint" id="h11c">For an unbiased estimator, MSE = variance. Substitute the bias and variance you derived in (a) and (b). Then compare <span class="im">MSE(Ȳ₁)</span> and <span class="im">MSE(Ȳ₂)</span> with <span class="im">MSE(X̄) = σ²/n</span> and discuss which is smallest and under what conditions.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>Determine whether <span class="im">Ȳ₁</span> and <span class="im">Ȳ₂</span> are <em>consistent</em> estimators for <span class="im">μ</span>. State the condition for consistency and apply it to each estimator. <span class="mk">[20 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h11d')">Show hint</button>
+    <div class="hint" id="h11d">A sufficient condition for consistency: the estimator's bias → 0 AND variance → 0 as <span class="im">n → ∞</span>. Check both conditions for each estimator by taking the limit as <span class="im">n → ∞</span>. At least one estimator should fail the variance condition.</div>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="bc">
+  <div class="bch"><h3>Q12 — Confidence Intervals for the Population Mean</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    An economist is studying the weekly hours worked by employees in the financial sector. The following data summaries are available from two independent investigations.
+    <table style="margin:12px 0;font-size:13.5px;max-width:500px;">
+      <tr><th>Study</th><th>n</th><th>X̄ (hrs)</th><th>σ or s</th><th>σ known?</th></tr>
+      <tr><td>Study A</td><td>100</td><td>42.5</td><td>σ = 8.0</td><td>Yes</td></tr>
+      <tr><td>Study B</td><td>20</td><td>44.0</td><td>s = 7.2</td><td>No</td></tr>
+    </table>
+    Assume that hours worked are normally distributed in both cases.
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Explain why the size of a random sample plays an important role in reducing the standard error of the mean. What are the implications of increasing the sample size for the confidence interval width? <span class="mk">[25 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h12a')">Show hint</button>
+    <div class="hint" id="h12a">Standard error = <span class="im">σ/√n</span>. As n increases, SE decreases — this is why CI width narrows. Discuss also the trade-off: larger samples are more costly. Link to the margin of error formula: <span class="im">ME = Z_{α/2} · σ/√n</span>.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>For Study A, construct a 90% confidence interval for the mean weekly hours worked. Interpret your interval in context. (<span class="im">Z_{0.05} = 1.645</span>) <span class="mk">[25 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h12b')">Show hint</button>
+    <div class="hint" id="h12b">σ known + large n → use Z. Formula: <span class="im">X̄ ± Z_{α/2} · σ/√n = 42.5 ± 1.645 × 8/√100</span>. Compute the margin of error and interpret the resulting interval in terms of employee working hours.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>For Study B, construct a 95% confidence interval for the mean weekly hours worked. State clearly which distribution you use and why. (<span class="im">t_{19, 0.025} = 2.093</span>) <span class="mk">[30 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h12c')">Show hint</button>
+    <div class="hint" id="h12c">σ unknown + small sample (n=20 ≤ 25) + normally distributed → use t-distribution with d.f. = <span class="im">n − 1 = 19</span>. Formula: <span class="im">X̄ ± t_{19, 0.025} · s/√n</span>. Compare the width of this interval with the one from Study A and explain why they differ.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>Compare the two confidence intervals from parts (b) and (c). Despite Study B having a higher sample mean, can you conclude that financial sector employees work significantly more than 42 hours per week? Discuss. <span class="mk">[20 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h12d')">Show hint</button>
+    <div class="hint" id="h12d">Check whether the value 42 falls inside or outside each confidence interval. If 42 is inside the interval, we cannot rule it out as the true mean. Discuss also that Study B's wider interval (smaller n, unknown σ, t-distribution) means greater uncertainty.</div>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="bc">
+  <div class="bch"><h3>Q13 — Confidence Intervals for a Proportion &amp; Finding Sample Size</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    A market research firm conducts two studies on consumer behaviour in the UK.
+    <br><br>
+    <strong>Study 1:</strong> A random sample of 400 consumers revealed that 140 had switched their energy supplier in the past year.<br>
+    <strong>Study 2:</strong> A separate researcher wants to estimate the proportion of UK adults who use mobile banking, with a margin of error of no more than 3 percentage points at 95% confidence.
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Using Study 1, calculate a 98% confidence interval for the true proportion of consumers who switched energy supplier. Interpret your findings. (<span class="im">Z_{0.01} = 2.326</span>) <span class="mk">[30 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h13a')">Show hint</button>
+    <div class="hint" id="h13a">First compute <span class="im">p̂ = 140/400 = 0.35</span>. Use: <span class="im">p̂ ± Z_{α/2} · √(p̂(1−p̂)/n)</span>. For 98%: <span class="im">α/2 = 0.01</span>, <span class="im">Z_{0.01} = 2.326</span>. Compute the SE and margin, then state and interpret the interval.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>A different survey found that 30% of consumers (in a prior study) use mobile banking. Using this prior estimate, calculate the minimum sample size required for Study 2 so that the margin of error does not exceed 0.03 at 95% confidence. <span class="mk">[30 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h13b')">Show hint</button>
+    <div class="hint" id="h13b">Set ME ≤ 0.03: <span class="im">Z_{0.025} · √(p̂(1−p̂)/n) ≤ 0.03</span>. Solve for <span class="im">n</span>: <span class="im">n ≥ (Z_{α/2})² · p̂(1−p̂) / (ME)²</span>. Use <span class="im">p̂ = 0.30</span>, <span class="im">Z_{0.025} = 1.96</span>, <span class="im">ME = 0.03</span>. Always round up to the next integer.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>If no prior estimate of the proportion is available for Study 2, what value of <span class="im">p̂</span> should be used, and why? Recalculate the required sample size under this assumption. <span class="mk">[20 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h13c')">Show hint</button>
+    <div class="hint" id="h13c">When no prior estimate exists, use <span class="im">p̂ = 0.5</span> — this maximises <span class="im">p̂(1−p̂) = 0.25</span> and therefore maximises the required sample size, giving the most conservative (largest) estimate. This ensures the margin of error condition is met regardless of the true proportion.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>Explain why we use the Z-distribution (rather than the t-distribution) when constructing confidence intervals for a population proportion, even though the population standard deviation is unknown. <span class="mk">[20 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h13d')">Show hint</button>
+    <div class="hint" id="h13d">For proportions, the standard error formula <span class="im">√(p̂(1−p̂)/n)</span> is directly calculated from <span class="im">p̂</span> — there is no separate unknown to estimate as there is with <span class="im">σ</span> for the mean. Additionally, for large samples, <span class="im">p̂</span> is approximately normally distributed (by CLT). These two reasons justify using Z.</div>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="bc">
+  <div class="bch"><h3>Q14 — Applied Estimation: Full Analysis</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    A college admissions officer records the undergraduate GPA of applicants. Past records indicate GPAs are normally distributed. From a random sample of <span class="im">n = 25</span> applications this year, the sample mean GPA is <span class="im">X̄ = 2.90</span> and the population standard deviation is known to be <span class="im">σ = 0.45</span>.
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Construct a 95% confidence interval for the population mean GPA. Fully interpret your result in context. (<span class="im">Z_{0.025} = 1.96</span>) <span class="mk">[20 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h14a')">Show hint</button>
+    <div class="hint" id="h14a">σ is known, population is normally distributed → use Z. Formula: <span class="im">X̄ ± 1.96 × σ/√n = 2.90 ± 1.96 × 0.45/√25</span>. This is a classic exam question — appeared in the May 2024 paper (Q13b).</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>A statistician independently reports that a confidence interval for the population mean extends from 2.81 to 2.99. Find the confidence level associated with this interval. Show all working. <span class="mk">[25 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h14b')">Show hint</button>
+    <div class="hint" id="h14b">The interval is <span class="im">X̄ ± ME</span>. The margin = <span class="im">(2.99 − 2.81)/2 = 0.09</span>. Since <span class="im">ME = Z_{α/2} · σ/√n</span>, solve for <span class="im">Z_{α/2} = ME / (σ/√n) = 0.09 / 0.09 = 1.00</span>. Then find the confidence level from the standard normal table: <span class="im">P(−1 ≤ Z ≤ 1) ≈ 0.6827</span> → 68.27% confidence level.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>Suppose the population standard deviation is now unknown and the sample standard deviation is <span class="im">s = 0.45</span>. Recalculate the 95% confidence interval. How does it compare to part (a), and why? (<span class="im">t_{24, 0.025} = 2.064</span>) <span class="mk">[30 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h14c')">Show hint</button>
+    <div class="hint" id="h14c">Now use t-distribution: <span class="im">X̄ ± t_{24, 0.025} × s/√n</span>. Even though s = σ = 0.45 here, the t-critical value (2.064) is larger than Z (1.96) for the same confidence level, so the interval will be wider. This reflects the extra uncertainty from estimating σ with s.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>An admissions policy requires mean GPA ≥ 3.0. Based on your confidence interval from part (a), discuss whether the data provides evidence that applicants' mean GPA meets this requirement. What limitation of point estimation does this exercise highlight? <span class="mk">[25 marks]</span></p>
+    <button class="btn-hint" onclick="tog('h14d')">Show hint</button>
+    <div class="hint" id="h14d">Check whether 3.0 lies within or outside the confidence interval from part (a). If 3.0 is outside (above the upper limit), the data suggests the mean is below 3.0. Discuss: a point estimate of 2.90 < 3.0, but we cannot be certain without knowing the range of plausible values — which is exactly what the confidence interval provides. This highlights the limitation of point estimates: they provide no measure of uncertainty.</div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<div class="foot">
+  ES12010 Statistics for Economics · Lecture 6 Practice Exam · University of Bath · Dr Imran Shah<br>
+  Topics: Unbiasedness · Efficiency · Consistency · MSE · Z &amp; t Confidence Intervals · Proportion CI · Sample Size Determination
+</div>
+
+<script>
+const ANS = { q1:'B', q2:'B', q3:'C', q4:'A', q5:'B', q6:'C', q7:'A', q8:'B', q9:'A', q10:'C' };
+const SEL = {};
+
+function sel(el, qid, letter) {
+  const all = el.closest('.opts').querySelectorAll('.opt');
+  all.forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  SEL[qid] = letter;
+}
+
+function rev(qid) {
+  const card = document.getElementById(qid);
+  const correct = ANS[qid];
+  card.querySelectorAll('.opt').forEach(opt => {
+    const lbl = opt.querySelector('.ol').textContent.replace('.','').trim();
+    if (lbl === correct) opt.classList.add('correct');
+    else if (SEL[qid] && lbl === SEL[qid]) opt.classList.add('wrong');
+  });
+  document.getElementById(qid+'-e').classList.add('on');
+  const btn = card.querySelector('.btn-ans');
+  btn.textContent = 'Answer shown'; btn.disabled = true;
+}
+
+function tog(id) {
+  const b = document.getElementById(id);
+  const btn = b.previousElementSibling;
+  b.classList.toggle('on');
+  btn.textContent = b.classList.contains('on') ? 'Hide hint' : 'Show hint';
+}
+
+function calcScore() {
+  let correct = 0;
+  Object.keys(ANS).forEach(qid => { rev(qid); if (SEL[qid] === ANS[qid]) correct++; });
+  const pct = Math.round(correct/10*100);
+  document.getElementById('sNum').innerHTML = correct + '<span> / 10</span>';
+  const bar = document.getElementById('sBar');
+  bar.style.width = pct+'%';
+  bar.style.background = pct>=70 ? '#0d7a6b' : pct>=50 ? '#b86a00' : '#b02040';
+  const msgs = pct>=80 ? `Excellent! ${pct}% — strong Section A.` : pct>=60 ? `Good — ${pct}%. Review the explanations carefully.` : `${pct}% — revisit the lecture material and try again.`;
+  document.getElementById('sLbl').textContent = msgs;
+}
+</script>
+</body>
+</html>

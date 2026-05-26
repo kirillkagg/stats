@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 8 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#141c14;--ink2:#2e3d2e;--ink3:#5a6b52;
+    --rule:#bfd0b0;--rule2:#daebd0;
+    --page:#f5faf3;--cream:#edf5e8;
+    --accent:#1d5c1d;--gold:#2e8b2e;
+    --correct:#145a32;--correct-bg:#edfaf2;
+    --mark-bg:#f0faf0;--shadow:rgba(20,44,20,0.09);
+    --wrong-bg:#fff0f0;--wrong:#8b1a1a;
+    --hi:#e8f5e8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);color:var(--ink);font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.78;}
+  .page-wrap{max-width:860px;margin:0 auto;padding:40px 24px 80px;}
+
+  /* PROGRESS */
+  .prog-wrap{position:sticky;top:0;z-index:100;background:white;border-bottom:2px solid var(--rule2);padding:10px 24px;display:flex;align-items:center;gap:14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);}
+  .prog-bar{flex:1;height:5px;background:var(--rule2);border-radius:3px;overflow:hidden;}
+  .prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:width .4s;width:0%;}
+  .score-disp{font-weight:600;color:var(--ink);min-width:110px;text-align:right;font-family:'DM Mono',monospace;font-size:12px;}
+  .lec-badge{background:var(--accent);color:white;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:3px 12px;border-radius:2px;letter-spacing:.06em;}
+
+  /* HEADER */
+  .exam-hdr{border-top:4px solid var(--accent);padding:28px 0 20px;margin-bottom:32px;border-bottom:1px solid var(--rule);}
+  .exam-hdr::after{content:'';display:block;border-bottom:2px solid var(--accent);margin-top:20px;}
+  .hdr-grid{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;}
+  .uni-name{font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;}
+  .exam-title{font-size:25px;font-weight:600;line-height:1.25;margin-bottom:3px;}
+  .exam-sub{font-size:15px;color:var(--ink3);font-style:italic;}
+  .exam-meta{text-align:right;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.85;}
+
+  /* INSTRUCTIONS */
+  .instruct{background:var(--cream);border-left:4px solid var(--gold);padding:16px 20px;margin-bottom:36px;border-radius:0 4px 4px 0;}
+  .instruct p{font-size:15px;color:var(--ink2);margin-bottom:5px;}
+  .instruct p:last-child{margin-bottom:0;}
+
+  /* SECTION HEADERS */
+  .sec-hdr{display:flex;align-items:center;gap:14px;margin:48px 0 22px;}
+  .sec-tab{background:var(--accent);color:white;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:5px 16px;border-radius:2px;}
+  .sec-desc{font-size:14px;color:var(--ink3);font-style:italic;font-family:'DM Sans',sans-serif;}
+
+  /* QUESTION CARDS */
+  .q-card{border:1px solid var(--rule2);border-radius:5px;margin-bottom:22px;overflow:hidden;transition:box-shadow .2s;background:white;}
+  .q-card:hover{box-shadow:0 5px 20px var(--shadow);}
+  .q-head{display:flex;align-items:center;gap:12px;padding:15px 20px 13px;border-bottom:1px solid var(--rule2);background:var(--cream);flex-wrap:wrap;}
+  .q-num{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--accent);min-width:32px;}
+  .q-marks{margin-left:auto;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);background:white;border:1px solid var(--rule2);padding:2px 10px;border-radius:20px;white-space:nowrap;}
+  .q-body{padding:18px 20px;}
+  .q-text{font-size:16.5px;color:var(--ink);margin-bottom:16px;line-height:1.72;}
+
+  /* OPTIONS */
+  .options{list-style:none;}
+  .options li{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;margin-bottom:5px;border:1px solid var(--rule2);border-radius:4px;cursor:pointer;transition:background .14s,border-color .14s;font-size:16px;line-height:1.5;background:white;}
+  .options li:hover{background:var(--cream);border-color:var(--rule);}
+  .options li.selected{background:#e8f5e8;border-color:#4a9d4a;}
+  .options li.correct{background:var(--correct-bg);border-color:#27ae60;color:#145a32;}
+  .options li.wrong{background:var(--wrong-bg);border-color:#c0392b;color:var(--wrong);}
+  .opt-letter{font-family:'DM Mono',monospace;font-size:12.5px;font-weight:500;color:var(--ink3);min-width:22px;padding-top:2px;flex-shrink:0;}
+  .options li.correct .opt-letter{color:#145a32;}
+  .options li.wrong .opt-letter{color:var(--wrong);}
+
+  /* BUTTONS */
+  .btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:7px 18px;border-radius:3px;border:1.5px solid;cursor:pointer;transition:all .14s;}
+  .btn-check{border-color:#1d7a3a;color:#1d7a3a;background:white;}
+  .btn-check:hover{background:#1d7a3a;color:white;}
+  .btn-reveal{border-color:var(--accent);color:var(--accent);background:white;}
+  .btn-reveal:hover{background:var(--accent);color:white;}
+  .btn-reset{border-color:var(--rule);color:var(--ink3);background:white;}
+  .btn-reset:hover{background:var(--cream);}
+
+  /* SOLUTIONS */
+  .sol-block{display:none;margin-top:14px;background:var(--correct-bg);border:1px solid #a8dbc0;border-radius:4px;padding:16px 18px;}
+  .sol-block.visible{display:block;}
+  .sol-title{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--correct);margin-bottom:10px;}
+  .sol-step{font-size:15.5px;color:var(--ink2);line-height:1.82;margin-bottom:9px;}
+  .sol-step:last-child{margin-bottom:0;}
+  .math-block{display:block;font-family:'DM Mono',monospace;font-size:13.5px;background:rgba(20,90,50,.06);border-left:3px solid #27ae60;padding:10px 14px;margin:9px 0;border-radius:0 3px 3px 0;color:#0a3d1f;white-space:pre-wrap;line-height:2.0;}
+  .final-ans{font-family:'DM Mono',monospace;font-size:14.5px;font-weight:500;color:var(--correct);background:rgba(20,90,50,.1);padding:3px 10px;border-radius:3px;display:inline-block;}
+  .mark-note{font-size:14px;color:var(--ink3);border:1px dashed var(--gold);padding:10px 14px;border-radius:3px;margin-top:10px;background:var(--mark-bg);line-height:1.72;}
+  .warn-box{font-size:14px;color:#5a3a00;border:1px solid #c8921a;padding:10px 14px;border-radius:3px;margin:10px 0;background:#fffbf0;line-height:1.72;}
+
+  /* DECISION TABLE */
+  .decision-table{width:100%;border-collapse:collapse;font-size:14.5px;margin:12px 0;font-family:'DM Sans',sans-serif;}
+  .decision-table th{background:var(--accent);color:white;padding:9px 14px;text-align:center;font-weight:500;font-size:13px;}
+  .decision-table td{padding:9px 14px;border:1px solid var(--rule2);color:var(--ink2);text-align:center;vertical-align:middle;}
+  .decision-table .row-head{background:var(--cream);font-weight:500;color:var(--ink);text-align:left;}
+  .cell-correct{background:#edfaf2;color:#145a32;font-weight:500;}
+  .cell-error{background:var(--wrong-bg);color:var(--wrong);font-weight:500;}
+
+  /* DATA TABLE */
+  .data-table{width:100%;border-collapse:collapse;font-size:15px;margin:12px 0;font-family:'DM Sans',sans-serif;}
+  .data-table th{background:var(--accent);color:white;padding:8px 14px;text-align:left;font-weight:500;font-size:13px;}
+  .data-table td{padding:8px 14px;border-bottom:1px solid var(--rule2);color:var(--ink2);}
+  .data-table tr:nth-child(even) td{background:var(--cream);}
+  .data-table .total-row td{font-weight:600;color:var(--ink);background:var(--cream);border-top:2px solid var(--rule);}
+
+  /* SECTION B */
+  .part-block{border:1px solid var(--rule2);border-radius:4px;margin-bottom:16px;overflow:hidden;}
+  .part-head{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--cream);border-bottom:1px solid var(--rule2);}
+  .part-label{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--accent);}
+  .part-body{padding:16px 20px;background:white;}
+  .part-text{font-size:16.5px;color:var(--ink);line-height:1.78;margin-bottom:12px;}
+  .subpart{padding:10px 0 4px;border-top:1px dashed var(--rule2);margin-top:10px;}
+  .subpart:first-of-type{border-top:none;margin-top:0;}
+  .subpart-label{font-family:'DM Mono',monospace;font-size:12px;color:var(--gold);margin-bottom:6px;font-weight:500;}
+  .subpart-text{font-size:16.5px;color:var(--ink);line-height:1.75;}
+
+  /* KEY FORMULA STRIP */
+  .key-formula{display:inline-block;font-family:'DM Mono',monospace;font-size:13.5px;background:var(--hi);color:var(--accent);border:1px solid var(--rule2);padding:3px 10px;border-radius:3px;margin:2px 3px;}
+
+  /* MISC */
+  .divider{border:none;border-top:1px solid var(--rule2);margin:36px 0;}
+  .final-score{display:none;text-align:center;padding:36px;background:white;border:2px solid var(--rule2);border-radius:6px;margin-top:32px;}
+  .final-score.visible{display:block;}
+  .score-number{font-size:58px;font-weight:600;color:var(--accent);line-height:1;margin-bottom:6px;}
+  .score-label{font-size:18px;color:var(--ink3);font-style:italic;}
+  ul.body-list{margin:10px 0 10px 24px;}
+  ul.body-list li{font-size:16.5px;line-height:2.0;}
+
+  /* HYPOTHESIS NOTATION */
+  .hyp-box{display:inline-block;background:var(--hi);border:1px solid var(--rule2);border-radius:4px;padding:8px 18px;font-family:'DM Mono',monospace;font-size:15px;color:var(--accent);margin:6px 4px;}
+  .step-badge{display:inline-block;background:var(--accent);color:white;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:2px 9px;border-radius:12px;margin-right:6px;letter-spacing:.04em;vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<!-- STICKY PROGRESS -->
+<div class="prog-wrap">
+  <span class="lec-badge">Lecture 8</span>
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+  <span class="score-disp" id="scorDisp">0 / 6 answered</span>
+  <button class="btn btn-reset" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="exam-hdr">
+    <div class="hdr-grid">
+      <div>
+        <div class="uni-name">University of Bath — Department of Economics</div>
+        <div class="exam-title">ES12010: Statistics for Economics</div>
+        <div class="exam-sub">Lecture 8 Practice Exam — Hypothesis Testing: Single &amp; Two Populations</div>
+      </div>
+      <div class="exam-meta">
+        <div style="background:var(--accent);color:white;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;padding:3px 12px;border-radius:2px;margin-bottom:6px;display:inline-block;">Practice Paper</div>
+        <div>Suggested time: 2 hours</div>
+        <div>Total marks: 100</div>
+        <div>Statistical tables provided</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instruct">
+    <p><strong>Instructions:</strong> Answer all 6 questions in Section A (50 marks) and any ONE question in Section B (50 marks).</p>
+    <p>Section A: Select ONE answer per question. Each carries <strong>5 marks</strong> — 2 for the correct option, 3 for a clear written explanation.</p>
+    <p>Section B: Show all working. State hypotheses, calculate test statistics, compare with critical values, and state conclusions in plain language. Round to two decimal places.</p>
+    <p style="color:var(--accent);font-style:italic;">Interactive: click an option to select, "Check Answer" for feedback, "Show worked explanation" for the full mark scheme.</p>
+  </div>
+
+  <!-- KEY FORMULAE -->
+  <div style="background:white;border:1px solid var(--rule2);border-radius:4px;padding:14px 20px;margin-bottom:36px;">
+    <div style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;">Key Formulae — Lecture 8</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:13.5px;margin-bottom:8px;">
+      <span class="key-formula">Z = (X̄−μ₀)/(σ/√n)</span>
+      <span class="key-formula">t = (X̄−μ₀)/(s/√n), d.f.=n−1</span>
+      <span class="key-formula">Z = (p̂−P₀)/√[P₀(1−P₀)/n]</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:13.5px;">
+      <span class="key-formula">s²_p = [(n₁−1)s₁²+(n₂−1)s₂²]/(n₁+n₂−2)</span>
+      <span class="key-formula">t = (X̄₁−X̄₂)/√(s²_p/n₁+s²_p/n₂), d.f.=n₁+n₂−2</span>
+      <span class="key-formula">p̂₀ = (n₁p̂₁+n₂p̂₂)/(n₁+n₂)</span>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION A ═══ -->
+  <div class="sec-hdr">
+    <span class="sec-tab">Section A</span>
+    <span class="sec-desc">Multiple-choice — answer all 6 questions</span>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q1</span>
+      <span style="flex:1">The null and alternative hypothesis</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">Which of the following statements correctly describes the null hypothesis H₀?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Null &amp; Alternative Hypotheses (Slides 4–5, Notes pp.9–10)</small>
+      </div>
+      <ul class="options" id="opts1">
+        <li onclick="selectOpt(1,'A')"><span class="opt-letter">A.</span>It is the hypothesis the researcher is trying to support and is generally rejected by the data.</li>
+        <li onclick="selectOpt(1,'B')"><span class="opt-letter">B.</span>It always contains a "≠" sign and defines the range of values under investigation.</li>
+        <li onclick="selectOpt(1,'C')"><span class="opt-letter">C.</span>It states the assumption to be tested, always contains an "=", "≤", or "≥" sign, and is upheld unless compelling evidence contradicts it.</li>
+        <li onclick="selectOpt(1,'D')"><span class="opt-letter">D.</span>It is accepted with certainty when the test statistic falls inside the rejection region.</li>
+        <li onclick="selectOpt(1,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(1,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSol('sol1')">Show worked explanation</button>
+      </div>
+      <div class="sol-block" id="sol1">
+        <div class="sol-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="sol-step"><strong>2 marks — Correct option: C</strong></div>
+        <div class="sol-step"><strong>3 marks — Explanation:</strong> The null hypothesis H₀ has three defining features:</div>
+        <div class="sol-step">1. It is the <em>status quo</em> assumption — the default position upheld unless strong evidence against it is found. By analogy, it is "innocent until proven guilty."</div>
+        <div class="sol-step">2. It always contains an equality sign: "=", "≤", or "≥". It can never contain "≠", "&lt;", or "&gt;" — those belong to the alternative hypothesis H₁.</div>
+        <div class="sol-step">3. It is always a statement about a <em>population parameter</em> (μ, P, σ²), never about a sample statistic.</div>
+        <div class="sol-step">Why the others fail: Option A describes H₁, not H₀. Option B describes H₁ (which uses ≠). Option D is wrong because failing to reject H₀ does not mean accepting it as certainly true — the test may simply lack power to detect a false H₀.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> A very common error is writing H₀ with a sample mean (e.g. H₀: X̄ = 50) rather than a population parameter (H₀: μ = 50). This is always incorrect — hypotheses are about populations, tested using sample evidence.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q2</span>
+      <span style="flex:1">Type I and Type II errors</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A government agency tests H₀: μ ≥ £12,500 (district is not eligible for funding) vs H₁: μ &lt; £12,500 (district is eligible). A Type I error in this context would be:<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Type I &amp; Type II Errors (Notes pp.3–5, 13–14)</small>
+      </div>
+      <ul class="options" id="opts2">
+        <li onclick="selectOpt(2,'A')"><span class="opt-letter">A.</span>Failing to fund a district that is genuinely eligible (μ &lt; £12,500).</li>
+        <li onclick="selectOpt(2,'B')"><span class="opt-letter">B.</span>Funding a district that is genuinely ineligible (μ ≥ £12,500) — rejecting a true H₀.</li>
+        <li onclick="selectOpt(2,'C')"><span class="opt-letter">C.</span>Correctly funding all eligible districts.</li>
+        <li onclick="selectOpt(2,'D')"><span class="opt-letter">D.</span>Correctly not funding any ineligible district.</li>
+        <li onclick="selectOpt(2,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(2,'B')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSol('sol2')">Show worked explanation</button>
+      </div>
+      <div class="sol-block" id="sol2">
+        <div class="sol-title">✓ Correct Answer: B — Mark Scheme</div>
+        <div class="sol-step"><strong>2 marks — Correct option: B</strong></div>
+        <div class="sol-step"><strong>3 marks — Explanation:</strong> Using the standard error-type matrix:</div>
+        <table class="decision-table" style="margin:10px 0;">
+          <thead><tr><th>Decision</th><th>H₀ True (μ ≥ 12,500)</th><th>H₀ False (μ &lt; 12,500)</th></tr></thead>
+          <tbody>
+            <tr><td class="row-head">Fail to reject H₀ (don't fund)</td><td class="cell-correct">Correct (1−α)</td><td class="cell-error">Type II error (β)</td></tr>
+            <tr><td class="row-head">Reject H₀ (fund district)</td><td class="cell-error">Type I error (α)</td><td class="cell-correct">Correct (1−β) = Power</td></tr>
+          </tbody>
+        </table>
+        <div class="sol-step"><strong>Type I error:</strong> Rejecting H₀ when H₀ is <em>true</em> — funding an ineligible district (μ ≥ 12,500). This is the error the agency identified as "more costly" in the lecture example, which is why the significance level α controls its probability.</div>
+        <div class="sol-step"><strong>Type II error:</strong> Failing to reject H₀ when H₀ is <em>false</em> — not funding a genuinely eligible district (μ &lt; 12,500). Its probability is β; the test's power = 1 − β.</div>
+        <div class="sol-step">Option A describes a Type II error. Options C and D are correct decisions, not errors.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Always link Type I and II errors to the specific context of the question. In the exam you MUST reproduce the 2×2 decision table and identify which cell corresponds to each error type. α = P(Type I) is set by the researcher; β = P(Type II) cannot be directly controlled without additional information.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q3</span>
+      <span style="flex:1">One-sample Z-test (population variance known)</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A production manager claims a new manufacturing process produces more than 80 units/hour (population σ = 8 units). A random sample of n = 25 hours gives X̄ = 83 units. Testing H₀: μ ≤ 80 vs H₁: μ &gt; 80 at α = 0.05. What is the correct conclusion?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Z-test, population variance known (Notes pp.15–16)</small>
+      </div>
+      <ul class="options" id="opts3">
+        <li onclick="selectOpt(3,'A')"><span class="opt-letter">A.</span>Fail to reject H₀; Z = 1.875, which is less than the critical value Z = 1.96.</li>
+        <li onclick="selectOpt(3,'B')"><span class="opt-letter">B.</span>Reject H₀; Z = 1.875 &gt; critical value Z = 1.645. Strong evidence the new process improves productivity.</li>
+        <li onclick="selectOpt(3,'C')"><span class="opt-letter">C.</span>Reject H₀; Z = 1.875 &gt; critical value Z = 2.326. Very strong evidence.</li>
+        <li onclick="selectOpt(3,'D')"><span class="opt-letter">D.</span>Fail to reject H₀; Z = 0.375, which is less than Z = 1.645.</li>
+        <li onclick="selectOpt(3,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(3,'B')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSol('sol3')">Show worked explanation</button>
+      </div>
+      <div class="sol-block" id="sol3">
+        <div class="sol-title">✓ Correct Answer: B — Mark Scheme</div>
+        <div class="sol-step"><strong>2 marks — Correct option: B</strong></div>
+        <div class="sol-step"><strong>3 marks — Step-by-step:</strong></div>
+        <span class="math-block">Step 1 — Hypotheses:
+H₀: μ ≤ 80  (no improvement)
+H₁: μ > 80  (new process is better) → Upper-tail test
+
+Step 2 — Standard error:
+σ_X̄ = σ/√n = 8/√25 = 8/5 = 1.6
+
+Step 3 — Test statistic:
+Z = (X̄ − μ₀)/σ_X̄ = (83 − 80)/1.6 = 3/1.6 = 1.875
+
+Step 4 — Critical value (α = 0.05, upper-tail):
+Z_(0.05) = 1.645
+
+Step 5 — Decision:
+Z = 1.875 > 1.645  →  Reject H₀ ✓
+
+p-value = P(Z > 1.875) = 1 − Φ(1.875) ≈ 0.030</span>
+        <div class="sol-step">Option A uses Z = 1.96 — this is the two-tailed critical value (α/2 = 0.025), not the one-tailed value. For an upper-tail test at 5%, the critical value is 1.645. Option C uses 2.326 — this is Z for α = 0.01 (one-tail).</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Distinguish between one-tailed and two-tailed critical values. For α = 0.05: one-tailed Z = 1.645; two-tailed Z = 1.96. For α = 0.01: one-tailed Z = 2.326; two-tailed Z = 2.576. Mixing these up is one of the most penalised errors.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q4</span>
+      <span style="flex:1">The p-value — interpretation and calculation</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">An upper-tail Z-test yields a test statistic of Z = 2.15. The p-value for this test is closest to:<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: p-value (Notes pp.15, Slides 14–15)</small>
+      </div>
+      <ul class="options" id="opts4">
+        <li onclick="selectOpt(4,'A')"><span class="opt-letter">A.</span>0.9842</li>
+        <li onclick="selectOpt(4,'B')"><span class="opt-letter">B.</span>0.0316</li>
+        <li onclick="selectOpt(4,'C')"><span class="opt-letter">C.</span>0.0158</li>
+        <li onclick="selectOpt(4,'D')"><span class="opt-letter">D.</span>0.5000</li>
+        <li onclick="selectOpt(4,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(4,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSol('sol4')">Show worked explanation</button>
+      </div>
+      <div class="sol-block" id="sol4">
+        <div class="sol-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="sol-step"><strong>2 marks — Correct option: C (0.0158)</strong></div>
+        <div class="sol-step"><strong>3 marks — Explanation:</strong> The p-value is the <em>probability of observing a test statistic as extreme as or more extreme than the one obtained, assuming H₀ is true</em>. It is the smallest significance level at which H₀ would be rejected.</div>
+        <span class="math-block">Upper-tail test → p-value = P(Z > observed Z)
+p-value = P(Z > 2.15) = 1 − Φ(2.15)
+        = 1 − 0.9842
+        = 0.0158</span>
+        <div class="sol-step"><strong>Decision rule using p-value:</strong> Reject H₀ if p-value &lt; α.</div>
+        <div class="sol-step">• At α = 0.05: 0.0158 &lt; 0.05 → Reject H₀</div>
+        <div class="sol-step">• At α = 0.01: 0.0158 &gt; 0.01 → Fail to reject H₀</div>
+        <div class="sol-step">Option A (0.9842) = Φ(2.15) — the cumulative probability, not the tail area. Option B (0.0316) = 2 × 0.0158 — this would be correct for a <em>two-tailed</em> test, not an upper-tail test.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> For upper-tail: p-value = 1 − Φ(Z). For lower-tail: p-value = Φ(Z). For two-tailed: p-value = 2 × (1 − Φ(|Z|)). Always identify the tail direction from the alternative hypothesis H₁ before computing the p-value.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q5</span>
+      <span style="flex:1">One-sample t-test (population variance unknown)</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A sample of n = 20 observations gives X̄ = 48.5 and s = 6.2. Test H₀: μ = 50 vs H₁: μ ≠ 50 at α = 0.05. What is the correct conclusion?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: t-test, population variance unknown (Notes pp.17–19)</small>
+      </div>
+      <ul class="options" id="opts5">
+        <li onclick="selectOpt(5,'A')"><span class="opt-letter">A.</span>Reject H₀; |t| = 1.082, which exceeds the critical value t = 1.729.</li>
+        <li onclick="selectOpt(5,'B')"><span class="opt-letter">B.</span>Reject H₀; |t| = 1.082, which exceeds the critical value t = 2.093.</li>
+        <li onclick="selectOpt(5,'C')"><span class="opt-letter">C.</span>Fail to reject H₀; |t| = 1.082 is less than the critical value t_(19, 0.025) = 2.093.</li>
+        <li onclick="selectOpt(5,'D')"><span class="opt-letter">D.</span>Fail to reject H₀; t = 2.093, which is less than the critical value t = 2.576.</li>
+        <li onclick="selectOpt(5,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(5,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSol('sol5')">Show worked explanation</button>
+      </div>
+      <div class="sol-block" id="sol5">
+        <div class="sol-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="sol-step"><strong>2 marks — Correct option: C</strong></div>
+        <div class="sol-step"><strong>3 marks — Step-by-step:</strong></div>
+        <span class="math-block">Step 1 — Hypotheses:
+H₀: μ = 50,  H₁: μ ≠ 50  →  Two-tailed test
+
+Step 2 — Use t-test (σ unknown, n = 20 ≤ 25):
+SE = s/√n = 6.2/√20 = 6.2/4.4721 = 1.3866
+
+Step 3 — Test statistic:
+t = (X̄ − μ₀)/SE = (48.5 − 50)/1.3866 = −1.5/1.3866 = −1.082
+
+Step 4 — Critical value (two-tailed, α = 0.05, d.f. = n−1 = 19):
+t_(19, 0.025) = 2.093
+
+Step 5 — Decision:
+|t| = 1.082 < 2.093  →  Fail to reject H₀
+
+Conclusion: Insufficient evidence to conclude μ ≠ 50.</span>
+        <div class="sol-step">Option A uses t = 1.729 — this is the one-tailed critical value t_(19,0.05), not the two-tailed t_(19,0.025). Since H₁: μ ≠ 50 is two-tailed, we must use α/2 = 0.025 per tail.</div>
+        <div class="sol-step">Note also: the sample mean 48.5 differs from 50, but this alone is not proof the population mean differs — random variation always causes X̄ ≠ μ. The test asks whether the difference is <em>statistically significant</em>.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Use the t-distribution (not Z) when σ is unknown. With n ≤ 100, always use t. For a two-tailed test at α, compare |t| with t_(n−1, α/2) — not t_(n−1, α).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q6</span>
+      <span style="flex:1">Pooled variance — two independent samples</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">Two independent samples are drawn from normally distributed populations with equal but unknown variances. Sample 1: n₁ = 15, s₁² = 120. Sample 2: n₂ = 18, s₂² = 95. What is the pooled variance estimate s²_p?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Pooled variance estimator (Notes pp.25–26)</small>
+      </div>
+      <ul class="options" id="opts6">
+        <li onclick="selectOpt(6,'A')"><span class="opt-letter">A.</span>107.50</li>
+        <li onclick="selectOpt(6,'B')"><span class="opt-letter">B.</span>104.76</li>
+        <li onclick="selectOpt(6,'C')"><span class="opt-letter">C.</span>106.29</li>
+        <li onclick="selectOpt(6,'D')"><span class="opt-letter">D.</span>110.00</li>
+        <li onclick="selectOpt(6,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(6,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSol('sol6')">Show worked explanation</button>
+      </div>
+      <div class="sol-block" id="sol6">
+        <div class="sol-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="sol-step"><strong>2 marks — Correct option: C (106.29)</strong></div>
+        <div class="sol-step"><strong>3 marks — Explanation:</strong> The pooled variance weights each sample variance by its degrees of freedom (n−1), then divides by total degrees of freedom:</div>
+        <span class="math-block">s²_p = [(n₁−1)s₁² + (n₂−1)s₂²] / (n₁ + n₂ − 2)
+     = [(15−1)×120 + (18−1)×95] / (15 + 18 − 2)
+     = [14×120 + 17×95] / 31
+     = [1680 + 1615] / 31
+     = 3295 / 31
+     = 106.29</span>
+        <div class="sol-step">Option A (107.50) = simple average of 120 and 95 = 215/2 — this ignores the different sample sizes. Option D (110) uses n rather than (n−1) in the numerators. The pooled estimate gives more weight to the larger sample — here s₂² carries 17/31 weight, s₁² carries 14/31.</div>
+        <div class="sol-step">The pooled test statistic uses d.f. = n₁ + n₂ − 2 = 15 + 18 − 2 = 31.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> The pooled variance formula is one of the most heavily tested calculations. Always use (n−1) in the numerator, not n. The total degrees of freedom in the denominator must match: (n₁−1) + (n₂−1) = n₁+n₂−2.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="final-score" id="finalScore">
+    <div class="score-number" id="finalScoreNum">—</div>
+    <div class="score-label">Section A MCQ score (options only)</div>
+    <p style="margin-top:16px;font-size:15px;color:var(--ink3);">Add 3 marks per question for well-written explanations. Maximum for Section A = 30 marks.</p>
+  </div>
+
+  <!-- ═══ SECTION B ═══ -->
+  <hr class="divider">
+  <div class="sec-hdr">
+    <span class="sec-tab">Section B</span>
+    <span class="sec-desc">Long-answer questions — answer any ONE of the two questions below</span>
+  </div>
+
+  <!-- ══ B Q7 ══ -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q7</span>
+      <span style="flex:1">Single-Population Hypothesis Tests — Mean &amp; Proportion</span>
+      <span class="q-marks">50 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text"><strong>You must show all working.</strong> State hypotheses clearly, calculate test statistics, state critical values with degrees of freedom, and draw conclusions in plain language.</div>
+
+      <!-- B7a -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(a) Hypothesis Testing Framework</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">Describe the complete hypothesis testing procedure. In your answer you must explain:</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [5 marks]</div>
+            <div class="subpart-text">The roles of H₀ and H₁, using the analogy of a criminal jury trial. Why is H₀ the hypothesis that requires strong evidence to reject?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">The meaning and trade-off between Type I error (probability α) and Type II error (probability β). What is the "power" of a test and why does it matter?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [5 marks]</div>
+            <div class="subpart-text">The concept of the p-value and why it is more informative than simply reporting "reject" or "fail to reject" at a fixed α.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSol('solB7a')">Show model answer</button>
+          </div>
+          <div class="sol-block" id="solB7a">
+            <div class="sol-title">✓ Model Answer — Part (a)</div>
+            <div class="sol-step"><strong>(i) Roles of H₀ and H₁ — jury analogy:</strong></div>
+            <div class="sol-step">Hypothesis testing mirrors a criminal trial: H₀ represents the presumption of innocence — it is the default position upheld unless evidence against it is overwhelming. H₁ represents the prosecution's claim. Just as a jury only convicts on compelling evidence, we only reject H₀ when the sample data makes the null hypothesis sufficiently implausible. H₀ requires strong evidence to reject because wrongly rejecting it (convicting an innocent person, or making a costly policy decision without justification) is considered the more serious error.</div>
+            <div class="sol-step"><strong>(ii) Type I / II errors and power:</strong></div>
+            <table class="decision-table" style="margin:8px 0 12px;">
+              <thead><tr><th>Decision</th><th>H₀ True</th><th>H₀ False</th></tr></thead>
+              <tbody>
+                <tr><td class="row-head">Fail to reject H₀</td><td class="cell-correct">Correct (1−α)</td><td class="cell-error">Type II error (β)</td></tr>
+                <tr><td class="row-head">Reject H₀</td><td class="cell-error">Type I error (α)</td><td class="cell-correct">Correct = Power (1−β)</td></tr>
+              </tbody>
+            </table>
+            <div class="sol-step">α = P(Type I error) = P(rejecting H₀ when H₀ is true) — set by the researcher at the outset (typically 0.01, 0.05, or 0.10). β = P(Type II error) = P(failing to reject H₀ when H₀ is false). The <em>power</em> = 1 − β is the probability of correctly detecting a false null hypothesis. Reducing α increases the critical value, making it harder to reject H₀ — this raises β and reduces power. Larger sample sizes are the main tool for simultaneously reducing both error types.</div>
+            <div class="sol-step"><strong>(iii) p-value:</strong></div>
+            <div class="sol-step">The p-value is the <em>smallest significance level</em> at which H₀ would be rejected given the observed data — equivalently, the probability of obtaining a test statistic as extreme as the one observed, assuming H₀ is true. It is more informative than a binary reject/fail-to-reject conclusion because it quantifies the <em>strength</em> of evidence against H₀: a p-value of 0.001 provides much stronger evidence than 0.049, even though both lead to rejection at α = 0.05. Decision rule: Reject H₀ if p-value &lt; α.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) H₀ definition 2 + jury analogy 2 + H₁ contrast 1 = 5. (ii) Each error type 1.5 + trade-off 1 + power 1 = 5. (iii) p-value definition 2 + why more informative 2 + rule 1 = 5.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B7b -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(b) One-Sample t-test (Variance Unknown)</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">The average nightly cost of a hotel room in Paris is claimed to be €168. A random sample of 25 hotels gives X̄ = €172.50 and sample standard deviation s = €15.40. Population variance is unknown.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [3 marks]</div>
+            <div class="subpart-text">State the null and alternative hypothesis for a two-tailed test. Justify why a t-distribution (rather than Z) is used here.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [8 marks]</div>
+            <div class="subpart-text">Compute the test statistic, state the critical value with degrees of freedom, and state your conclusion at α = 0.05. Then compute the approximate p-value and interpret it.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [4 marks]</div>
+            <div class="subpart-text">A colleague argues: "The sample mean €172.50 is clearly different from €168, so we must reject H₀." Explain why this reasoning is flawed.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSol('solB7b')">Show worked solution</button>
+          </div>
+          <div class="sol-block" id="solB7b">
+            <div class="sol-title">✓ Worked Solution — Part (b)</div>
+            <div class="sol-step"><strong>(i) Hypotheses and distribution choice:</strong></div>
+            <span class="math-block">H₀: μ = 168  (mean cost equals €168)
+H₁: μ ≠ 168  (mean cost differs from €168)  → Two-tailed test</span>
+            <div class="sol-step">We use the t-distribution because the population standard deviation σ is unknown (we have only s = 15.40 from the sample). With σ unknown and n ≤ 100, the t-distribution with n−1 degrees of freedom is required. It accounts for the additional uncertainty introduced by estimating σ from the sample — the t-distribution has heavier tails than the normal distribution.</div>
+            <div class="sol-step"><strong>(ii) Test statistic and conclusion:</strong></div>
+            <span class="math-block">SE = s/√n = 15.40/√25 = 15.40/5 = 3.08
+
+t = (X̄ − μ₀)/SE = (172.50 − 168)/3.08 = 4.50/3.08 = 1.46
+
+Degrees of freedom: d.f. = n − 1 = 24
+Critical value (two-tailed, α = 0.05): t_(24, 0.025) = 2.064
+
+Decision: |t| = 1.46 < 2.064  →  Fail to reject H₀
+
+p-value (two-tailed): p ≈ 2 × P(t_(24) > 1.46) ≈ 2 × 0.079 ≈ 0.158
+
+Since p = 0.158 > 0.05, we fail to reject H₀.</span>
+            <div class="sol-step"><strong>Conclusion:</strong> There is insufficient evidence at the 5% significance level to conclude that the true mean hotel cost in Paris differs from €168. The observed difference of €4.50 could plausibly be due to random sampling variation.</div>
+            <div class="sol-step"><strong>(iii) Why the colleague is wrong:</strong> Random sampling always produces X̄ ≠ μ — we would almost never observe X̄ = 168.00 exactly, even if the true population mean is €168. The relevant question is not <em>whether</em> X̄ differs from μ₀, but <em>how unlikely</em> such a difference is under H₀. The t-test standardises this difference relative to the sampling variability (SE). With SE = 3.08 and observed difference of 4.50, the deviation is only 1.46 standard errors — well within the range of normal sampling fluctuation. Statistical significance, not mere numerical difference, drives the decision.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Hypotheses 2 + t-rationale 1 = 3. (ii) SE 1 + t 2 + CV with d.f. 2 + decision 1 + p-value 2 = 8. (iii) Explanation 4.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B7c -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(c) One-Sample Z-test: Annual Returns</span><span class="q-marks">10 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">The mean annual average rate of return for stocks in the <em>smallest</em> decile of the US market over 33 years (1990–2022) is X̄ = 13.30%, with sample standard deviation s = 24.91. Test the hypothesis that the true mean annual rate of return is 10%, using a one-sided alternative.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [5 marks]</div>
+            <div class="subpart-text">State the hypotheses. Compute the test statistic and state the critical value at α = 0.05. Is there sufficient evidence that the mean return exceeds 10%?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">The mean return for the <em>largest</em> decile is X̄ = 11.87% with s = 18.23, also over 33 years. Without performing the full test, explain why the evidence against H₀: μ = 10 for the largest decile is likely weaker than for the smallest decile, even though 11.87% is closer to 10%.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSol('solB7c')">Show worked solution</button>
+          </div>
+          <div class="sol-block" id="solB7c">
+            <div class="sol-title">✓ Worked Solution — Part (c)</div>
+            <div class="sol-step"><strong>(i) Smallest decile test:</strong></div>
+            <span class="math-block">H₀: μ ≤ 10%     (mean return ≤ 10%)
+H₁: μ > 10%     (mean return exceeds 10%) → Upper-tail
+
+SE = s/√n = 24.91/√33 = 24.91/5.745 = 4.336
+
+t = (X̄ − μ₀)/SE = (13.30 − 10)/4.336 = 3.30/4.336 = 0.761
+
+d.f. = 32,  Critical value t_(32, 0.05) = 1.694
+
+Decision: t = 0.761 < 1.694  →  Fail to reject H₀</span>
+            <div class="sol-step">Despite a sample mean of 13.30% — more than 3 percentage points above 10% — there is <strong>insufficient evidence</strong> at the 5% level to conclude the true mean return exceeds 10%. The very high variability (s = 24.91%) produces a large SE, swamping the observed excess return.</div>
+            <div class="sol-step"><strong>(ii) Comparison between deciles:</strong></div>
+            <span class="math-block">Largest decile: X̄ = 11.87, s = 18.23, n = 33
+SE = 18.23/√33 = 3.172
+t = (11.87 − 10)/3.172 = 1.87/3.172 = 0.590
+
+Smallest decile: t = 0.761
+Largest decile:  t = 0.590</span>
+            <div class="sol-step">The largest-decile test statistic (0.590) is actually <em>smaller</em> than the smallest-decile one (0.761), even though 11.87 − 10 = 1.87 &lt; 13.30 − 10 = 3.30. This illustrates a crucial point: the test statistic measures the excess return <em>relative to the sampling variability</em> (SE). The largest decile has lower variance (s = 18.23 vs 24.91), but the smaller numerator more than offsets this. The strength of evidence against H₀ depends on both the magnitude of departure from μ₀ <em>and</em> the precision of the estimate.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Hypotheses 1 + t 2 + CV + decision 2 = 5. (ii) Calculate t for largest 2 + conceptual explanation comparing both 3 = 5.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B7d -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(d) Test of Population Proportion</span><span class="q-marks">10 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A random sample of 50 university admissions officers was asked about their expectations in application interviews. Of these, 28 agreed that the interviewer usually expects the interviewee to have volunteer experience.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [6 marks]</div>
+            <div class="subpart-text">Test the null hypothesis that the population proportion P = 0.5, against the alternative that it is greater than 0.5, at the 5% significance level. State the hypotheses, compute the test statistic, critical value, and conclusion.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [4 marks]</div>
+            <div class="subpart-text">Compute the p-value for this test and interpret it. At what significance level would H₀ just be rejected?</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSol('solB7d')">Show worked solution</button>
+          </div>
+          <div class="sol-block" id="solB7d">
+            <div class="sol-title">✓ Worked Solution — Part (d)</div>
+            <div class="sol-step"><strong>(i) Proportion test:</strong></div>
+            <span class="math-block">H₀: P ≤ 0.5    H₁: P > 0.5   →  Upper-tail test
+
+Check: n·P₀·(1−P₀) = 50 × 0.5 × 0.5 = 12.5 > 5  ✓
+
+p̂ = 28/50 = 0.56
+
+Z = (p̂ − P₀) / √[P₀(1−P₀)/n]
+  = (0.56 − 0.50) / √[0.5 × 0.5 / 50]
+  = 0.06 / √0.005
+  = 0.06 / 0.07071
+  = 0.849
+
+Critical value (α = 0.05, upper-tail): Z_(0.05) = 1.645
+
+Decision: Z = 0.849 < 1.645  →  Fail to reject H₀</span>
+            <div class="sol-step"><strong>Conclusion:</strong> There is insufficient evidence at the 5% level to conclude that more than half of all admissions officers expect volunteer experience. While the sample proportion (56%) exceeds 50%, the difference is not statistically significant.</div>
+            <div class="sol-step"><strong>(ii) p-value:</strong></div>
+            <span class="math-block">p-value = P(Z > 0.849) = 1 − Φ(0.849)
+        = 1 − Φ(0.85)
+        = 1 − 0.8023
+        = 0.1977</span>
+            <div class="sol-step">The p-value of 0.1977 means: if H₀ were true (P = 0.5), there is a 19.8% probability of observing a sample proportion as extreme as 0.56 or higher, purely by chance. H₀ would only be rejected if the researcher was willing to tolerate a Type I error probability of at least 19.8% — far above conventional thresholds. This is the smallest α at which H₀ would just be rejected with this data.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Hypotheses 1 + condition check 1 + Z calculation 2 + CV + decision 2 = 6. (ii) p-value 2 + interpretation 2 = 4.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ B Q8 ══ -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q8</span>
+      <span style="flex:1">Two-Population Tests — Means (Unknown Equal Variances) &amp; Proportions</span>
+      <span class="q-marks">50 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text"><strong>You must show all working.</strong> State hypotheses, calculate pooled variances and test statistics, state critical values, and draw conclusions in plain language with economic interpretation.</div>
+
+      <!-- B8a -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(a) Significance Level &amp; Decision-Making</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">How does the choice of significance level α affect the decision to reject or fail to reject the null hypothesis in hypothesis testing? In your answer, discuss:</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [7 marks]</div>
+            <div class="subpart-text">The relationship between α, the critical region, and the probability of a Type I error. Why do economists most commonly use α = 0.05 rather than α = 0.5 or α = 0.001?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [8 marks]</div>
+            <div class="subpart-text">A policymaker is deciding whether to reform company insolvency laws to match a foreign country's model. The reform would assist new companies but reduce bank profitability. A hypothesis test at α = 0.05 fails to reject H₀: μ_UK = μ_France. Explain what considerations should influence whether the policymaker uses α = 0.05, α = 0.01, or α = 0.10 for this decision, distinguishing between statistical significance and economic significance.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSol('solB8a')">Show model answer</button>
+          </div>
+          <div class="sol-block" id="solB8a">
+            <div class="sol-title">✓ Model Answer — Part (a)</div>
+            <div class="sol-step"><strong>(i) α and the critical region:</strong></div>
+            <div class="sol-step">The significance level α defines the critical region — the set of test-statistic values that lead to rejection of H₀. A smaller α pushes the critical value further into the tail, making it harder to reject H₀ and thus reducing the probability of a Type I error (wrongly rejecting a true H₀). Conversely, a smaller α increases the probability of a Type II error (β rises) — failing to detect a genuine effect.</div>
+            <span class="math-block">α = 0.05, upper-tail:  reject if Z > 1.645
+α = 0.01, upper-tail:  reject if Z > 2.326
+α = 0.10, upper-tail:  reject if Z > 1.282</span>
+            <div class="sol-step">α = 0.05 is conventional because it balances the two error types reasonably well for most applied contexts — it is neither so large that trivial differences are declared significant (α = 0.5) nor so small that even important effects go undetected (α = 0.001). It originated with R.A. Fisher as a practical threshold and has become the accepted standard in social sciences, though it should not be treated as an absolute boundary.</div>
+            <div class="sol-step"><strong>(ii) Policy decision — statistical vs economic significance:</strong></div>
+            <div class="sol-step"><em>Statistical significance</em> tells us whether an observed difference is unlikely to be due to chance. <em>Economic significance</em> asks whether the difference is large enough to matter in practice.</div>
+            <div class="sol-step">For this specific decision: if the reform gives greater assistance to new companies but harms bank profitability, there are two costly errors: (1) reforming when it isn't needed — costs banks (Type I, if H₀ is "no difference"); (2) not reforming when it would help — costs struggling companies (Type II).</div>
+            <div class="sol-step">If harm to banks is the greater concern, the policymaker should use a lower α (e.g., 0.01) to require stronger evidence before acting. If failing to help struggling companies is worse, a higher α (e.g., 0.10) is appropriate — reducing the burden of proof. The choice of α is fundamentally a value judgment about the relative costs of the two error types, not a purely statistical decision. A fail-to-reject result at α = 0.05 does not mean the populations are identical — only that the evidence is insufficient at this threshold.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) α and critical region 3 + formula/values 2 + why 0.05 2 = 7. (ii) Error types in context 2 + statistical vs economic significance 3 + α choice rationale 3 = 8.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B8b -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(b) Two-Sample t-test: Unknown but Equal Variances</span><span class="q-marks">25 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">From a sample of 50 UK companies it is found that the mean duration (time until bankruptcy) of new companies is 30 months, with sample variance of 200. From a sample of 40 French companies, the mean duration is 34 months, with sample variance 180. Assume population variances are unknown and equal.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [12 marks]</div>
+            <div class="subpart-text">Test at the 5% significance level the hypothesis that the two countries have equal mean company duration. State the hypotheses clearly, compute the pooled variance, test statistic, critical value, and state your conclusion.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [8 marks]</div>
+            <div class="subpart-text">Construct a 95% confidence interval for the difference in mean company duration between the two countries. Is the result consistent with your answer to part (i)?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [5 marks]</div>
+            <div class="subpart-text">Suppose these results are the basis for a decision about whether the UK should reform its company laws to match France's model. Comment specifically on whether the choice of α = 0.05 is appropriate for this policy decision.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSol('solB8b')">Show worked solution</button>
+          </div>
+          <div class="sol-block" id="solB8b">
+            <div class="sol-title">✓ Worked Solution — Part (b)</div>
+            <div class="sol-step"><strong>(i) Two-sample pooled t-test:</strong></div>
+            <span class="math-block">H₀: μ_UK − μ_France = 0  (equal mean durations)
+H₁: μ_UK − μ_France ≠ 0  (durations differ)  →  Two-tailed test
+
+Given: n_UK = 50, X̄_UK = 30, s²_UK = 200
+       n_FR = 40, X̄_FR = 34, s²_FR = 180
+
+Step 1 — Pooled variance:
+s²_p = [(n_UK−1)s²_UK + (n_FR−1)s²_FR] / (n_UK + n_FR − 2)
+     = [(50−1)×200 + (40−1)×180] / (50 + 40 − 2)
+     = [49×200 + 39×180] / 88
+     = [9800 + 7020] / 88
+     = 16820 / 88
+     = 191.14
+
+Step 2 — Standard error:
+SE = √(s²_p/n_UK + s²_p/n_FR)
+   = √(191.14/50 + 191.14/40)
+   = √(3.823 + 4.779)
+   = √8.601
+   = 2.933
+
+Step 3 — Test statistic:
+t = (X̄_UK − X̄_FR) / SE = (30 − 34) / 2.933 = −4 / 2.933 = −1.36
+
+Step 4 — Critical value:
+d.f. = n_UK + n_FR − 2 = 88
+t_(88, 0.025) ≈ 1.987  (two-tailed α = 0.05)
+
+Step 5 — Decision:
+|t| = 1.36 < 1.987  →  Fail to reject H₀</span>
+            <div class="sol-step"><strong>Conclusion:</strong> At the 5% significance level, there is insufficient evidence to conclude that UK and French companies have different mean durations before bankruptcy. The 4-month difference is not statistically significant given the variability in both samples.</div>
+            <div class="sol-step"><strong>(ii) 95% Confidence interval:</strong></div>
+            <span class="math-block">CI = (X̄_UK − X̄_FR) ± t_(88,0.025) × SE
+   = (30 − 34) ± 1.987 × 2.933
+   = −4 ± 5.83
+   = (−9.83,  1.83)</span>
+            <div class="sol-step">The 95% CI for (μ_UK − μ_France) is (−9.83, 1.83). This interval contains zero, which is consistent with failing to reject H₀: μ_UK − μ_France = 0 at the 5% level. We cannot rule out that the true difference is anywhere from −9.83 months (France better) to +1.83 months (UK better). The interval is wide because the sample sizes, though moderate, face substantial within-country variation.</div>
+            <div class="sol-step"><strong>(iii) Appropriateness of α = 0.05:</strong></div>
+            <div class="sol-step">The reform involves a trade-off: it would help new companies (a social benefit) but reduce bank profitability (a financial cost). This means two errors have asymmetric consequences. A Type I error (reforming when unnecessary) would harm banks. A Type II error (not reforming when it would help) would leave struggling companies unsupported. Since both sides have significant stakeholders, the choice of α = 0.05 is reasonable as a neutral benchmark — but the policymaker might justify α = 0.10 if helping new companies is the priority (lower evidence threshold to reform), or α = 0.01 if protecting bank profitability is paramount. The statistical result alone should not drive the policy: the confidence interval shows the plausible range of the true difference, which encompasses economically significant values of up to nearly 10 months.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Hypotheses 2 + s²_p 3 + SE 2 + t 2 + CV+decision 3 = 12. (ii) Formula 2 + interval 4 + consistency 2 = 8. (iii) Two error types in context 2 + α reasoning 2 + economic significance 1 = 5.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B8c -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(c) Two-Population Proportions Test</span><span class="q-marks">10 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A marketing research firm investigates whether an advertising campaign increased consumer recognition of a new product. Before the campaign, a sample of 270 residents were surveyed and 50 had heard of the product. After the campaign, 203 residents were surveyed and 81 had heard of it.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [7 marks]</div>
+            <div class="subpart-text">Test at α = 0.05 whether recognition increased after the campaign. State your hypotheses, compute the pooled proportion, test statistic, critical value, and conclusion.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [3 marks]</div>
+            <div class="subpart-text">Compute the p-value. On the basis of your results, write a one-paragraph recommendation to the firm's marketing director.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSol('solB8c')">Show worked solution</button>
+          </div>
+          <div class="sol-block" id="solB8c">
+            <div class="sol-title">✓ Worked Solution — Part (c)</div>
+            <div class="sol-step"><strong>(i) Two-proportion test:</strong></div>
+            <span class="math-block">Let P_B = proportion before campaign, P_A = proportion after.
+
+H₀: P_B − P_A ≥ 0  (no increase or decrease in recognition)
+H₁: P_B − P_A < 0  (recognition increased after campaign)
+→ Lower-tail test
+
+Sample proportions:
+p̂_B = 50/270 = 0.185
+p̂_A = 81/203 = 0.399
+
+Pooled proportion:
+p̂₀ = (50 + 81)/(270 + 203) = 131/473 = 0.277
+
+Standard error:
+SE = √[p̂₀(1−p̂₀) × (1/n_B + 1/n_A)]
+   = √[0.277 × 0.723 × (1/270 + 1/203)]
+   = √[0.2002 × (0.003704 + 0.004926)]
+   = √[0.2002 × 0.008630]
+   = √0.001727
+   = 0.04156
+
+Test statistic:
+Z = (p̂_B − p̂_A) / SE = (0.185 − 0.399) / 0.04156
+  = −0.214 / 0.04156
+  = −5.15
+
+Critical value (lower-tail, α = 0.05): −Z_(0.05) = −1.645
+
+Decision: Z = −5.15 < −1.645  →  Reject H₀ ✓</span>
+            <div class="sol-step"><strong>(ii) p-value and recommendation:</strong></div>
+            <span class="math-block">p-value = P(Z < −5.15) ≈ P(Z < −5.15) ≈ 0.000 (essentially zero)</span>
+            <div class="sol-step"><strong>Recommendation:</strong> The statistical evidence is overwhelming. The proportion of consumers who recognised the product increased from 18.5% before the campaign to 39.9% after — a 21.4 percentage-point increase. With a test statistic of Z = −5.15 and a p-value that is effectively zero, we reject with very high confidence the null hypothesis that the campaign had no effect. The advertising campaign produced a statistically and economically significant increase in product recognition. The marketing director should regard the campaign as a clear success and consider whether to continue or expand it.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Hypotheses 1 + p̂ values 1 + pooled proportion 1 + SE 2 + Z + decision 2 = 7. (ii) p-value 1 + recommendation 2 = 3.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+  const answers={},checked={};
+  const correct={1:'C',2:'B',3:'B',4:'C',5:'C',6:'C'};
+
+  function selectOpt(q,letter){
+    if(checked[q])return;
+    document.querySelectorAll('#opts'+q+' li').forEach(o=>o.classList.remove('selected'));
+    const idx=['A','B','C','D','E'].indexOf(letter);
+    if(idx>=0)document.querySelectorAll('#opts'+q+' li')[idx].classList.add('selected');
+    answers[q]=letter;
+  }
+
+  function checkAnswer(q,ans){
+    if(!answers[q]){alert('Please select an answer first.');return;}
+    checked[q]=true;
+    const opts=document.querySelectorAll('#opts'+q+' li');
+    const letters=['A','B','C','D','E'];
+    opts.forEach((o,i)=>{
+      o.classList.remove('selected');
+      if(letters[i]===ans)o.classList.add('correct');
+      else if(letters[i]===answers[q])o.classList.add('wrong');
+      o.style.cursor='default';
+    });
+    updateProgress();
+  }
+
+  function toggleSol(id){
+    const el=document.getElementById(id);
+    if(el)el.classList.toggle('visible');
+  }
+
+  function updateProgress(){
+    const done=Object.keys(checked).length;
+    const score=Object.keys(checked).filter(q=>answers[q]===correct[q]).length;
+    document.getElementById('progFill').style.width=(done/6*100)+'%';
+    document.getElementById('scorDisp').textContent=score+'/'+done+' correct';
+    if(done===6){
+      document.getElementById('finalScore').classList.add('visible');
+      document.getElementById('finalScoreNum').textContent=score+'/6';
+    }
+  }
+
+  function resetAll(){
+    for(const k in answers)delete answers[k];
+    for(const k in checked)delete checked[k];
+    for(let q=1;q<=6;q++){
+      document.querySelectorAll('#opts'+q+' li').forEach(o=>{
+        o.classList.remove('selected','correct','wrong');
+        o.style.cursor='pointer';
+      });
+      const s=document.getElementById('sol'+q);
+      if(s)s.classList.remove('visible');
+    }
+    document.getElementById('progFill').style.width='0%';
+    document.getElementById('scorDisp').textContent='0 / 6 answered';
+    document.getElementById('finalScore').classList.remove('visible');
+  }
+</script>
+</body>
+</html>

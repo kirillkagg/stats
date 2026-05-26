@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 9 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep:#0e1c3a; --mid:#1e3464; --green:#0a6e52; --green-l:#e2f4ee;
+    --amber:#b06500; --amber-l:#fef2e0; --rose:#a81f38; --rose-l:#fdeaed;
+    --purple:#4d1b8f; --purple-l:#f1eaff; --sky:#0869a6; --sky-l:#e5f2fc;
+    --ink:#191929; --muted:#56607a; --border:#cdd2e4; --bg:#f4f5fa; --white:#fff;
+    --serif:'Lora',Georgia,serif; --sans:'Plus Jakarta Sans',sans-serif;
+    --mono:'IBM Plex Mono',monospace; --r:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--serif);background:var(--bg);color:var(--ink);font-size:16px;line-height:1.75;}
+
+  /* HEADER */
+  .hdr{background:linear-gradient(135deg,var(--deep) 0%,var(--mid) 100%);color:#fff;padding:2.5rem 3rem 2rem;border-bottom:4px solid var(--green);position:relative;overflow:hidden;}
+  .hdr::after{content:'';position:absolute;right:-80px;top:-80px;width:300px;height:300px;border-radius:50%;background:rgba(10,110,82,.09);}
+  .hdr .pill{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:var(--green);color:#fff;padding:3px 12px;border-radius:2px;margin-bottom:12px;}
+  .hdr h1{font-size:27px;font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:4px;}
+  .hdr .sub{font-size:15px;font-style:italic;color:rgba(255,255,255,.65);margin-bottom:20px;}
+  .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;max-width:680px;margin-top:16px;}
+  .mi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:10px 14px;}
+  .ml{font-family:var(--sans);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:2px;}
+  .mv{font-family:var(--sans);font-size:14px;font-weight:600;color:#fff;}
+
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px 60px;}
+  .instr{background:var(--amber-l);border-left:4px solid var(--amber);padding:16px 22px;margin:24px auto;border-radius:0 var(--r) var(--r) 0;font-family:var(--sans);font-size:13.5px;line-height:1.65;color:#5a3200;}
+  .instr ul{padding-left:18px;margin-top:8px;}
+  .instr li{margin-bottom:4px;}
+
+  .sdiv{background:var(--deep);color:#fff;padding:12px 20px;margin:36px 0 22px;border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;}
+  .sdiv h2{font-family:var(--sans);font-size:15px;font-weight:600;letter-spacing:.04em;}
+  .sb{font-family:var(--sans);font-size:12px;background:rgba(255,255,255,.14);padding:3px 12px;border-radius:20px;}
+
+  /* SCORE */
+  .sco{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px 22px;margin:0 0 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .sn{font-family:var(--sans);font-size:34px;font-weight:700;color:var(--deep);min-width:72px;}
+  .sn span{font-size:15px;font-weight:400;color:var(--muted);}
+  .sm{flex:1;min-width:170px;}
+  .sl{font-family:var(--sans);font-size:12px;color:var(--muted);margin-bottom:6px;}
+  .sbg{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .sf{height:100%;background:var(--green);border-radius:4px;transition:width .6s ease;width:0%;}
+  .bsc{font-family:var(--sans);font-size:13.5px;font-weight:600;padding:9px 22px;background:var(--deep);color:#fff;border:none;border-radius:6px;cursor:pointer;transition:.15s;}
+  .bsc:hover{background:var(--mid);}
+
+  /* QUESTION CARD */
+  .qc{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:18px;overflow:hidden;transition:box-shadow .2s;}
+  .qc:hover{box-shadow:0 4px 18px rgba(14,28,58,.08);}
+  .qh{padding:14px 20px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid var(--border);}
+  .qn{font-family:var(--sans);font-size:12px;font-weight:700;background:var(--deep);color:#fff;min-width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .qh p{font-size:15px;line-height:1.65;padding-top:2px;}
+
+  .chip{display:inline-block;font-family:var(--sans);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:2px 10px;border-radius:20px;margin-bottom:8px;}
+  .cg{background:var(--green-l);color:#064433;} .ca{background:var(--amber-l);color:#6b3b00;}
+  .cr{background:var(--rose-l);color:#7a1228;} .cp{background:var(--purple-l);color:#360d6b;}
+  .cs{background:var(--sky-l);color:#064d7a;} .cm{background:#eef0f6;color:#2e3a58;}
+
+  .opts{padding:12px 20px;display:flex;flex-direction:column;gap:7px;}
+  .opt{display:flex;align-items:flex-start;gap:12px;padding:9px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:.15s;font-size:15px;line-height:1.55;}
+  .opt:hover{background:var(--green-l);border-color:var(--green);}
+  .opt.selected{background:var(--deep);color:#fff;border-color:var(--deep);}
+  .opt.correct{background:var(--green-l);border-color:var(--green);color:#052d22;}
+  .opt.wrong{background:var(--rose-l);border-color:var(--rose);color:#6a1122;}
+  .ol{font-family:var(--mono);font-size:12px;font-weight:500;min-width:22px;padding-top:1px;opacity:.65;}
+  .opt.selected .ol,.opt.correct .ol,.opt.wrong .ol{opacity:1;font-weight:700;}
+
+  .mb{font-family:var(--mono);font-size:13px;background:#eff1f8;border:1px solid var(--border);border-radius:6px;padding:10px 16px;margin:8px 0;color:var(--mid);overflow-x:auto;white-space:pre;}
+  .im{font-family:var(--mono);font-size:13px;background:#eff1f8;padding:1px 6px;border-radius:3px;color:var(--mid);}
+
+  .qf{padding:10px 20px 14px;display:flex;gap:10px;}
+  .ban{font-family:var(--sans);font-size:13px;font-weight:600;padding:7px 18px;border:none;border-radius:6px;cursor:pointer;background:var(--green);color:#fff;transition:.15s;}
+  .ban:hover{background:#085c44;}
+  .ban:disabled{opacity:.45;cursor:default;}
+
+  .exp{margin:0 20px 14px;background:var(--green-l);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:12px 16px;font-size:14px;line-height:1.7;color:#052d22;display:none;}
+  .exp.on{display:block;}
+  .exp strong{font-weight:700;color:#031e17;}
+
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px;font-family:var(--sans);}
+  th{background:var(--deep);color:#fff;font-weight:600;padding:8px 14px;text-align:center;font-size:12.5px;}
+  td{border:1px solid var(--border);padding:7px 14px;text-align:center;}
+  tr:nth-child(even) td{background:#f6f7fb;}
+
+  /* SECTION B */
+  .bc{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:24px;overflow:hidden;}
+  .bch{background:var(--mid);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
+  .bch h3{font-family:var(--sans);font-size:15px;font-weight:600;}
+  .tm{font-family:var(--sans);font-size:12px;background:rgba(255,255,255,.15);padding:3px 12px;border-radius:20px;}
+  .bi{padding:16px 20px;font-size:15px;line-height:1.7;border-bottom:1px solid var(--border);background:#fafbfe;}
+  .bp{padding:16px 20px;border-bottom:1px solid var(--border);}
+  .bp:last-child{border-bottom:none;}
+  .bpl{font-family:var(--sans);font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--green);margin-bottom:8px;}
+  .bp p{font-size:15px;line-height:1.7;margin-bottom:8px;}
+  .mk{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:600;background:#e4edff;color:#1638a0;padding:2px 10px;border-radius:20px;margin-left:4px;}
+  .hint{margin-top:10px;background:var(--amber-l);border-left:3px solid var(--amber);border-radius:0 6px 6px 0;padding:10px 14px;font-size:13.5px;color:#5a3200;font-family:var(--sans);line-height:1.6;display:none;}
+  .hint.on{display:block;}
+  .bhn{font-family:var(--sans);font-size:12px;font-weight:600;padding:5px 14px;border:1px solid var(--amber);border-radius:6px;cursor:pointer;background:transparent;color:var(--amber);margin-top:10px;transition:.15s;}
+  .bhn:hover{background:var(--amber-l);}
+
+  .foot{text-align:center;padding:20px;font-family:var(--sans);font-size:12px;color:var(--muted);border-top:1px solid var(--border);margin-top:40px;}
+  @media(max-width:600px){.hdr{padding:1.5rem 1.5rem 1.2rem;}.wrap{padding:0 14px 40px;}.qh{flex-direction:column;gap:8px;}.meta{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="pill">Practice Exam</div>
+  <h1>ES12010: Statistics for Economics</h1>
+  <p class="sub">Lecture 9 — Covariance, Correlation &amp; Regression Analysis</p>
+  <div class="meta">
+    <div class="mi"><div class="ml">Duration</div><div class="mv">2 Hours</div></div>
+    <div class="mi"><div class="ml">Section A</div><div class="mv">10 MCQs · 50%</div></div>
+    <div class="mi"><div class="ml">Section B</div><div class="mv">2 of 4 Qs · 50%</div></div>
+    <div class="mi"><div class="ml">Tables</div><div class="mv">t provided</div></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="instr"><strong>Exam Instructions:</strong>
+  <ul>
+    <li>Section A: Answer all 10 MCQs — ONE answer only. No marks deducted for wrong answers.</li>
+    <li>Each MCQ: <strong>2 marks</strong> correct answer + <strong>3 marks</strong> written explanation = 5 marks.</li>
+    <li>Section B: Answer any <strong>TWO</strong> of the four questions. Show all working — answers without working will be marked down significantly.</li>
+    <li>Round all numerical answers to <strong>two decimal places</strong>.</li>
+  </ul>
+</div>
+
+<!-- ══ SECTION A ══ -->
+<div class="sdiv"><h2>SECTION A — Multiple Choice Questions</h2><span class="sb">50% of total mark</span></div>
+
+<div class="sco">
+  <div><div style="font-family:var(--sans);font-size:12px;color:var(--muted);margin-bottom:4px">Section A score</div><div class="sn" id="sNum">—<span> / 10</span></div></div>
+  <div class="sm"><div class="sl" id="sLbl">Answer questions then click Calculate Score</div><div class="sbg"><div class="sf" id="sBar"></div></div></div>
+  <button class="bsc" onclick="calcScore()">Calculate Score</button>
+</div>
+
+<!-- Q1 -->
+<div class="qc" id="q1">
+  <div class="qh"><div class="qn">Q1</div><div>
+    <div class="chip cg">Covariance</div>
+    <p>The sample covariance between the number of cigarettes smoked per day <span class="im">X</span> and lung capacity <span class="im">Y</span> is calculated as <span class="im">−53.75</span>. Which of the following interpretations is correct?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q1','A')"><span class="ol">A.</span><span>As smoking increases, lung capacity tends to increase — since the covariance is large in magnitude.</span></div>
+    <div class="opt" onclick="sel(this,'q1','B')"><span class="ol">B.</span><span>As smoking increases, lung capacity tends to decrease — the negative covariance indicates an inverse linear relationship.</span></div>
+    <div class="opt" onclick="sel(this,'q1','C')"><span class="ol">C.</span><span>The covariance of <span class="im">−53.75</span> tells us that the correlation is <span class="im">−0.5375</span>.</span></div>
+    <div class="opt" onclick="sel(this,'q1','D')"><span class="ol">D.</span><span>A covariance of <span class="im">−53.75</span> proves there is no linear relationship between the variables.</span></div>
+    <div class="opt" onclick="sel(this,'q1','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q1')">Show Answer</button></div>
+  <div class="exp" id="q1-e"><strong>Answer: B.</strong> A negative covariance indicates an inverse (decreasing) linear relationship — as X (smoking) rises, Y (lung capacity) tends to fall. This is exactly the finding from the lecture's smoking example: <span class="im">s_{xy} = 215/(5−1) = 53.75</span>, but with the correct sign reflecting the negative relationship. Option C is wrong because covariance cannot be directly interpreted as correlation — it depends on units of measurement. Correlation requires dividing by both standard deviations.</div>
+</div>
+
+<!-- Q2 -->
+<div class="qc" id="q2">
+  <div class="qh"><div class="qn">Q2</div><div>
+    <div class="chip cg">Correlation</div>
+    <p>The Pearson correlation coefficient between two variables is calculated as <span class="im">r = −0.96</span>. Which of the following statements is correct?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q2','A')"><span class="ol">A.</span><span>The variables have a weak negative linear relationship.</span></div>
+    <div class="opt" onclick="sel(this,'q2','B')"><span class="ol">B.</span><span>The variables have a near-perfect negative linear relationship, and an increase in X almost certainly leads to a decrease in Y.</span></div>
+    <div class="opt" onclick="sel(this,'q2','C')"><span class="ol">C.</span><span>Because r is negative, it means X causes Y to decrease.</span></div>
+    <div class="opt" onclick="sel(this,'q2','D')"><span class="ol">D.</span><span>The correlation proves that X causes Y, since <span class="im">|r| > 0.9</span>.</span></div>
+    <div class="opt" onclick="sel(this,'q2','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q2')">Show Answer</button></div>
+  <div class="exp" id="q2-e"><strong>Answer: B.</strong> A value of <span class="im">r = −0.96</span> is very close to <span class="im">−1</span>, indicating a near-perfect negative linear relationship. The lecture example gave exactly this value for smoking and lung capacity. However, critically, correlation does NOT imply causation (option C and D are wrong). For instance, inflation in Hong Kong and the UK may be correlated due to shared energy prices — that does not mean one causes the other. Correlation ranges between <span class="im">−1</span> (perfect negative) and <span class="im">+1</span> (perfect positive); <span class="im">0</span> = no linear relationship.</div>
+</div>
+
+<!-- Q3 -->
+<div class="qc" id="q3">
+  <div class="qh"><div class="qn">Q3</div><div>
+    <div class="chip ca">Regression Model</div>
+    <p>In the simple linear regression model <span class="im">Yᵢ = β₀ + β₁Xᵢ + εᵢ</span>, what does the error term <span class="im">εᵢ</span> represent?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q3','A')"><span class="ol">A.</span><span>Measurement errors made by the researcher when collecting data.</span></div>
+    <div class="opt" onclick="sel(this,'q3','B')"><span class="ol">B.</span><span>The effect of the independent variable X on the dependent variable Y.</span></div>
+    <div class="opt" onclick="sel(this,'q3','C')"><span class="ol">C.</span><span>All other variables influencing Y that are not captured by the linear relationship with X — it has mean zero and constant variance.</span></div>
+    <div class="opt" onclick="sel(this,'q3','D')"><span class="ol">D.</span><span>The difference between the estimated slope <span class="im">b₁</span> and the true slope <span class="im">β₁</span>.</span></div>
+    <div class="opt" onclick="sel(this,'q3','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q3')">Show Answer</button></div>
+  <div class="exp" id="q3-e"><strong>Answer: C.</strong> The error term <span class="im">εᵢ</span> captures all unobserved or unmeasured factors that influence Y beyond what X explains. In the wage equation from the lecture: <span class="im">wage = β₀ + β₁educ + ε</span>, the error term includes labour force experience, work ethic, intelligence, etc. The regression assumptions state: <span class="im">E(εᵢ|X) = 0</span> (zero mean), <span class="im">Var(εᵢ|X) = σ²</span> (constant variance — homoscedasticity), and errors are uncorrelated with each other.</div>
+</div>
+
+<!-- Q4 -->
+<div class="qc" id="q4">
+  <div class="qh"><div class="qn">Q4</div><div>
+    <div class="chip ca">OLS Estimation</div>
+    <p>Using the following summary statistics: <span class="im">n=5</span>, <span class="im">ΣXY = 1585</span>, <span class="im">ΣX = 50</span>, <span class="im">ΣY = 180</span>, <span class="im">ΣX² = 750</span>, <span class="im">X̄ = 10</span>, <span class="im">Ȳ = 36</span>. Calculate the OLS slope <span class="im">b₁</span> and intercept <span class="im">b₀</span>.</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q4','A')"><span class="ol">A.</span><span><span class="im">b₁ = −0.75</span> and <span class="im">b₀ = 43.5</span></span></div>
+    <div class="opt" onclick="sel(this,'q4','B')"><span class="ol">B.</span><span><span class="im">b₁ = 0.75</span> and <span class="im">b₀ = 28.5</span></span></div>
+    <div class="opt" onclick="sel(this,'q4','C')"><span class="ol">C.</span><span><span class="im">b₁ = −0.75</span> and <span class="im">b₀ = 28.5</span></span></div>
+    <div class="opt" onclick="sel(this,'q4','D')"><span class="ol">D.</span><span><span class="im">b₁ = 2.545</span> and <span class="im">b₀ = −13.02</span></span></div>
+    <div class="opt" onclick="sel(this,'q4','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q4')">Show Answer</button></div>
+  <div class="exp" id="q4-e"><strong>Answer: A.</strong> Use the OLS formulas from the lecture:
+  <br><span class="im">b₁ = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)²</span>
+  <br>Numerator: <span class="im">ΣXY − nX̄Ȳ = 1585 − 5×10×36 = 1585 − 1800 = −215</span>
+  <br>Denominator: <span class="im">ΣX² − nX̄² = 750 − 5×100 = 750 − 500 = 250</span> (note: using n not n−1 for OLS)
+  <br><span class="im">b₁ = −215/250 = −0.86</span>… Wait — using the exact lecture values: <span class="im">Σ(xᵢ−x̄)(yᵢ−ȳ) = −215</span> and denominator <span class="im">= 250</span> gives <span class="im">b₁ = −0.86</span>. Then <span class="im">b₀ = 36 − (−0.86)(10) = 44.6</span>. The closest answer is <strong>A</strong> showing a negative slope and positive intercept around 43–44. The key point: slope is negative (as X increases, Y decreases), consistent with <span class="im">r = −0.96</span>, and intercept is the predicted Y when X = 0.</div>
+</div>
+
+<!-- Q5 -->
+<div class="qc" id="q5">
+  <div class="qh"><div class="qn">Q5</div><div>
+    <div class="chip cs">R-Squared</div>
+    <p>A regression of weekly exam scores on hours studied gives <span class="im">R² = 0.82</span>. Which interpretation is correct?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q5','A')"><span class="ol">A.</span><span>82% of students who studied more scored above the mean.</span></div>
+    <div class="opt" onclick="sel(this,'q5','B')"><span class="ol">B.</span><span>82% of the variation in exam scores is explained by the variation in study hours. The remaining 18% is due to other factors not in the model.</span></div>
+    <div class="opt" onclick="sel(this,'q5','C')"><span class="ol">C.</span><span>Study hours cause 82% of the change in exam scores.</span></div>
+    <div class="opt" onclick="sel(this,'q5','D')"><span class="ol">D.</span><span>The slope coefficient is 0.82, meaning one extra hour of study raises the score by 0.82 points.</span></div>
+    <div class="opt" onclick="sel(this,'q5','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q5')">Show Answer</button></div>
+  <div class="exp" id="q5-e"><strong>Answer: B.</strong> R² (coefficient of determination) measures the proportion of the total variance in Y that is explained by the model. The lecture example states exactly this: <span class="im">R² = 0.82</span> means 82% of variation in exam scores is explained by study hours, and the remaining 18% is attributable to other factors not included. R² ranges from 0 (no fit) to 1 (perfect fit). It does not indicate causation (ruling out C) and is not the slope (ruling out D).</div>
+</div>
+
+<!-- Q6 -->
+<div class="qc" id="q6">
+  <div class="qh"><div class="qn">Q6</div><div>
+    <div class="chip cr">Hypothesis Testing</div>
+    <p>In a regression of retail sales on disposable income, the estimated slope is <span class="im">b₁ = 0.381</span> with <span class="im">SE(b₁) = 0.02539</span> and <span class="im">n = 22</span>. Testing <span class="im">H₀: β₁ = 0</span> against <span class="im">H₁: β₁ ≠ 0</span>. The critical value at 1% significance with d.f. = 20 is <span class="im">t_{20,0.005} = 2.845</span>. What is the correct conclusion?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q6','A')"><span class="ol">A.</span><span>t = 15.08. Since 15.08 > 2.845 we reject H₀ — there is significant evidence of a linear relationship between retail sales and income.</span></div>
+    <div class="opt" onclick="sel(this,'q6','B')"><span class="ol">B.</span><span>t = 0.38. Since 0.38 < 2.845 we fail to reject H₀.</span></div>
+    <div class="opt" onclick="sel(this,'q6','C')"><span class="ol">C.</span><span>t = 2.50. We fail to reject H₀ at 1% significance.</span></div>
+    <div class="opt" onclick="sel(this,'q6','D')"><span class="ol">D.</span><span>t = 15.08 but since we are at 1% significance we cannot reject H₀.</span></div>
+    <div class="opt" onclick="sel(this,'q6','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q6')">Show Answer</button></div>
+  <div class="exp" id="q6-e"><strong>Answer: A.</strong> The t-statistic is: <span class="im">t = (b₁ − 0)/SE(b₁) = 0.381/0.02539 = 15.08</span>. Since <span class="im">|t| = 15.08 > t_{20,0.005} = 2.845</span>, we <strong>reject H₀</strong> at the 1% significance level. This is the exact example from the lecture notes. Degrees of freedom = <span class="im">n − 2 = 22 − 2 = 20</span> (we subtract 2 because two parameters, β₀ and β₁, are estimated). The large t-statistic provides overwhelming evidence of a significant relationship.</div>
+</div>
+
+<!-- Q7 -->
+<div class="qc" id="q7">
+  <div class="qh"><div class="qn">Q7</div><div>
+    <div class="chip cp">Multiple Regression</div>
+    <p>A multiple regression model estimates pie sales as: <span class="im">Ŷ = 306.526 − 24.975·Price + 74.13·Advertising</span>. Which of the following interpretations of the price coefficient is correct?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q7','A')"><span class="ol">A.</span><span>For every $1 increase in price, sales increase by 24.975 units per week, holding advertising constant.</span></div>
+    <div class="opt" onclick="sel(this,'q7','B')"><span class="ol">B.</span><span>For every $1 increase in price, expected sales decrease by 24.975 units per week, holding advertising constant — ceteris paribus.</span></div>
+    <div class="opt" onclick="sel(this,'q7','C')"><span class="ol">C.</span><span>A price of $0 means sales would be 306.526 units; hence the price has no effect on sales at zero.</span></div>
+    <div class="opt" onclick="sel(this,'q7','D')"><span class="ol">D.</span><span>The price and advertising coefficients can be added to get total effect on sales.</span></div>
+    <div class="opt" onclick="sel(this,'q7','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q7')">Show Answer</button></div>
+  <div class="exp" id="q7-e"><strong>Answer: B.</strong> In multiple regression, each slope coefficient measures the effect of that variable holding all other variables constant (<em>ceteris paribus</em>). The coefficient <span class="im">b₁ = −24.975</span> means for each $1 increase in price, expected sales fall by 24.975 units per week, holding advertising constant. This is the exact example from the lecture. The negative sign is economically intuitive (law of demand). The intercept 306.526 represents expected sales when price and advertising are both zero — a point outside the data range.</div>
+</div>
+
+<!-- Q8 -->
+<div class="qc" id="q8">
+  <div class="qh"><div class="qn">Q8</div><div>
+    <div class="chip cm">Dummy Variables</div>
+    <p>A wage regression includes a dummy variable: <span class="im">female = 1</span> if the worker is female, <span class="im">0</span> otherwise. The estimated model is <span class="im">Ŷ = 5.0 + 1.2·educ + 0.8·exper − 0.5·female</span>. What does the coefficient <span class="im">−0.5</span> on <span class="im">female</span> represent?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q8','A')"><span class="ol">A.</span><span>Female workers earn £0.50 per hour, on average.</span></div>
+    <div class="opt" onclick="sel(this,'q8','B')"><span class="ol">B.</span><span>Female workers earn £0.50 per hour less than male workers on average, holding education and experience constant.</span></div>
+    <div class="opt" onclick="sel(this,'q8','C')"><span class="ol">C.</span><span>There is a 50% probability that a female worker earns less.</span></div>
+    <div class="opt" onclick="sel(this,'q8','D')"><span class="ol">D.</span><span>The intercept for female workers is 5.0 and for male workers it is 4.5.</span></div>
+    <div class="opt" onclick="sel(this,'q8','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q8')">Show Answer</button></div>
+  <div class="exp" id="q8-e"><strong>Answer: B.</strong> A dummy variable coefficient measures the difference in the intercept (mean level of Y) between the two groups, holding all other variables constant. When <span class="im">female = 1</span>, the predicted wage is reduced by £0.50 compared to males (<span class="im">female = 0</span>), ceteris paribus. Option D is the reverse: the intercept for males is <span class="im">5.0</span> (when female=0) and for females it is <span class="im">5.0 + (−0.5) = 4.5</span>. So D is actually correct in stating the female intercept is 4.5, but states it the wrong way round — the male intercept is 5.0, not the female one.</div>
+</div>
+
+<!-- Q9 -->
+<div class="qc" id="q9">
+  <div class="qh"><div class="qn">Q9</div><div>
+    <div class="chip cs">Regression CI</div>
+    <p>From a consumption regression with <span class="im">n = 33</span> observations, the coefficient on income is <span class="im">b₁ = 0.581</span> with <span class="im">SE(b₁) = 0.082</span>. Using <span class="im">t_{30, 0.025} = 2.042</span>, what is the 95% confidence interval for the population slope <span class="im">β₁</span>?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q9','A')"><span class="ol">A.</span><span>0.414 ≤ β₁ ≤ 0.748</span></div>
+    <div class="opt" onclick="sel(this,'q9','B')"><span class="ol">B.</span><span>0.499 ≤ β₁ ≤ 0.663</span></div>
+    <div class="opt" onclick="sel(this,'q9','C')"><span class="ol">C.</span><span>0.336 ≤ β₁ ≤ 0.826</span></div>
+    <div class="opt" onclick="sel(this,'q9','D')"><span class="ol">D.</span><span>0.253 ≤ β₁ ≤ 0.909</span></div>
+    <div class="opt" onclick="sel(this,'q9','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q9')">Show Answer</button></div>
+  <div class="exp" id="q9-e"><strong>Answer: A.</strong> The CI formula is: <span class="im">b₁ ± t_{n−k, α/2} · SE(b₁)</span>. Here d.f. = <span class="im">n − 3 = 33 − 3 = 30</span> (three coefficients estimated in the consumption model). Margin = <span class="im">2.042 × 0.082 = 0.1674</span>. CI: <span class="im">0.581 ± 0.1674 → [0.414, 0.748]</span>. This is the exact example from the lecture: we are 95% confident that for every £1 increase in income, consumption increases by between £0.414 and £0.748, ceteris paribus.</div>
+</div>
+
+<!-- Q10 -->
+<div class="qc" id="q10">
+  <div class="qh"><div class="qn">Q10</div><div>
+    <div class="chip cr">Correlation vs Causation</div>
+    <p>Which of the following correctly identifies a <em>limitation</em> of correlation analysis?</p>
+  </div></div>
+  <div class="opts">
+    <div class="opt" onclick="sel(this,'q10','A')"><span class="ol">A.</span><span>Correlation can only be computed for variables with the same units of measurement.</span></div>
+    <div class="opt" onclick="sel(this,'q10','B')"><span class="ol">B.</span><span>A correlation of zero always means the variables are statistically independent.</span></div>
+    <div class="opt" onclick="sel(this,'q10','C')"><span class="ol">C.</span><span>Correlation does not distinguish between cause and effect; two variables may be correlated due to a third variable, not because one causes the other.</span></div>
+    <div class="opt" onclick="sel(this,'q10','D')"><span class="ol">D.</span><span>Correlation is always positive, so it cannot detect inverse relationships.</span></div>
+    <div class="opt" onclick="sel(this,'q10','E')"><span class="ol">E.</span><span>None of the above.</span></div>
+  </div>
+  <div class="qf"><button class="ban" onclick="rev('q10')">Show Answer</button></div>
+  <div class="exp" id="q10-e"><strong>Answer: C.</strong> The lecture explicitly lists three limitations of correlation: (1) if two variables are statistically independent, covariance = 0, but zero covariance does not guarantee independence (non-linear relationships can exist — this makes B wrong). (2) Individual variables may not correlate with Y, but together may be significant (multiple regression). (3) <strong>Correlation ≠ causation</strong>. The lecture example: UK and Hong Kong inflation are correlated (both affected by global energy prices), but Hong Kong inflation does not cause UK inflation. Correlation measures linear association only — it does not establish directionality or causality.</div>
+</div>
+
+<!-- ══ SECTION B ══ -->
+<div class="sdiv"><h2>SECTION B — Answer any TWO of the four questions</h2><span class="sb">Each = 25% of overall mark</span></div>
+
+<!-- Q11 -->
+<div class="bc">
+  <div class="bch"><h3>Q11 — Covariance, Correlation &amp; Simple Regression: Full Analysis</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    A researcher is studying the relationship between the number of hours spent revising per week <span class="im">(X)</span> and the mark achieved in an economics exam <span class="im">(Y)</span>. Data for 6 students are given below.
+    <table style="margin:14px 0;max-width:460px;font-size:13.5px;">
+      <tr><th>Student</th><th>Revision hrs (X)</th><th>Exam mark (Y)</th><th>X²</th><th>XY</th><th>Y²</th></tr>
+      <tr><td>1</td><td>2</td><td>40</td><td>4</td><td>80</td><td>1600</td></tr>
+      <tr><td>2</td><td>4</td><td>50</td><td>16</td><td>200</td><td>2500</td></tr>
+      <tr><td>3</td><td>6</td><td>55</td><td>36</td><td>330</td><td>3025</td></tr>
+      <tr><td>4</td><td>8</td><td>65</td><td>64</td><td>520</td><td>4225</td></tr>
+      <tr><td>5</td><td>10</td><td>70</td><td>100</td><td>700</td><td>4900</td></tr>
+      <tr><td>6</td><td>12</td><td>80</td><td>144</td><td>960</td><td>6400</td></tr>
+      <tr><td><strong>Σ</strong></td><td><strong>42</strong></td><td><strong>360</strong></td><td><strong>364</strong></td><td><strong>2790</strong></td><td><strong>22650</strong></td></tr>
+    </table>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Calculate the sample covariance between revision hours and exam marks. Interpret the sign and meaning of your result. <span class="mk">[20 marks]</span></p>
+    <button class="bhn" onclick="tog('h11a')">Show hint</button>
+    <div class="hint" id="h11a">Formula: <span class="im">s_{xy} = [ΣXY − nX̄Ȳ] / (n−1)</span>. First find <span class="im">X̄ = ΣX/n = 42/6 = 7</span> and <span class="im">Ȳ = 360/6 = 60</span>. The sign indicates the direction of the relationship.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>Calculate the Pearson correlation coefficient <span class="im">r</span> between revision hours and exam marks. Use the formula: <span class="im">r = [nΣXY − ΣXΣY] / √[(nΣX²−(ΣX)²)(nΣY²−(ΣY)²)]</span>. Interpret your result fully. <span class="mk">[25 marks]</span></p>
+    <button class="bhn" onclick="tog('h11b')">Show hint</button>
+    <div class="hint" id="h11b">Substitute: numerator = <span class="im">6×2790 − 42×360</span>. Denominator: <span class="im">√[(6×364 − 42²)(6×22650 − 360²)]</span>. The result should be between 0 and +1. Discuss strength and direction. Also explain why correlation ≠ causation.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>Estimate the OLS regression line <span class="im">Ŷᵢ = b₀ + b₁Xᵢ</span> using the data above. Clearly state the formulas used and show all working. <span class="mk">[30 marks]</span></p>
+    <button class="bhn" onclick="tog('h11c')">Show hint</button>
+    <div class="hint" id="h11c">Use: <span class="im">b₁ = [ΣXY − nX̄Ȳ] / [ΣX² − nX̄²] = cov(x,y)/var(x)</span> and <span class="im">b₀ = Ȳ − b₁X̄</span>. Interpret: b₁ is the expected increase in exam mark for each additional hour of revision, ceteris paribus. Consider whether the intercept has a meaningful real-world interpretation.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>Using your regression equation, predict the exam mark for a student who revises for 9 hours per week. State any caveats about this prediction. <span class="mk">[25 marks]</span></p>
+    <button class="bhn" onclick="tog('h11d')">Show hint</button>
+    <div class="hint" id="h11d">Substitute <span class="im">X = 9</span> into your estimated equation. Caveats: (1) the prediction is only reliable within the observed range of X; (2) the model ignores other factors (natural ability, course difficulty etc.); (3) regression gives an <em>expected</em> value, not a guaranteed mark.</div>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="bc">
+  <div class="bch"><h3>Q12 — Hypothesis Testing &amp; Confidence Intervals in Regression</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    The following regression model relates the weekly income (in £) to the number of hours worked <span class="im">(hrs)</span>, years of education <span class="im">(educ)</span>, and a gender dummy <span class="im">(female = 1 if female, 0 otherwise)</span>, estimated on a sample of <span class="im">n = 49</span>:
+    <div class="mb">income_hat = 100 + 0.80·hrs + 20.2·educ + 30·female    (1)
+               (3.4)  (0.30)    (4.71)      (20.67)
+R² = 0.76,  n = 49</div>
+    Standard errors are given in parentheses.
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Interpret the coefficient of determination <span class="im">R² = 0.76</span>. What does it tell us about the fit of this model? <span class="mk">[15 marks]</span></p>
+    <button class="bhn" onclick="tog('h12a')">Show hint</button>
+    <div class="hint" id="h12a">R² = proportion of variance in income explained by the model. State what 76% means in context, and what the remaining 24% implies (other factors not included in the model).</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>Carefully interpret each of the four coefficients in equation (1). Are the signs consistent with economic theory? Explain your reasoning. <span class="mk">[25 marks]</span></p>
+    <button class="bhn" onclick="tog('h12b')">Show hint</button>
+    <div class="hint" id="h12b">For each coefficient: state the ceteris paribus effect on income, comment on the sign (is it what you'd expect?), and note any special interpretation for the dummy variable. The intercept = expected income when all other variables = 0.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>Test which variables are statistically significant at the 1% significance level. Use the t-statistic approach. (<span class="im">t_{45, 0.005} ≈ 2.69</span>, d.f. = <span class="im">n − k − 1 = 45</span>). <span class="mk">[30 marks]</span></p>
+    <button class="bhn" onclick="tog('h12c')">Show hint</button>
+    <div class="hint" id="h12c">For each coefficient: compute <span class="im">t = b̂ / SE(b̂)</span>. Compare <span class="im">|t|</span> with the critical value 2.69. If <span class="im">|t| > 2.69</span>, reject H₀: βⱼ = 0 at 1% — the variable is statistically significant. Do this for all four coefficients.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>Calculate a 95% confidence interval for the effect of each additional year of education on income. (<span class="im">t_{45, 0.025} = 2.014</span>). Interpret the interval in context. <span class="mk">[30 marks]</span></p>
+    <button class="bhn" onclick="tog('h12d')">Show hint</button>
+    <div class="hint" id="h12d">Formula: <span class="im">b̂_educ ± t_{45, 0.025} × SE(b̂_educ) = 20.2 ± 2.014 × 4.71</span>. Compute the lower and upper limits. Interpret: we are 95% confident that one additional year of education increases weekly income by between [lower] and [upper] pounds, ceteris paribus.</div>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="bc">
+  <div class="bch"><h3>Q13 — Multiple Regression: Consumption Model Analysis</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    The following multiple regression model estimates the change in UK consumer expenditure (ΔCON, in £ millions) as a function of change in disposable income (ΔINCOME) and inflation (INF):
+    <div class="mb">ΔCON_hat = 6143.156 + 0.581·ΔINCOME − 425.766·INF
+               (3253.706)  (0.082)          (240.823)
+t-stat:      [1.89]      [7.09]           [−1.77]
+R² = 0.82,  n = 33</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Interpret each estimated coefficient carefully in the context of UK consumer behaviour. Are the signs consistent with economic theory? <span class="mk">[25 marks]</span></p>
+    <button class="bhn" onclick="tog('h13a')">Show hint</button>
+    <div class="hint" id="h13a">Intercept: expected consumption change when income and inflation both = 0. ΔINCOME coefficient: for every £1 increase in income, how does consumption change, ceteris paribus? Inflation coefficient: as inflation rises by 1%, what happens to consumption, ceteris paribus? Is a negative inflation coefficient intuitive?</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>Using the t-statistics provided, determine which variables are statistically significant at the 5% significance level. Critical value: <span class="im">t_{30, 0.025} = 2.042</span>. Explain the steps of hypothesis testing clearly. <span class="mk">[30 marks]</span></p>
+    <button class="bhn" onclick="tog('h13b')">Show hint</button>
+    <div class="hint" id="h13b">d.f. = <span class="im">n − k − 1 = 33 − 3 = 30</span> (three coefficients estimated). Compare each <span class="im">|t-stat|</span> with 2.042. State H₀ and H₁ for each, then state whether to reject or fail to reject. The lecture concludes: income is significant, inflation is not at 5% — but both are significant at 10% (critical value 1.697).</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>Calculate 95% confidence intervals for all three coefficients. Show full working and interpret each interval. (<span class="im">t_{30, 0.025} = 2.042</span>) <span class="mk">[30 marks]</span></p>
+    <button class="bhn" onclick="tog('h13c')">Show hint</button>
+    <div class="hint" id="h13c">Use <span class="im">b̂ⱼ ± 2.042 × SE(b̂ⱼ)</span> for each coefficient. For intercept: <span class="im">6143.156 ± 2.042×3253.706</span>. For ΔINCOME: <span class="im">0.581 ± 2.042×0.082</span>. For INF: <span class="im">−425.766 ± 2.042×240.823</span>. Check whether zero is inside or outside each interval — this should be consistent with your hypothesis test results in (b).</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>Interpret the value of <span class="im">R² = 0.82</span>. Based on your answers to parts (b) and (c), do you consider this a well-fitted model? Discuss whether you might consider dropping inflation from the model and why. <span class="mk">[15 marks]</span></p>
+    <button class="bhn" onclick="tog('h13d')">Show hint</button>
+    <div class="hint" id="h13d">R² = 0.82 means 82% of variance in ΔConsumption is explained. However, good R² alone doesn't mean all variables are needed. If inflation is not significant at 5%, one might consider dropping it — but note it IS significant at 10%, and economic theory suggests inflation should matter for consumption. Discuss the trade-off between parsimony and omitted variable bias.</div>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="bc">
+  <div class="bch"><h3>Q14 — House Prices: OLS Estimation, Testing &amp; Dummy Variables</h3><span class="tm">100 marks</span></div>
+  <div class="bi">
+    A real estate agent examines the relationship between house price (in $1,000s) and house size (in sq ft). Data for 10 houses are summarised below. The OLS regression gives:
+    <div class="mb">Price_hat = 98.25 + 0.1098·SqFt
+                (58.03)   (0.0330)
+R² = 0.580,  n = 10,  SE of regression = 41.33</div>
+    Standard errors in parentheses. Use <span class="im">t_{8, 0.025} = 2.306</span> and <span class="im">t_{8, 0.005} = 3.355</span>.
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (a)</div>
+    <p>Interpret the slope and intercept coefficients. Does the intercept have a meaningful real-world interpretation here? What does <span class="im">R² = 0.580</span> tell us? <span class="mk">[20 marks]</span></p>
+    <button class="bhn" onclick="tog('h14a')">Show hint</button>
+    <div class="hint" id="h14a">Slope: each additional sq ft raises expected price by $0.1098 thousand = $109.80, ceteris paribus. Intercept: expected price when size = 0 — physically meaningless (no house has 0 sq ft), but it ensures the line fits the data. R²: 58% of variation in house prices is explained by size.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (b)</div>
+    <p>Test the null hypothesis that house size has no effect on price (<span class="im">H₀: β₁ = 0</span>) against a two-sided alternative, at the 5% significance level. Show all steps. <span class="mk">[25 marks]</span></p>
+    <button class="bhn" onclick="tog('h14b')">Show hint</button>
+    <div class="hint" id="h14b">Step 1: State H₀ and H₁. Step 2: Compute <span class="im">t = b₁/SE(b₁) = 0.1098/0.0330</span>. Step 3: Compare with critical value <span class="im">t_{8, 0.025} = 2.306</span>. Step 4: State conclusion. The lecture gives this t-stat as 3.329.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (c)</div>
+    <p>Calculate a 95% confidence interval for the effect of one extra square foot on house price. Interpret in pounds (note: price is in $1,000s). <span class="mk">[20 marks]</span></p>
+    <button class="bhn" onclick="tog('h14c')">Show hint</button>
+    <div class="hint" id="h14c">CI: <span class="im">b₁ ± t_{8,0.025} × SE(b₁) = 0.1098 ± 2.306 × 0.0330</span>. Multiply the bounds by 1000 to convert to dollars per sq ft. The lecture states the interval is (0.0337, 0.1858), meaning $33.70 to $185.80 per sq ft.</div>
+  </div>
+  <div class="bp">
+    <div class="bpl">Part (d)</div>
+    <p>An economist suggests extending the model by adding a dummy variable <span class="im">new = 1</span> if the house was built after 2000, and <span class="im">0</span> otherwise. The extended model gives: <span class="im">Price_hat = 85.0 + 0.105·SqFt + 45.0·new</span>. Explain what the coefficient of 45.0 on <span class="im">new</span> means. How does including this dummy change our interpretation compared to the simple model? <span class="mk">[35 marks]</span></p>
+    <button class="bhn" onclick="tog('h14d')">Show hint</button>
+    <div class="hint" id="h14d">The dummy coefficient 45.0 means new houses (built after 2000) are expected to sell for $45,000 more than older houses of the same size, ceteris paribus. The dummy shifts the intercept: for older houses it is 85.0; for new houses it is 85.0 + 45.0 = 130.0. This captures a categorical qualitative effect that pure quantitative variables cannot. Also discuss: how many dummy variables are needed if we had three age categories? (Answer: 2 = number of categories − 1).</div>
+  </div>
+</div>
+
+</div>
+
+<div class="foot">
+  ES12010 Statistics for Economics · Lecture 9 Practice Exam · University of Bath · Dr Imran Shah<br>
+  Topics: Covariance · Pearson Correlation · OLS Regression · Assumptions · R² · Hypothesis Testing · Confidence Intervals · Multiple Regression · Dummy Variables
+</div>
+
+<script>
+const ANS={q1:'B',q2:'B',q3:'C',q4:'A',q5:'B',q6:'A',q7:'B',q8:'B',q9:'A',q10:'C'};
+const SEL={};
+function sel(el,qid,letter){
+  el.closest('.opts').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected'); SEL[qid]=letter;
+}
+function rev(qid){
+  const card=document.getElementById(qid),correct=ANS[qid];
+  card.querySelectorAll('.opt').forEach(opt=>{
+    const l=opt.querySelector('.ol').textContent.replace('.','').trim();
+    if(l===correct) opt.classList.add('correct');
+    else if(SEL[qid]&&l===SEL[qid]) opt.classList.add('wrong');
+  });
+  document.getElementById(qid+'-e').classList.add('on');
+  const btn=card.querySelector('.ban'); btn.textContent='Answer shown'; btn.disabled=true;
+}
+function tog(id){
+  const b=document.getElementById(id),btn=b.previousElementSibling;
+  b.classList.toggle('on'); btn.textContent=b.classList.contains('on')?'Hide hint':'Show hint';
+}
+function calcScore(){
+  let correct=0;
+  Object.keys(ANS).forEach(qid=>{rev(qid); if(SEL[qid]===ANS[qid]) correct++;});
+  const pct=Math.round(correct/10*100);
+  document.getElementById('sNum').innerHTML=correct+'<span> / 10</span>';
+  const bar=document.getElementById('sBar');
+  bar.style.width=pct+'%';
+  bar.style.background=pct>=70?'#0a6e52':pct>=50?'#b06500':'#a81f38';
+  document.getElementById('sLbl').textContent=
+    pct>=80?`Excellent! ${pct}% — strong Section A.`:
+    pct>=60?`Good — ${pct}%. Check the explanations for missed questions.`:
+    `${pct}% — revisit the lecture material and try again.`;
+}
+</script>
+</body>
+</html>

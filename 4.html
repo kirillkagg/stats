@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 4 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a2e;--ink-mid:#3d3d5c;--ink-light:#7a7a9a;--rule:#e0dff0;--accent:#2e5bff;--accent-light:#e8edff;--correct:#1a7a4a;--correct-bg:#e6f7ee;--wrong:#c0392b;--wrong-bg:#fdecea;--warn-bg:#fffbe6;--warn:#b8860b;--paper:#faf9f7;--white:#ffffff;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.65;}
+.exam-header{background:var(--ink);color:#fff;padding:2.5rem 3rem 2rem;position:relative;overflow:hidden;}
+.exam-header::after{content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:rgba(46,91,255,.18);pointer-events:none;}
+.header-meta{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem;}
+.exam-header h1{font-family:'EB Garamond',serif;font-size:2.1rem;font-weight:600;line-height:1.2;}
+.exam-header .subtitle{color:rgba(255,255,255,.65);font-size:13px;margin-top:.5rem;}
+.header-rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-top:2rem;position:relative;z-index:1;}
+.rule-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:.6rem 1rem;font-size:12px;color:rgba(255,255,255,.8);}
+.rule-chip strong{display:block;font-size:14px;color:#fff;}
+.score-bar{background:var(--white);border-bottom:1px solid var(--rule);padding:.8rem 3rem;display:flex;align-items:center;gap:2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.score-label{font-size:12px;color:var(--ink-light);}
+.score-val{font-size:18px;font-weight:500;color:var(--accent);min-width:50px;}
+.score-track{flex:1;height:6px;background:var(--rule);border-radius:3px;overflow:hidden;}
+.score-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s ease;width:0%;}
+.btn-reveal-all{margin-left:auto;background:var(--ink);color:#fff;border:none;border-radius:6px;padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:opacity .2s;}
+.btn-reveal-all:hover{opacity:.8;}
+.container{max-width:860px;margin:0 auto;padding:2.5rem 2rem 4rem;}
+.section-header{display:flex;align-items:center;gap:1rem;margin:2.5rem 0 1.5rem;padding-bottom:.8rem;border-bottom:2px solid var(--ink);}
+.section-tag{background:var(--ink);color:#fff;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .8rem;border-radius:4px;}
+.section-title{font-family:'EB Garamond',serif;font-size:1.5rem;}
+.section-note{background:var(--warn-bg);border-left:3px solid var(--warn);border-radius:0 6px 6px 0;padding:.8rem 1.1rem;font-size:13px;color:var(--warn);margin-bottom:1.5rem;line-height:1.5;}
+.q-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin-bottom:1.2rem;overflow:hidden;transition:box-shadow .2s;}
+.q-card:hover{box-shadow:0 2px 16px rgba(0,0,0,.07);}
+.q-header{display:flex;align-items:flex-start;gap:1rem;padding:1.2rem 1.4rem 1rem;}
+.q-num{background:var(--accent-light);color:var(--accent);font-weight:500;font-size:13px;min-width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.q-text{font-size:14.5px;line-height:1.6;flex:1;}
+.q-text .math{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;}
+.options{padding:.2rem 1.4rem 1rem 4rem;}
+.opt{display:flex;align-items:flex-start;gap:.7rem;padding:.5rem .8rem;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:.2rem;border:1.5px solid transparent;user-select:none;}
+.opt:hover{background:var(--accent-light);}
+.opt.selected{border-color:var(--accent);background:var(--accent-light);}
+.opt.correct{border-color:var(--correct);background:var(--correct-bg);}
+.opt.wrong{border-color:var(--wrong);background:var(--wrong-bg);}
+.opt-letter{font-weight:500;font-size:13px;min-width:22px;height:22px;border-radius:4px;background:var(--rule);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:background .15s,color .15s;}
+.opt.selected .opt-letter{background:var(--accent);color:#fff;}
+.opt.correct .opt-letter{background:var(--correct);color:#fff;}
+.opt.wrong .opt-letter{background:var(--wrong);color:#fff;}
+.opt-text{font-size:14px;line-height:1.5;}
+.q-feedback{display:none;margin:0 1.4rem .4rem 4rem;padding:.7rem 1rem;border-radius:8px;font-size:13px;line-height:1.55;}
+.q-feedback.show{display:block;}
+.q-feedback.fb-correct{background:var(--correct-bg);color:var(--correct);border-left:3px solid var(--correct);}
+.q-feedback.fb-wrong{background:var(--wrong-bg);color:var(--wrong);border-left:3px solid var(--wrong);}
+.solution-box{display:none;margin:0 1.4rem 1rem 4rem;padding:.9rem 1.1rem;background:#f4f3ff;border:1px solid #d0ccf5;border-radius:8px;font-size:13px;line-height:1.65;color:var(--ink-mid);}
+.solution-box.show{display:block;}
+.solution-box strong{color:var(--ink);}
+.btn-solution{display:block;margin:.3rem 1.4rem .9rem 4rem;background:none;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:.35rem .9rem;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;width:fit-content;transition:background .15s,color .15s;}
+.btn-solution:hover{background:var(--accent);color:#fff;}
+.marks-tag{display:inline-block;background:var(--accent-light);color:var(--accent);font-size:11px;padding:.1rem .5rem;border-radius:4px;margin-left:.5rem;vertical-align:middle;font-weight:500;}
+.b-card{background:var(--white);border:1px solid var(--rule);border-radius:12px;margin-bottom:1.5rem;overflow:hidden;}
+.b-card-header{background:var(--ink);color:#fff;padding:1rem 1.4rem;display:flex;align-items:center;gap:1rem;}
+.b-q-num{background:rgba(255,255,255,.15);color:#fff;font-size:13px;font-weight:500;padding:.3rem .8rem;border-radius:6px;}
+.b-q-title{font-family:'EB Garamond',serif;font-size:1.15rem;font-weight:400;}
+.b-marks{margin-left:auto;font-size:12px;color:rgba(255,255,255,.6);white-space:nowrap;}
+.b-body{padding:1.4rem;}
+.b-intro{font-size:14px;line-height:1.7;color:var(--ink-mid);margin-bottom:1.2rem;padding:.9rem 1.1rem;background:var(--paper);border-radius:8px;border-left:3px solid var(--rule);}
+.b-part{border-top:1px solid var(--rule);padding:1rem 0;}
+.b-part:first-child{border-top:none;padding-top:0;}
+.b-part-header{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.6rem;}
+.b-part-label{background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:500;padding:.2rem .6rem;border-radius:4px;flex-shrink:0;}
+.b-part-text{font-size:14.5px;line-height:1.6;flex:1;}
+.btn-show-soln{background:none;border:1px solid var(--rule);border-radius:6px;padding:.4rem .9rem;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink-light);cursor:pointer;margin-top:.6rem;transition:border-color .15s,color .15s;display:flex;align-items:center;gap:.4rem;}
+.btn-show-soln:hover{border-color:var(--accent);color:var(--accent);}
+.b-solution{display:none;margin-top:.8rem;padding:1rem 1.1rem;background:#f4f3ff;border:1px solid #d0ccf5;border-radius:8px;font-size:13px;line-height:1.7;color:var(--ink-mid);}
+.b-solution.show{display:block;}
+.b-solution h4{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:.5rem;font-weight:500;}
+.b-solution p{margin-bottom:.5rem;}
+.b-solution .step{padding:.4rem 0;border-bottom:1px solid rgba(0,0,0,.05);}
+.b-solution .step:last-child{border-bottom:none;}
+.b-solution strong{color:var(--ink);}
+.b-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.b-tab{background:var(--white);border:1.5px solid var(--rule);border-radius:8px;padding:.5rem 1.1rem;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--ink-mid);transition:all .15s;}
+.b-tab.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent);font-weight:500;}
+.b-content{display:none;}
+.b-content.active{display:block;}
+.formula-ref{background:var(--ink);color:#fff;border-radius:12px;padding:1.5rem;margin-bottom:2rem;}
+.formula-ref h3{font-family:'EB Garamond',serif;font-size:1.1rem;margin-bottom:1rem;color:rgba(255,255,255,.8);}
+.formula-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.8rem;}
+.formula-item{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:.7rem 1rem;}
+.formula-item .fname{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:.3rem;letter-spacing:.05em;text-transform:uppercase;}
+.formula-item .fval{font-family:'EB Garamond',serif;font-style:italic;font-size:15px;color:rgba(255,255,255,.9);}
+.exam-footer{text-align:center;color:var(--ink-light);font-size:12px;padding:2rem 0;border-top:1px solid var(--rule);margin-top:3rem;}
+@media(max-width:600px){.exam-header{padding:1.5rem 1.2rem;}.container{padding:1.5rem 1rem 3rem;}.score-bar{padding:.8rem 1rem;gap:1rem;}.options{padding-left:2.5rem;}.q-feedback,.solution-box,.btn-solution{margin-left:2.5rem;}}
+</style>
+</head>
+<body>
+<div class="exam-header">
+  <div class="header-meta">University of Bath &middot; Department of Economics &middot; ES12010</div>
+  <h1>Statistics for Economics<br><em style="font-weight:400;font-size:1.5rem">Lecture 4 Practice Exam</em></h1>
+  <div class="subtitle">Continuous Random Variables &middot; Uniform Distribution &middot; Normal Distribution &middot; Normal Approximation to Binomial</div>
+  <div class="header-rules">
+    <div class="rule-chip"><strong>2 Hours</strong>Suggested time</div>
+    <div class="rule-chip"><strong>Section A</strong>10 MCQs &middot; 50%</div>
+    <div class="rule-chip"><strong>Section B</strong>Any 2 of 4 &middot; 50%</div>
+    <div class="rule-chip"><strong>Rounding</strong>2 decimal places</div>
+  </div>
+</div>
+
+<div class="score-bar">
+  <div>
+    <div class="score-label">Section A Score</div>
+    <div class="score-val" id="scoreVal">0 / 10</div>
+  </div>
+  <div class="score-track"><div class="score-fill" id="scoreFill"></div></div>
+  <button class="btn-reveal-all" onclick="revealAll()">Reveal All Answers</button>
+</div>
+
+<div class="container">
+
+<div class="formula-ref">
+  <h3>Key Formulas &mdash; Lecture 4</h3>
+  <div class="formula-grid">
+    <div class="formula-item"><div class="fname">Uniform PDF</div><div class="fval">f(x) = 1/(b&minus;a),  a &le; x &le; b</div></div>
+    <div class="formula-item"><div class="fname">Uniform Mean &amp; Variance</div><div class="fval">&mu; = (a+b)/2,  &sigma;&sup2; = (b&minus;a)&sup2;/12</div></div>
+    <div class="formula-item"><div class="fname">Continuous E(X)</div><div class="fval">E(X) = &int; x &middot; f(x) dx</div></div>
+    <div class="formula-item"><div class="fname">Continuous Var(X)</div><div class="fval">Var(X) = E(X&sup2;) &minus; [E(X)]&sup2;</div></div>
+    <div class="formula-item"><div class="fname">Z Standardisation</div><div class="fval">Z = (X &minus; &mu;) / &sigma;</div></div>
+    <div class="formula-item"><div class="fname">Linear function W = aX + b</div><div class="fval">E(W) = a&mu;+b,  Var(W) = a&sup2;&sigma;&sup2;</div></div>
+    <div class="formula-item"><div class="fname">Normal approx. to Binomial</div><div class="fval">&mu; = np,  &sigma;&sup2; = np(1&minus;p)</div></div>
+    <div class="formula-item"><div class="fname">Valid when</div><div class="fval">np &ge; 5  and  n(1&minus;p) &ge; 5</div></div>
+  </div>
+</div>
+
+<div class="section-header">
+  <span class="section-tag">Section A</span>
+  <span class="section-title">Multiple Choice Questions</span>
+</div>
+<div class="section-note">
+  Answer all 10 questions. Choose <strong>ONE</strong> answer per question. No marks deducted for wrong answers.<br>
+  Each question: <strong>2 marks</strong> for the correct answer + <strong>3 marks</strong> for explanation. Click &ldquo;Show worked solution&rdquo; after answering to practise your explanation.
+</div>
+
+<!-- Q1 -->
+<div class="q-card" id="qcard1">
+  <div class="q-header"><div class="q-num">Q1</div><div class="q-text">Which of the following statements about a continuous random variable <span class="math">X</span> is <strong>correct</strong>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(1,'A')"><span class="opt-letter">A</span><span class="opt-text">The probability that X takes any single specific value is always greater than zero.</span></div>
+    <div class="opt" onclick="selectOpt(1,'B')"><span class="opt-letter">B</span><span class="opt-text">The probability that X takes any single specific value is exactly zero; only intervals have positive probability.</span></div>
+    <div class="opt" onclick="selectOpt(1,'C')"><span class="opt-letter">C</span><span class="opt-text">The probability density function f(x) must always be less than or equal to 1 for all values of x.</span></div>
+    <div class="opt" onclick="selectOpt(1,'D')"><span class="opt-letter">D</span><span class="opt-text">The cumulative distribution function F(x) can take values greater than 1.</span></div>
+    <div class="opt" onclick="selectOpt(1,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb1"></div>
+  <button class="btn-solution" id="solbtn1" onclick="toggleSol(1)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol1">
+    <strong>Correct answer: B</strong><br><br>
+    For any continuous RV, P(X = c) = 0 for any specific constant c, because the integral over a single point has zero width and therefore zero area. Only intervals carry positive probability: P(a &lt; X &lt; b) = &int;<sub>a</sub><sup>b</sup> f(x)dx &gt; 0.<br><br>
+    <strong>Why others are wrong:</strong><br>
+    A &mdash; This describes discrete RVs.<br>
+    C &mdash; f(x) can exceed 1 (e.g., f(x) = 2 on [0, 0.5] integrates to 1 and is valid).<br>
+    D &mdash; F(x) = P(X &le; x) is always between 0 and 1.
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card" id="qcard2">
+  <div class="q-header"><div class="q-num">Q2</div><div class="q-text">Which of the following is a <strong>valid</strong> probability density function on the interval <span class="math">0 &le; x &le; 3</span>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(2,'A')"><span class="opt-letter">A</span><span class="opt-text"><span class="math">f(x) = 1/3</span> for 0 &le; x &le; 3, and 0 otherwise.</span></div>
+    <div class="opt" onclick="selectOpt(2,'B')"><span class="opt-letter">B</span><span class="opt-text"><span class="math">f(x) = x</span> for 0 &le; x &le; 3, and 0 otherwise.</span></div>
+    <div class="opt" onclick="selectOpt(2,'C')"><span class="opt-letter">C</span><span class="opt-text"><span class="math">f(x) = &minus;0.5x</span> for 0 &le; x &le; 3, and 0 otherwise.</span></div>
+    <div class="opt" onclick="selectOpt(2,'D')"><span class="opt-letter">D</span><span class="opt-text"><span class="math">f(x) = 2x</span> for 0 &le; x &le; 3, and 0 otherwise.</span></div>
+    <div class="opt" onclick="selectOpt(2,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb2"></div>
+  <button class="btn-solution" id="solbtn2" onclick="toggleSol(2)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol2">
+    <strong>Correct answer: A</strong><br><br>
+    A valid PDF needs: (i) f(x) &ge; 0, and (ii) total area = 1.<br><br>
+    <strong>A:</strong> f(x) = 1/3 &ge; 0 &checkmark;. &int;<sub>0</sub><sup>3</sup>(1/3)dx = 1 &checkmark; <em>Valid.</em><br>
+    <strong>B:</strong> &int;<sub>0</sub><sup>3</sup> x dx = 9/2 = 4.5 &ne; 1 &cross;<br>
+    <strong>C:</strong> f(x) = &minus;0.5x &lt; 0 for x &gt; 0 &cross; (density cannot be negative)<br>
+    <strong>D:</strong> &int;<sub>0</sub><sup>3</sup> 2x dx = 9 &ne; 1 &cross;
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card" id="qcard3">
+  <div class="q-header"><div class="q-num">Q3</div><div class="q-text">Consider the PDF <span class="math">f(x) = (3/8)x&sup2;</span> for <span class="math">0 &le; x &le; 2</span>, 0 otherwise. What is <span class="math">E(X)</span>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(3,'A')"><span class="opt-letter">A</span><span class="opt-text">1.50</span></div>
+    <div class="opt" onclick="selectOpt(3,'B')"><span class="opt-letter">B</span><span class="opt-text">1.20</span></div>
+    <div class="opt" onclick="selectOpt(3,'C')"><span class="opt-letter">C</span><span class="opt-text">0.75</span></div>
+    <div class="opt" onclick="selectOpt(3,'D')"><span class="opt-letter">D</span><span class="opt-text">2.00</span></div>
+    <div class="opt" onclick="selectOpt(3,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb3"></div>
+  <button class="btn-solution" id="solbtn3" onclick="toggleSol(3)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol3">
+    <strong>Correct answer: A (E(X) = 1.50)</strong><br><br>
+    E(X) = &int;<sub>0</sub><sup>2</sup> x &middot; (3/8)x&sup2; dx = (3/8) &int;<sub>0</sub><sup>2</sup> x&sup3; dx = (3/8)[x&sup4;/4]<sub>0</sub><sup>2</sup> = (3/8)(4) = <strong>1.5</strong><br><br>
+    Validity check: &int;<sub>0</sub><sup>2</sup>(3/8)x&sup2;dx = (3/8)[x&sup3;/3]<sub>0</sub><sup>2</sup> = (3/8)(8/3) = 1 &checkmark;
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card" id="qcard4">
+  <div class="q-header"><div class="q-num">Q4</div><div class="q-text">Waiting time at a bus stop is uniformly distributed between 5 and 25 minutes. Which statement correctly gives the mean and variance?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(4,'A')"><span class="opt-letter">A</span><span class="opt-text">Mean = 15 minutes, Variance = 33.33 minutes&sup2;</span></div>
+    <div class="opt" onclick="selectOpt(4,'B')"><span class="opt-letter">B</span><span class="opt-text">Mean = 15 minutes, Variance = 20 minutes&sup2;</span></div>
+    <div class="opt" onclick="selectOpt(4,'C')"><span class="opt-letter">C</span><span class="opt-text">Mean = 10 minutes, Variance = 33.33 minutes&sup2;</span></div>
+    <div class="opt" onclick="selectOpt(4,'D')"><span class="opt-letter">D</span><span class="opt-text">Mean = 15 minutes, Variance = 3.33 minutes&sup2;</span></div>
+    <div class="opt" onclick="selectOpt(4,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb4"></div>
+  <button class="btn-solution" id="solbtn4" onclick="toggleSol(4)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol4">
+    <strong>Correct answer: A</strong><br><br>
+    Uniform(a=5, b=25):<br>
+    Mean: &mu; = (5+25)/2 = <strong>15 minutes</strong><br>
+    Variance: &sigma;&sup2; = (25&minus;5)&sup2;/12 = 400/12 = <strong>33.33 minutes&sup2;</strong><br>
+    Standard deviation: &sigma; = &radic;33.33 &asymp; 5.77 minutes
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card" id="qcard5">
+  <div class="q-header"><div class="q-num">Q5</div><div class="q-text">Machine off-line time is uniformly distributed between 20 and 80 minutes. What is the probability it is off-line for <strong>between 35 and 65 minutes</strong>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(5,'A')"><span class="opt-letter">A</span><span class="opt-text">0.30</span></div>
+    <div class="opt" onclick="selectOpt(5,'B')"><span class="opt-letter">B</span><span class="opt-text">0.40</span></div>
+    <div class="opt" onclick="selectOpt(5,'C')"><span class="opt-letter">C</span><span class="opt-text">0.50</span></div>
+    <div class="opt" onclick="selectOpt(5,'D')"><span class="opt-letter">D</span><span class="opt-text">0.60</span></div>
+    <div class="opt" onclick="selectOpt(5,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb5"></div>
+  <button class="btn-solution" id="solbtn5" onclick="toggleSol(5)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol5">
+    <strong>Correct answer: C (0.50)</strong><br><br>
+    X ~ Uniform(20, 80). For uniform distributions: P(c &le; X &le; d) = (d&minus;c)/(b&minus;a)<br><br>
+    P(35 &le; X &le; 65) = (65&minus;35)/(80&minus;20) = 30/60 = <strong>0.50</strong><br><br>
+    The interval [35, 65] is exactly half the total range, so we expect probability = 0.5.
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card" id="qcard6">
+  <div class="q-header"><div class="q-num">Q6</div><div class="q-text">Let <span class="math">W = 3X + 5</span> where X has mean 4 and variance 9. What are E(W) and Var(W)?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(6,'A')"><span class="opt-letter">A</span><span class="opt-text">E(W) = 17, Var(W) = 81</span></div>
+    <div class="opt" onclick="selectOpt(6,'B')"><span class="opt-letter">B</span><span class="opt-text">E(W) = 17, Var(W) = 27</span></div>
+    <div class="opt" onclick="selectOpt(6,'C')"><span class="opt-letter">C</span><span class="opt-text">E(W) = 12, Var(W) = 81</span></div>
+    <div class="opt" onclick="selectOpt(6,'D')"><span class="opt-letter">D</span><span class="opt-text">E(W) = 17, Var(W) = 32</span></div>
+    <div class="opt" onclick="selectOpt(6,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb6"></div>
+  <button class="btn-solution" id="solbtn6" onclick="toggleSol(6)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol6">
+    <strong>Correct answer: A</strong><br><br>
+    Rules for linear functions W = aX + b:<br>
+    E(W) = a&middot;E(X) + b = 3(4) + 5 = 12 + 5 = <strong>17</strong><br>
+    Var(W) = a&sup2;&middot;Var(X) = 9 &times; 9 = <strong>81</strong><br><br>
+    Key point: constants (the +5) shift the mean but do NOT affect variance. SD(W) = &radic;81 = 9.
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card" id="qcard7">
+  <div class="q-header"><div class="q-num">Q7</div><div class="q-text">Let <span class="math">X ~ N(50, 100)</span>. Find <span class="math">P(X &gt; 65)</span> using standard normal tables.</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(7,'A')"><span class="opt-letter">A</span><span class="opt-text">0.9332</span></div>
+    <div class="opt" onclick="selectOpt(7,'B')"><span class="opt-letter">B</span><span class="opt-text">0.4332</span></div>
+    <div class="opt" onclick="selectOpt(7,'C')"><span class="opt-letter">C</span><span class="opt-text">0.0668</span></div>
+    <div class="opt" onclick="selectOpt(7,'D')"><span class="opt-letter">D</span><span class="opt-text">0.1336</span></div>
+    <div class="opt" onclick="selectOpt(7,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb7"></div>
+  <button class="btn-solution" id="solbtn7" onclick="toggleSol(7)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol7">
+    <strong>Correct answer: C (0.0668)</strong><br><br>
+    X ~ N(&mu;=50, &sigma;&sup2;=100), so &sigma; = 10.<br><br>
+    Standardise: Z = (65&minus;50)/10 = <strong>1.5</strong><br>
+    Table: &Phi;(1.5) = 0.9332<br>
+    P(X &gt; 65) = P(Z &gt; 1.5) = 1 &minus; 0.9332 = <strong>0.0668</strong><br><br>
+    Only about 6.7% of values lie more than 1.5 standard deviations above the mean.
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="q-card" id="qcard8">
+  <div class="q-header"><div class="q-num">Q8</div><div class="q-text">Let <span class="math">X ~ N(200, 225)</span>. Find <span class="math">P(185 &lt; X &lt; 215)</span>.</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(8,'A')"><span class="opt-letter">A</span><span class="opt-text">0.3413</span></div>
+    <div class="opt" onclick="selectOpt(8,'B')"><span class="opt-letter">B</span><span class="opt-text">0.6826</span></div>
+    <div class="opt" onclick="selectOpt(8,'C')"><span class="opt-letter">C</span><span class="opt-text">0.9544</span></div>
+    <div class="opt" onclick="selectOpt(8,'D')"><span class="opt-letter">D</span><span class="opt-text">0.4772</span></div>
+    <div class="opt" onclick="selectOpt(8,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb8"></div>
+  <button class="btn-solution" id="solbtn8" onclick="toggleSol(8)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol8">
+    <strong>Correct answer: B (0.6826)</strong><br><br>
+    X ~ N(200, 225) so &mu;=200, &sigma;=15.<br><br>
+    Z<sub>1</sub> = (185&minus;200)/15 = &minus;1.0 &nbsp;&nbsp; Z<sub>2</sub> = (215&minus;200)/15 = 1.0<br><br>
+    P(&minus;1 &lt; Z &lt; 1) = &Phi;(1) &minus; &Phi;(&minus;1) = 0.8413 &minus; 0.1587 = <strong>0.6826</strong><br><br>
+    This is the &ldquo;68% rule&rdquo;: approximately 68.26% of observations lie within &plusmn;1 standard deviation of the mean.
+  </div>
+</div>
+
+<!-- Q9 -->
+<div class="q-card" id="qcard9">
+  <div class="q-header"><div class="q-num">Q9</div><div class="q-text">A fair coin is tossed 100 times. Using the normal approximation to the binomial, what is the probability of getting <strong>between 45 and 55 heads</strong>?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(9,'A')"><span class="opt-letter">A</span><span class="opt-text">0.3413</span></div>
+    <div class="opt" onclick="selectOpt(9,'B')"><span class="opt-letter">B</span><span class="opt-text">0.5000</span></div>
+    <div class="opt" onclick="selectOpt(9,'C')"><span class="opt-letter">C</span><span class="opt-text">0.6826</span></div>
+    <div class="opt" onclick="selectOpt(9,'D')"><span class="opt-letter">D</span><span class="opt-text">0.9544</span></div>
+    <div class="opt" onclick="selectOpt(9,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb9"></div>
+  <button class="btn-solution" id="solbtn9" onclick="toggleSol(9)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol9">
+    <strong>Correct answer: C (0.6826)</strong><br><br>
+    n=100, p=0.5. Validity: np=50&ge;5, n(1&minus;p)=50&ge;5 &checkmark;<br><br>
+    &mu; = np = 50, &sigma;&sup2; = np(1&minus;p) = 25, &sigma; = 5<br><br>
+    Z<sub>1</sub> = (45&minus;50)/5 = &minus;1.0, &nbsp; Z<sub>2</sub> = (55&minus;50)/5 = 1.0<br>
+    P = &Phi;(1) &minus; &Phi;(&minus;1) = 0.8413 &minus; 0.1587 = <strong>0.6826</strong>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card" id="qcard10">
+  <div class="q-header"><div class="q-num">Q10</div><div class="q-text">Suppose X is normally distributed with mean 8 and standard deviation 5. Consider statements (i)&ndash;(iii):<br>
+  (i) P(X &lt; 8) = 0.5&nbsp;&nbsp; (ii) P(X &gt; 13) = P(X &lt; 3)&nbsp;&nbsp; (iii) P(6 &lt; X &lt; 10) &asymp; 0.31<br>
+  Which combination is correct?</div></div>
+  <div class="options">
+    <div class="opt" onclick="selectOpt(10,'A')"><span class="opt-letter">A</span><span class="opt-text">(i) only.</span></div>
+    <div class="opt" onclick="selectOpt(10,'B')"><span class="opt-letter">B</span><span class="opt-text">(i) and (ii) only.</span></div>
+    <div class="opt" onclick="selectOpt(10,'C')"><span class="opt-letter">C</span><span class="opt-text">(i), (ii), and (iii).</span></div>
+    <div class="opt" onclick="selectOpt(10,'D')"><span class="opt-letter">D</span><span class="opt-text">(ii) and (iii) only.</span></div>
+    <div class="opt" onclick="selectOpt(10,'E')"><span class="opt-letter">E</span><span class="opt-text">None of the above.</span></div>
+  </div>
+  <div class="q-feedback" id="fb10"></div>
+  <button class="btn-solution" id="solbtn10" onclick="toggleSol(10)" style="display:none">&#9658; Show worked solution</button>
+  <div class="solution-box" id="sol10">
+    <strong>Correct answer: C &mdash; all three are correct.</strong><br><br>
+    <strong>(i):</strong> P(X &lt; &mu;) = 0.5 by symmetry of the normal distribution. &checkmark;<br><br>
+    <strong>(ii):</strong> P(X &gt; 13) = P(Z &gt; (13&minus;8)/5) = P(Z &gt; 1) = P(Z &lt; &minus;1) = P(X &lt; 3). By symmetry these are equal. &checkmark;<br><br>
+    <strong>(iii):</strong> Z<sub>1</sub> = (6&minus;8)/5 = &minus;0.4, Z<sub>2</sub> = (10&minus;8)/5 = 0.4.<br>
+    P = &Phi;(0.4)&minus;&Phi;(&minus;0.4) = 0.6554&minus;0.3446 = 0.3108 &asymp; <strong>0.31</strong> &checkmark;
+  </div>
+</div>
+
+<!-- SECTION B -->
+<div class="section-header">
+  <span class="section-tag">Section B</span>
+  <span class="section-title">Long Answer Questions</span>
+</div>
+<div class="section-note">
+  Answer any <strong>TWO</strong> of the four questions. Each is worth 25% of the overall mark. <strong>Show all working.</strong> Click the tabs to navigate. Click &ldquo;Show solution&rdquo; to reveal worked answers.
+</div>
+
+<div class="b-tabs">
+  <button class="b-tab active" onclick="showBTab(11)">Q11 &mdash; PDF Calculations</button>
+  <button class="b-tab" onclick="showBTab(12)">Q12 &mdash; Uniform Distribution</button>
+  <button class="b-tab" onclick="showBTab(13)">Q13 &mdash; Normal Distribution</button>
+  <button class="b-tab" onclick="showBTab(14)">Q14 &mdash; Normal Approx. to Binomial</button>
+</div>
+
+<!-- Q11 -->
+<div class="b-content active" id="bc11">
+<div class="b-card">
+  <div class="b-card-header">
+    <span class="b-q-num">Q11</span>
+    <span class="b-q-title">Probability Density Functions &mdash; E(X), Var(X) and Probabilities</span>
+    <span class="b-marks">25% of exam</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">
+      Consider the following probability density function:<br><br>
+      <span style="font-family:'EB Garamond',serif;font-style:italic;font-size:16px">
+        f(x) = (2/9) x(3 &minus; x) &nbsp; for 0 &le; x &le; 3, &nbsp; and 0 otherwise.
+      </span>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(a)</span><span class="b-part-text">Verify that f(x) is a valid probability density function. <span class="marks-tag">20 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11a">
+        <h4>Worked Solution</h4>
+        <div class="step"><strong>Condition (i): f(x) &ge; 0.</strong> On [0,3]: x&ge;0 and (3&minus;x)&ge;0, so f(x)=(2/9)x(3&minus;x)&ge;0. &checkmark;</div>
+        <div class="step"><strong>Condition (ii): Total area = 1.</strong> &int;<sub>0</sub><sup>3</sup>(2/9)x(3&minus;x)dx = (2/9)&int;<sub>0</sub><sup>3</sup>(3x&minus;x&sup2;)dx</div>
+        <div class="step">= (2/9)[3x&sup2;/2 &minus; x&sup3;/3]<sub>0</sub><sup>3</sup> = (2/9)[(27/2) &minus; (9)] = (2/9)(13.5&minus;9) = (2/9)(4.5) = <strong>1</strong> &checkmark;</div>
+        <div class="step">Both conditions satisfied &rArr; f(x) is a valid PDF.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(b)</span><span class="b-part-text">Derive E(X). <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11b">
+        <h4>Worked Solution</h4>
+        <div class="step">E(X) = &int;<sub>0</sub><sup>3</sup> x&middot;(2/9)x(3&minus;x)dx = (2/9)&int;<sub>0</sub><sup>3</sup>(3x&sup2;&minus;x&sup3;)dx</div>
+        <div class="step">= (2/9)[x&sup3; &minus; x&sup4;/4]<sub>0</sub><sup>3</sup> = (2/9)[27 &minus; 81/4] = (2/9)(27&minus;20.25)</div>
+        <div class="step">= (2/9)(6.75) = 13.5/9 = <strong>E(X) = 1.5</strong></div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(c)</span><span class="b-part-text">Derive Var(X). <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11c">
+        <h4>Worked Solution</h4>
+        <div class="step">Use Var(X) = E(X&sup2;) &minus; [E(X)]&sup2;</div>
+        <div class="step">E(X&sup2;) = (2/9)&int;<sub>0</sub><sup>3</sup>x&sup2;&middot;x(3&minus;x)dx = (2/9)&int;<sub>0</sub><sup>3</sup>(3x&sup3;&minus;x&sup4;)dx</div>
+        <div class="step">= (2/9)[3x&sup4;/4 &minus; x&sup5;/5]<sub>0</sub><sup>3</sup> = (2/9)[(243/4)&minus;(243/5)] = (2/9)(243)(1/20) = 486/180 = <strong>2.70</strong></div>
+        <div class="step">Var(X) = 2.70 &minus; (1.5)&sup2; = 2.70 &minus; 2.25 = <strong>0.45</strong></div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(d)</span><span class="b-part-text">Calculate P(1 &le; X &le; 2). <span class="marks-tag">30 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('11d')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs11d">
+        <h4>Worked Solution</h4>
+        <div class="step">P(1&le;X&le;2) = (2/9)&int;<sub>1</sub><sup>2</sup>(3x&minus;x&sup2;)dx = (2/9)[3x&sup2;/2 &minus; x&sup3;/3]<sub>1</sub><sup>2</sup></div>
+        <div class="step">At x=2: 6 &minus; 8/3 = 10/3. &nbsp; At x=1: 3/2 &minus; 1/3 = 7/6</div>
+        <div class="step">= (2/9)(10/3 &minus; 7/6) = (2/9)(20/6 &minus; 7/6) = (2/9)(13/6) = 26/54 = 13/27 &asymp; <strong>0.48</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Q12 -->
+<div class="b-content" id="bc12">
+<div class="b-card">
+  <div class="b-card-header">
+    <span class="b-q-num">Q12</span>
+    <span class="b-q-title">The Uniform Distribution &mdash; Properties and Applications</span>
+    <span class="b-marks">25% of exam</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">The time between customer arrivals at a bank (in minutes) follows a uniform distribution between <strong>2 minutes</strong> and <strong>10 minutes</strong>. Let X denote the inter-arrival time.</div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(a)</span><span class="b-part-text">State the key properties that define a uniform distribution. Write down f(x) for this problem. <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12a">
+        <h4>Worked Solution</h4>
+        <div class="step"><strong>Properties:</strong> (1) All outcomes in [a,b] are equally likely. (2) The probability of an event is proportional to interval length. (3) The PDF is constant (flat/rectangular shape).</div>
+        <div class="step"><strong>PDF:</strong> f(x) = 1/(b&minus;a) = 1/(10&minus;2) = 1/8 = 0.125, for 2 &le; x &le; 10, and 0 otherwise.</div>
+        <div class="step"><strong>Shape:</strong> A flat horizontal line at height 0.125. Total area = 0.125 &times; 8 = 1 &checkmark;</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(b)</span><span class="b-part-text">Calculate the mean and variance. <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12b">
+        <h4>Worked Solution</h4>
+        <div class="step">Mean: &mu; = (a+b)/2 = (2+10)/2 = <strong>6 minutes</strong></div>
+        <div class="step">Variance: &sigma;&sup2; = (b&minus;a)&sup2;/12 = (10&minus;2)&sup2;/12 = 64/12 &asymp; <strong>5.33 minutes&sup2;</strong></div>
+        <div class="step">Standard deviation: &sigma; = &radic;(16/3) &asymp; 2.31 minutes</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(c)</span><span class="b-part-text">Find P(X &gt; 7) and interpret the result in context. <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12c">
+        <h4>Worked Solution</h4>
+        <div class="step">P(X &gt; 7) = (10&minus;7)/(10&minus;2) = 3/8 = <strong>0.375</strong></div>
+        <div class="step"><strong>Interpretation:</strong> There is a 37.5% probability that more than 7 minutes elapse between successive customer arrivals. In roughly 3 out of every 8 gaps, the bank teller faces an idle period exceeding 7 minutes.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(d)</span><span class="b-part-text">Find P(3 &lt; X &lt; 8). What proportion of arrival gaps fall within one standard deviation of the mean? Compare briefly with the normal distribution. <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('12d')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs12d">
+        <h4>Worked Solution</h4>
+        <div class="step">P(3 &lt; X &lt; 8) = (8&minus;3)/(10&minus;2) = 5/8 = <strong>0.625</strong></div>
+        <div class="step"><strong>Within &plusmn;1 SD:</strong> &mu; &plusmn; &sigma; = 6 &plusmn; 2.31 = (3.69, 8.31)</div>
+        <div class="step">P(3.69 &lt; X &lt; 8.31) = (8.31&minus;3.69)/8 = 4.62/8 &asymp; <strong>0.578</strong></div>
+        <div class="step"><strong>Comparison:</strong> For a normal distribution P(&mu;&pm;&sigma;) &asymp; 68.3%. The uniform gives &asymp;57.8%, which is less concentrated around the mean &mdash; reflecting its flat shape with equal probability everywhere in [a,b].</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Q13 -->
+<div class="b-content" id="bc13">
+<div class="b-card">
+  <div class="b-card-header">
+    <span class="b-q-num">Q13</span>
+    <span class="b-q-title">The Normal Distribution &mdash; Z-Scores and Probabilities</span>
+    <span class="b-marks">25% of exam</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">Annual salaries at a firm are normally distributed with mean <strong>&pound;35,000</strong> and standard deviation <strong>&pound;5,000</strong>. Let X denote an employee&rsquo;s annual salary.</div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(a)</span><span class="b-part-text">State four key properties of the normal distribution. Why is it important in economics and statistics? <span class="marks-tag">20 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13a">
+        <h4>Worked Solution &mdash; Four Properties</h4>
+        <div class="step">1. <strong>Symmetric:</strong> Mean = median = mode; the distribution is a mirror image about &mu;.</div>
+        <div class="step">2. <strong>Bell-shaped:</strong> Probability is highest at the mean and tapers symmetrically in both directions.</div>
+        <div class="step">3. <strong>Defined by &mu; and &sigma;&sup2;:</strong> Two parameters completely characterise the distribution.</div>
+        <div class="step">4. <strong>Asymptotic tails:</strong> Tails approach but never reach zero; the range is (&minus;&infin;, +&infin;).</div>
+        <div class="step"><strong>Importance:</strong> The Central Limit Theorem guarantees that sample means converge to normality for large n, regardless of population shape. This underpins confidence intervals, hypothesis testing, and regression inference.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(b)</span><span class="b-part-text">Find P(X &gt; &pound;42,000). <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13b">
+        <h4>Worked Solution</h4>
+        <div class="step">Z = (42,000 &minus; 35,000)/5,000 = 7,000/5,000 = <strong>1.40</strong></div>
+        <div class="step">P(X &gt; 42,000) = P(Z &gt; 1.40) = 1 &minus; &Phi;(1.40) = 1 &minus; 0.9192 = <strong>0.0808</strong></div>
+        <div class="step"><strong>Interpretation:</strong> Approximately 8.1% of employees earn more than &pound;42,000 per year.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(c)</span><span class="b-part-text">Find P(&pound;28,000 &lt; X &lt; &pound;40,000). <span class="marks-tag">30 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13c">
+        <h4>Worked Solution</h4>
+        <div class="step">Z<sub>1</sub> = (28,000&minus;35,000)/5,000 = <strong>&minus;1.40</strong></div>
+        <div class="step">Z<sub>2</sub> = (40,000&minus;35,000)/5,000 = <strong>1.00</strong></div>
+        <div class="step">P = &Phi;(1.00) &minus; &Phi;(&minus;1.40) = 0.8413 &minus; 0.0808 = <strong>0.7605</strong></div>
+        <div class="step"><strong>Interpretation:</strong> About 76% of employees earn between &pound;28,000 and &pound;40,000.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(d)</span><span class="b-part-text">What salary level is exceeded by only 10% of employees? (Find the 90th percentile.) <span class="marks-tag">25 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('13d')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs13d">
+        <h4>Worked Solution</h4>
+        <div class="step">We need x: P(X &gt; x) = 0.10 &rArr; P(X &le; x) = 0.90</div>
+        <div class="step">From Z-table: &Phi;(z) = 0.90 &rArr; z = <strong>1.2816</strong></div>
+        <div class="step">Reverse standardise: x = &mu; + z&middot;&sigma; = 35,000 + 1.2816 &times; 5,000 = <strong>&pound;41,408</strong></div>
+        <div class="step"><strong>Interpretation:</strong> Only the top 10% of employees earn more than &pound;41,408 per year.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Q14 -->
+<div class="b-content" id="bc14">
+<div class="b-card">
+  <div class="b-card-header">
+    <span class="b-q-num">Q14</span>
+    <span class="b-q-title">Normal Approximation to the Binomial Distribution</span>
+    <span class="b-marks">25% of exam</span>
+  </div>
+  <div class="b-body">
+    <div class="b-intro">A manufacturing process produces items where <strong>30%</strong> are defective. In a batch of <strong>150 items</strong>, let X denote the number of defective items.</div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(a)</span><span class="b-part-text">State the conditions under which the normal approximation to the binomial is valid. Verify them here, and state the parameters of the approximating normal distribution. <span class="marks-tag">20 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('14a')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs14a">
+        <h4>Worked Solution</h4>
+        <div class="step"><strong>Conditions:</strong> np &ge; 5 AND n(1&minus;p) &ge; 5.</div>
+        <div class="step"><strong>Verification:</strong> np = 150&times;0.30 = 45 &ge; 5 &checkmark; &nbsp; n(1&minus;p) = 150&times;0.70 = 105 &ge; 5 &checkmark;</div>
+        <div class="step"><strong>Parameters:</strong> &mu; = np = <strong>45</strong>, &sigma;&sup2; = np(1&minus;p) = 150(0.3)(0.7) = <strong>31.50</strong>, &sigma; = &radic;31.5 &asymp; <strong>5.612</strong></div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(b)</span><span class="b-part-text">Using the normal approximation, find P(X &le; 40) and interpret your result. <span class="marks-tag">35 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('14b')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs14b">
+        <h4>Worked Solution</h4>
+        <div class="step">Z = (40 &minus; 45)/5.612 = &minus;5/5.612 &asymp; <strong>&minus;0.89</strong></div>
+        <div class="step">P(X &le; 40) &asymp; P(Z &le; &minus;0.89) = 1 &minus; &Phi;(0.89) = 1 &minus; 0.8133 = <strong>0.1867</strong></div>
+        <div class="step"><strong>Interpretation:</strong> There is approximately an 18.7% probability that 40 or fewer items are defective. Since the expected number is 45, this represents a below-average defect count.</div>
+      </div>
+    </div>
+    <div class="b-part">
+      <div class="b-part-header"><span class="b-part-label">(c)</span><span class="b-part-text">Find P(35 &le; X &le; 55) and explain what this interval represents in terms of standard deviations from the mean. <span class="marks-tag">45 marks</span></span></div>
+      <button class="btn-show-soln" onclick="toggleBSol('14c')"><span>&#9658;</span> Show solution</button>
+      <div class="b-solution" id="bs14c">
+        <h4>Worked Solution</h4>
+        <div class="step">Z<sub>1</sub> = (35&minus;45)/5.612 = &minus;10/5.612 &asymp; <strong>&minus;1.78</strong></div>
+        <div class="step">Z<sub>2</sub> = (55&minus;45)/5.612 = 10/5.612 &asymp; <strong>1.78</strong></div>
+        <div class="step">P = &Phi;(1.78) &minus; &Phi;(&minus;1.78) = 2&Phi;(1.78) &minus; 1 = 2(0.9625) &minus; 1 = <strong>0.9250</strong></div>
+        <div class="step"><strong>Interpretation:</strong> The interval [35, 55] spans &plusmn;1.78 standard deviations from the expected defect count of 45. There is a 92.5% probability the number of defectives falls in this range &mdash; closely approaching the &ldquo;95% = &plusmn;2&sigma;&rdquo; rule.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="exam-footer">
+  ES12010 Statistics for Economics &middot; Lecture 4 Practice Exam &middot; University of Bath<br>
+  Covers all Lecture 4 topics: Continuous RVs, PDF/CDF, Uniform Distribution, Linear Functions, Normal Distribution, Standard Normal, Normal Approximation to Binomial
+</div>
+</div>
+
+<script>
+const answers={1:'B',2:'A',3:'A',4:'A',5:'C',6:'A',7:'C',8:'B',9:'C',10:'C'};
+const selected={};
+let score=0;
+function selectOpt(q,letter){
+  if(selected[q])return;
+  selected[q]=letter;
+  const card=document.getElementById('qcard'+q);
+  const opts=card.querySelectorAll('.opt');
+  const fb=document.getElementById('fb'+q);
+  const solbtn=document.getElementById('solbtn'+q);
+  opts.forEach(o=>{
+    const l=o.querySelector('.opt-letter').textContent;
+    o.onclick=null;
+    if(l===answers[q])o.classList.add('correct');
+    if(l===letter&&letter!==answers[q])o.classList.add('wrong');
+  });
+  fb.classList.add('show');
+  if(letter===answers[q]){fb.classList.add('fb-correct');fb.innerHTML='&#10003; Correct! Well done.';score++;}
+  else{fb.classList.add('fb-wrong');fb.innerHTML='&#10007; Incorrect. Correct answer is <strong>'+answers[q]+'</strong>. See the worked solution.';}
+  solbtn.style.display='block';
+  updateScore();
+}
+function toggleSol(q){
+  const sol=document.getElementById('sol'+q);
+  const btn=document.getElementById('solbtn'+q);
+  sol.classList.toggle('show');
+  btn.textContent=sol.classList.contains('show')?'&#9660; Hide solution':'&#9658; Show worked solution';
+}
+function toggleBSol(id){
+  const el=document.getElementById('bs'+id);
+  const btn=el.previousElementSibling;
+  el.classList.toggle('show');
+  btn.innerHTML=el.classList.contains('show')?'<span>&#9660;</span> Hide solution':'<span>&#9658;</span> Show solution';
+}
+function updateScore(){
+  document.getElementById('scoreVal').textContent=score+' / 10';
+  document.getElementById('scoreFill').style.width=(score/10*100)+'%';
+}
+function revealAll(){
+  for(let q=1;q<=10;q++){
+    if(!selected[q])selectOpt(q,answers[q]);
+    const sol=document.getElementById('sol'+q);
+    const btn=document.getElementById('solbtn'+q);
+    sol.classList.add('show');
+    btn.style.display='block';
+    btn.textContent='&#9660; Hide solution';
+  }
+}
+function showBTab(n){
+  document.querySelectorAll('.b-tab').forEach((t,i)=>{t.classList.toggle('active',i===[11,12,13,14].indexOf(n));});
+  document.querySelectorAll('.b-content').forEach(c=>{c.classList.remove('active');});
+  document.getElementById('bc'+n).classList.add('active');
+}
+</script>
+</body>
+</html>

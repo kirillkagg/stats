@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 1 Practice Exam</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
+  :root {
+    --ink: #1a1a2e; --muted: #5a5a7a; --rule: #d0d0e0; --highlight: #f0f0fa;
+    --accent: #2e3192; --answer-bg: #eef6f0; --answer-border: #2e7d52;
+    --tag-a: #e8eaf8; --tag-b: #fff3e0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Serif 4', Georgia, serif; color: var(--ink); background: #fafafa; line-height: 1.7; padding: 2rem 1rem; }
+  .page { max-width: 760px; margin: 0 auto; background: white; padding: 3rem 3.5rem; border: 1px solid var(--rule); }
+  .header { text-align: center; border-bottom: 2px solid var(--ink); padding-bottom: 1.2rem; margin-bottom: 1.5rem; }
+  .header .uni { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .header h1 { font-size: 20px; font-weight: 600; margin: 0.4rem 0 0.2rem; }
+  .header .sub { font-size: 14px; color: var(--muted); font-style: italic; }
+  .header .meta { margin-top: 0.8rem; font-family: 'Inter', sans-serif; font-size: 12px; color: var(--muted); display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+  .infobox { background: var(--highlight); border-left: 3px solid var(--accent); padding: 0.9rem 1.2rem; margin-bottom: 2rem; font-family: 'Inter', sans-serif; font-size: 12.5px; line-height: 1.6; }
+  .infobox strong { color: var(--accent); }
+  .coverage-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 6px; margin-bottom: 2rem; }
+  .coverage-item { font-family: 'Inter', sans-serif; font-size: 11px; padding: 4px 10px; border-radius: 4px; display: flex; align-items: center; gap: 5px; }
+  .cov-done { background: #E1F5EE; color: #0F6E56; }
+  .cov-miss { background: #FCEBEB; color: #A32D2D; }
+  .section-header { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: white; background: var(--accent); padding: 6px 14px; margin: 2.5rem 0 1.2rem; display: inline-block; }
+  .section-note { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--muted); margin-bottom: 1.5rem; }
+  .question { margin-bottom: 2.2rem; }
+  .q-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 0.6rem; flex-wrap: wrap; }
+  .q-num { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; background: var(--tag-a); color: var(--accent); padding: 2px 9px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
+  .q-num.secb { background: var(--tag-b); color: #7a4000; }
+  .topic-tag { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--muted); border: 1px solid var(--rule); padding: 1px 7px; border-radius: 10px; }
+  .q-text { font-size: 14.5px; line-height: 1.65; }
+  .options { margin: 0.8rem 0 0 0; list-style: none; }
+  .options li { padding: 5px 0 5px 1.6rem; position: relative; font-size: 14px; line-height: 1.55; border-bottom: 0.5px solid #f0f0f0; }
+  .options li:last-child { border-bottom: none; }
+  .options li::before { content: attr(data-opt); position: absolute; left: 0; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; color: var(--accent); top: 6px; }
+  .answer-toggle { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--accent); cursor: pointer; border: 1px solid var(--accent); background: none; padding: 3px 10px; border-radius: 3px; margin-top: 0.6rem; }
+  .answer-toggle:hover { background: var(--tag-a); }
+  .answer-box { display: none; background: var(--answer-bg); border-left: 3px solid var(--answer-border); padding: 0.9rem 1.2rem; margin-top: 0.7rem; font-size: 13.5px; line-height: 1.65; }
+  .answer-box.visible { display: block; }
+  .answer-box .correct { font-family: 'Inter', sans-serif; font-weight: 600; color: var(--answer-border); font-size: 13px; margin-bottom: 0.4rem; }
+  .subpart { margin: 1.2rem 0 0 1rem; padding-left: 1rem; border-left: 2px solid var(--rule); }
+  .subpart-label { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 0.4rem; }
+  .marks { font-family: 'Inter', sans-serif; font-size: 11px; color: white; background: #7a4000; padding: 1px 8px; border-radius: 3px; float: right; margin-top: 2px; }
+  .data-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 13.5px; font-family: 'Inter', sans-serif; }
+  .data-table th { background: var(--highlight); padding: 6px 12px; text-align: center; font-size: 12px; font-weight: 600; border: 1px solid var(--rule); }
+  .data-table td { padding: 5px 12px; text-align: center; border: 1px solid var(--rule); }
+  .divider { border: none; border-top: 1px solid var(--rule); margin: 2rem 0; }
+  .hint { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--muted); font-style: italic; margin-top: 0.4rem; }
+  .new-badge { font-family: 'Inter', sans-serif; font-size: 10px; background: #fff3e0; color: #7a4000; border: 1px solid #f5c87a; padding: 1px 6px; border-radius: 3px; margin-left: 4px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="uni">University of Bath · Department of Economics</div>
+    <h1>ES12010: Statistics for Economics</h1>
+    <div class="sub">Lecture 1 Practice Exam — Descriptive Statistics &amp; Core Concepts</div>
+    <div class="meta">
+      <span>Based on: Lecture 1 slides + past papers 2024–2026</span>
+      <span>Section A: 13 questions · Section B: 1 question</span>
+      <span>Formula sheet assumed available</span>
+    </div>
+  </div>
+
+  <div class="infobox">
+    <strong>Section A:</strong> Choose <em>one</em> answer per question. Write the letter <em>and</em> a brief explanation — 2 marks for the correct answer, 3 marks for explanation (5 marks total per question).<br>
+    <strong>Section B:</strong> Show all working. Numerical answers rounded to 2 decimal places.<br>
+    <strong>Topics covered in this paper:</strong> Population/Sample · Descriptive vs Inferential · Data classification · Skewness · Central tendency · Variance (why n−1) · CV · IQR · Covariance · Correlation
+  </div>
+
+  <!-- SECTION A -->
+  <div class="section-header">Section A — Multiple Choice</div>
+  <p class="section-note">Answer all thirteen questions. 5 marks each (2 for answer, 3 for explanation).</p>
+
+  <!-- Q1 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q1</span><span class="topic-tag">Population · Sample · Parameter · Statistic</span></div>
+    <div class="q-text">Which of the following statements <strong>correctly distinguishes</strong> between a population parameter and a sample statistic?</div>
+    <ul class="options">
+      <li data-opt="A.">A parameter is computed from sample data; a statistic describes the entire population.</li>
+      <li data-opt="B.">A parameter is a numerical value describing a characteristic of a population; a statistic is a numerical value describing a characteristic of a sample.</li>
+      <li data-opt="C.">A statistic is always more accurate than a parameter because it is derived from observed data.</li>
+      <li data-opt="D.">Both parameters and statistics are used exclusively to describe populations.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: B</div>
+      A <em>parameter</em> (e.g. population mean μ, population variance σ²) is a fixed but often unknown value describing the entire population. A <em>statistic</em> (e.g. sample mean x̄, sample variance s²) is calculated from observed sample data and used to estimate the unknown parameter. Option A reverses these definitions. Option C is false — a statistic is subject to sampling variability and is not necessarily more accurate. Option D is incorrect; statistics describe samples, not populations.
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- Q2 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q2</span><span class="topic-tag">Descriptive vs Inferential Statistics</span></div>
+    <div class="q-text">A bank calculates the average monthly balance of all 5,000 of its own current account holders and publishes this in its annual report. A researcher then uses a random sample of 200 of these accounts to estimate the average monthly balance of <em>all UK</em> current account holders. Which statement correctly classifies these two actions?</div>
+    <ul class="options">
+      <li data-opt="A.">Both are examples of inferential statistics, since both involve numerical computation.</li>
+      <li data-opt="B.">The first action is descriptive statistics; the second is inferential statistics.</li>
+      <li data-opt="C.">The first action is inferential statistics, because it uses all 5,000 accounts to draw a conclusion.</li>
+      <li data-opt="D.">The second action is descriptive statistics, since it summarises the 200 accounts in the sample.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: B</div>
+      <em>Descriptive statistics</em> summarise the data observed — computing the mean balance of the bank's own 5,000 customers describes only those customers. <em>Inferential statistics</em> use sample data to draw conclusions about a broader population — the researcher's goal of estimating the UK-wide average from 200 accounts goes beyond the observed data. Option C is wrong: using an entire sub-population descriptively does not make it inferential. Option D is wrong because the researcher's intent is inference, not mere summary.
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- Q3 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q3</span><span class="topic-tag">Data Classification</span></div>
+    <div class="q-text">Consider the following four variables: (i) the number of employees in a firm, (ii) the annual revenue of a firm in £, (iii) a firm's credit rating (AAA, AA, A, BBB…), and (iv) the sector a firm belongs to (e.g. Technology, Finance, Healthcare). Which of the following correctly classifies these variables?</div>
+    <ul class="options">
+      <li data-opt="A.">(i) and (ii) are continuous; (iii) and (iv) are qualitative.</li>
+      <li data-opt="B.">(i) is discrete quantitative; (ii) is continuous quantitative; (iii) is ordinal qualitative; (iv) is nominal qualitative.</li>
+      <li data-opt="C.">(i), (ii), and (iii) are quantitative; only (iv) is qualitative.</li>
+      <li data-opt="D.">(i) and (ii) are discrete; (iii) and (iv) are continuous.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: B</div>
+      (i) Number of employees — <em>discrete</em> quantitative: it takes only whole number values (you cannot have 12.5 employees). (ii) Annual revenue — <em>continuous</em> quantitative: it can take any positive real value (£1,234,567.89…). (iii) Credit rating — <em>ordinal</em> qualitative: the categories have a meaningful order (AAA &gt; AA &gt; A…) but the gap between ratings is not numerically defined. (iv) Sector — <em>nominal</em> qualitative: categories with no inherent ordering. Option A is wrong because (i) is discrete, not continuous. Option C incorrectly treats credit ratings as quantitative.
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- Q4 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q4</span><span class="topic-tag">Central Tendency · Skewness</span></div>
+    <div class="q-text">The annual bonuses (£000s) paid to eight traders at an investment bank are: <strong>10, 12, 14, 15, 16, 18, 20, 95</strong>. Which of the following statements is correct?</div>
+    <ul class="options">
+      <li data-opt="A.">The distribution is negatively skewed, since the mean is pulled below the median by the outlier.</li>
+      <li data-opt="B.">The mean, median, and mode are all equal, indicating a symmetric distribution.</li>
+      <li data-opt="C.">The distribution is positively skewed; the mean exceeds the median because the extreme value of £95,000 pulls the mean upward to the right.</li>
+      <li data-opt="D.">The median is the least appropriate measure of central tendency here because it ignores the extreme value.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: C</div>
+      Mean = (10+12+14+15+16+18+20+95)/8 = 200/8 = <strong>£25,000</strong><br>
+      Median = average of 4th and 5th values (ranked) = (15+16)/2 = <strong>£15,500</strong><br><br>
+      The mean (£25,000) &gt; median (£15,500) — the classic signature of a <em>positively skewed</em> (right-skewed) distribution, where the tail extends to the right. The outlier bonus of £95,000 pulls the mean far above most of the data. In a positively skewed distribution: Mode &lt; Median &lt; Mean. Option A is wrong (it is positively, not negatively, skewed). Option D is incorrect — the median is actually <em>preferred</em> here precisely because it is robust to outliers.
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- Q5 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q5</span><span class="topic-tag">Sample Variance · Why n−1</span></div>
+    <div class="q-text">A sample of four observations has values: <strong>3, 7, 7, 19</strong>. Consider the following two statements:<br><br>(i) The sample variance is 48, calculated by dividing by (n−1) = 3.<br>(ii) Dividing by n−1 rather than n produces an <em>unbiased</em> estimator of the population variance.</div>
+    <ul class="options">
+      <li data-opt="A.">Statement (i) is correct; statement (ii) is false — dividing by n−1 introduces a downward bias.</li>
+      <li data-opt="B.">Statement (i) is correct; statement (ii) is also correct.</li>
+      <li data-opt="C.">Statement (i) is false (the correct sample variance is 36); statement (ii) is correct.</li>
+      <li data-opt="D.">Both statements are false.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: B</div>
+      x̄ = (3+7+7+19)/4 = 36/4 = 9<br>
+      Σ(xᵢ − x̄)² = (3−9)² + (7−9)² + (7−9)² + (19−9)² = 36+4+4+100 = 144<br>
+      s² = 144/(4−1) = 144/3 = <strong>48</strong> → Statement (i) ✓<br><br>
+      Statement (ii) is also correct. When computing a sample variance, the deviations are calculated from the <em>sample mean</em> x̄ rather than the true (unknown) population mean μ. Because x̄ is the value that minimises the sum of squared deviations, using it tends to underestimate the true spread. Dividing by n−1 instead of n corrects for this, producing an <em>unbiased</em> estimator of σ². This is sometimes called Bessel's correction. Note: 36 (option C) would be the result of dividing by n = 4, which gives the biased estimate.
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- Q6 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q6</span><span class="topic-tag">Coefficient of Variation</span><span class="new-badge">★ High exam probability</span></div>
+    <div class="q-text">Over the past five years, <strong>Stock X</strong> has averaged an annual return of <strong>20%</strong> with a standard deviation of <strong>6%</strong>. <strong>Stock Y</strong> has averaged an annual return of <strong>15%</strong> with a standard deviation of <strong>6%</strong>. Which of the following is correct?</div>
+    <ul class="options">
+      <li data-opt="A.">Stock X has smaller relative variation than Stock Y.</li>
+      <li data-opt="B.">Stock Y has smaller relative variation than Stock X.</li>
+      <li data-opt="C.">Both stocks exhibit identical relative variation because they have the same standard deviation.</li>
+      <li data-opt="D.">The coefficient of variation cannot be used to compare stocks with different means.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <p class="hint">CV = (S / X̄) × 100</p>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: A</div>
+      CV<sub>X</sub> = (6/20) × 100 = <strong>30%</strong><br>
+      CV<sub>Y</sub> = (6/15) × 100 = <strong>40%</strong><br><br>
+      Despite identical standard deviations, Stock X carries <em>less risk per unit of return</em> (CV = 30% vs 40%). This illustrates why the CV — not the raw standard deviation — is the correct measure when comparing variability across data sets with different means. Option C is a very common error: equal standard deviations do not imply equal relative variation when the means differ. Option D is wrong — the whole point of the CV is precisely to allow comparisons across different-scale data.
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- Q7 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q7</span><span class="topic-tag">Interquartile Range</span></div>
+    <div class="q-text">The following seven values represent the daily trading volumes (in millions of shares) at a stock exchange, ranked in ascending order: <strong>3, 7, 9, 12, 15, 18, 24</strong>. Consider the following statements:<br><br>(i) The interquartile range (IQR) is 11.<br>(ii) The IQR eliminates the effect of outliers by measuring the spread of the middle 50% of the data.<br>(iii) Q1 = 7 and Q3 = 18.</div>
+    <ul class="options">
+      <li data-opt="A.">Statements (i) and (iii) only are correct.</li>
+      <li data-opt="B.">All three statements are correct.</li>
+      <li data-opt="C.">Statements (i) and (ii) only are correct.</li>
+      <li data-opt="D.">Statement (ii) only is correct.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: B</div>
+      With n = 7 ranked observations: 3, 7, 9, 12, 15, 18, 24<br>
+      Median (Q2) = 4th value = 12<br>
+      Lower half (below median): 3, 7, 9 → Q1 = median = <strong>7</strong><br>
+      Upper half (above median): 15, 18, 24 → Q3 = median = <strong>18</strong><br>
+      IQR = Q3 − Q1 = 18 − 7 = <strong>11</strong><br><br>
+      All three statements are correct. The IQR specifically measures the range within which the middle 50% of observations fall, making it robust to extreme values at either end of the distribution — unlike the full range, which is entirely determined by the two most extreme values.
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- Q8 -->
+  <div class="question">
+    <div class="q-header"><span class="q-num">Q8</span><span class="topic-tag">Correlation Coefficient</span></div>
+    <div class="q-text">An analyst computes the following for two assets X and Y: Cov(X, Y) = −15, σ<sub>X</sub> = 5, σ<sub>Y</sub> = 6. Which of the following correctly describes the relationship between X and Y?</div>
+    <ul class="options">
+      <li data-opt="A.">The correlation coefficient is −0.50, indicating a perfect negative linear relationship.</li>
+      <li data-opt="B.">The correlation coefficient is −0.50, indicating a moderate negative linear relationship.</li>
+      <li data-opt="C.">The correlation coefficient is 0.50, since correlation cannot be negative.</li>
+      <li data-opt="D.">The covariance of −15 is sufficient to conclude there is a strong negative relationship; the correlation is unnecessary.</li>
+      <li data-opt="E.">None of the above.</li>
+    </ul>
+    <p class="hint">r = Cov(X,Y) / (σ<sub>X</sub> · σ<sub>Y</sub>)</p>
+    <button class="answer-toggle" onclick="toggle(this)">Show answer</button>
+    <div class="answer-box">
+      <div class="correct">✓ Correct answer: B</div>
+      r = Cov(X,Y) / (σ<sub>X</sub> · σ<sub>Y</sub>) = −15 / (5 × 6) = −15/30 = <strong>−0.50</strong><br><br>
+      A correlation of −0.50 indicates a <em>moderate negative</em> linear relationship — when X increases, Y tends to decrease, but not perfectly. A <em>perfect</em> negative relationship would be r = −1.00. Option A is numerically correct but wrong in its interpretation. Option C is false — correlation can range from −1 to +1. Option D illustrates why covariance alone is insufficient: covariance is scale-dependent (its value changes if the units of X or Y change), whereas the correlation coefficient is standardised and always lies between −1 and +1, making it the appropriate measure for comparing strength of relationships.
+    </div>
+  </div>
+
+  <!-- SECTION B -->
+  <div class="section-header">Section B — Long Answer</div>
+  <p class="section-note">Show all working. State all logical steps. Numerical answers rounded to 2 decimal places. [Total: 100 marks]</p>
+
+  <div class="question">
+    <div class="q-header"><span class="q-num secb">Q9</span></div>
+    <div class="q-text">An investment analyst is comparing two equity portfolios. The annual returns (%) for each portfolio over the last five years are given below:</div>
+
+    <table class="data-table" style="margin-top:1rem;">
+      <thead><tr><th>Year</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Portfolio A</strong></td><td>4</td><td>6</td><td>8</td><td>10</td><td>12</td></tr>
+        <tr><td><strong>Portfolio B</strong></td><td>3</td><td>9</td><td>8</td><td>7</td><td>13</td></tr>
+      </tbody>
+    </table>
+
+    <!-- (a) Conceptual -->
+    <div class="subpart">
+      <div class="subpart-label">(a) <span class="marks">20 marks</span></div>
+      <div class="q-text">Explain the difference between <strong>descriptive</strong> and <strong>inferential</strong> statistics. Using the investment context above, give one example of each type of analysis. Why is it important to distinguish between a population parameter and a sample statistic when drawing conclusions from financial data?</div>
+      <button class="answer-toggle" onclick="toggle(this)">Show model answer</button>
+      <div class="answer-box">
+        <div class="correct">Model answer — key points</div>
+        <strong>Descriptive statistics</strong> summarise and present what was observed in a data set, using measures such as the mean, variance, and graphical tools (histograms, bar charts). They make no claims beyond the data collected.<br><br>
+        <strong>Inferential statistics</strong> use sample data to draw conclusions or make estimates about a wider, unobserved population. They involve estimation and hypothesis testing.<br><br>
+        <em>Example (descriptive):</em> Computing the mean annual return of Portfolio A over these five years (= 8%) — this describes only the five observed years.<br>
+        <em>Example (inferential):</em> Using these five years to estimate the portfolio's long-run expected return, or to test whether Portfolio A and Portfolio B have the same true mean return.<br><br>
+        The distinction between <strong>parameter</strong> (e.g. the true long-run mean return μ, unknown) and <strong>statistic</strong> (e.g. the sample mean x̄ = 8%, computed from only five years) matters because statistics are subject to sampling variability. A different five-year window would produce a different x̄. Treating sample statistics as if they were true population parameters — without accounting for uncertainty — can lead to overconfident investment decisions.
+      </div>
+    </div>
+
+    <!-- (b)(i) Mean and Variance -->
+    <div class="subpart" style="margin-top:1rem;">
+      <div class="subpart-label">(b)(i) <span class="marks">20 marks</span></div>
+      <div class="q-text">Calculate the <strong>sample mean</strong> and <strong>sample variance</strong> for each portfolio. Show all workings clearly.</div>
+      <button class="answer-toggle" onclick="toggle(this)">Show model answer</button>
+      <div class="answer-box">
+        <div class="correct">Model answer</div>
+        <strong>Portfolio A:</strong><br>
+        x̄<sub>A</sub> = (4+6+8+10+12)/5 = 40/5 = <strong>8.00%</strong><br>
+        Squared deviations: (4−8)²=16, (6−8)²=4, (8−8)²=0, (10−8)²=4, (12−8)²=16 → Sum = 40<br>
+        s²<sub>A</sub> = 40/(5−1) = <strong>10.00</strong><br><br>
+        <strong>Portfolio B:</strong><br>
+        x̄<sub>B</sub> = (3+9+8+7+13)/5 = 40/5 = <strong>8.00%</strong><br>
+        Squared deviations: (3−8)²=25, (9−8)²=1, (8−8)²=0, (7−8)²=1, (13−8)²=25 → Sum = 52<br>
+        s²<sub>B</sub> = 52/(5−1) = <strong>13.00</strong>
+      </div>
+    </div>
+
+    <!-- (b)(ii) CV -->
+    <div class="subpart" style="margin-top:1rem;">
+      <div class="subpart-label">(b)(ii) <span class="marks">20 marks</span></div>
+      <div class="q-text">Calculate the <strong>coefficient of variation</strong> for each portfolio. Which portfolio carries greater relative risk per unit of return? Explain why the CV is a more appropriate measure of risk here than comparing standard deviations alone.</div>
+      <p class="hint">CV = (s / x̄) × 100</p>
+      <button class="answer-toggle" onclick="toggle(this)">Show model answer</button>
+      <div class="answer-box">
+        <div class="correct">Model answer</div>
+        s<sub>A</sub> = √10 ≈ <strong>3.16</strong> &nbsp;|&nbsp; s<sub>B</sub> = √13 ≈ <strong>3.61</strong><br>
+        CV<sub>A</sub> = (3.16/8.00) × 100 = <strong>39.53%</strong><br>
+        CV<sub>B</sub> = (3.61/8.00) × 100 = <strong>45.07%</strong><br><br>
+        <strong>Portfolio B</strong> carries greater relative risk (CV = 45.07% vs 39.53%). For every 1% of expected return, Portfolio B is more volatile.<br><br>
+        The CV is more appropriate than raw standard deviations here because it expresses variability as a <em>proportion of the mean</em>, allowing fair comparison. If two portfolios had different mean returns (e.g. one averaged 8% and the other 20%), a direct comparison of standard deviations would be misleading — a larger standard deviation in the higher-return portfolio might still represent proportionally less risk.
+      </div>
+    </div>
+
+    <!-- (b)(iii) Covariance -->
+    <div class="subpart" style="margin-top:1rem;">
+      <div class="subpart-label">(b)(iii) <span class="marks">20 marks</span></div>
+      <div class="q-text">Calculate the <strong>sample covariance</strong> between Portfolio A and Portfolio B. Interpret the sign and magnitude of your result.</div>
+      <p class="hint">Cov(A,B) = Σ[(Aᵢ − Ā)(Bᵢ − B̄)] / (n−1)</p>
+      <button class="answer-toggle" onclick="toggle(this)">Show model answer</button>
+      <div class="answer-box">
+        <div class="correct">Model answer</div>
+        <table class="data-table" style="font-size:12.5px;">
+          <thead><tr><th>Year</th><th>Aᵢ − Ā</th><th>Bᵢ − B̄</th><th>Product</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>−4</td><td>−5</td><td>+20</td></tr>
+            <tr><td>2</td><td>−2</td><td>+1</td><td>−2</td></tr>
+            <tr><td>3</td><td>0</td><td>0</td><td>0</td></tr>
+            <tr><td>4</td><td>+2</td><td>−1</td><td>−2</td></tr>
+            <tr><td>5</td><td>+4</td><td>+5</td><td>+20</td></tr>
+          </tbody>
+        </table>
+        Sum of products = 36 &nbsp;|&nbsp; Cov(A,B) = 36/4 = <strong>9.00</strong><br><br>
+        The <em>positive</em> covariance indicates that the two portfolios tend to move in the <em>same direction</em>. When Portfolio A's return is above its mean, Portfolio B's return also tends to be above its mean. From a diversification standpoint, holding both portfolios together provides limited risk reduction — true diversification benefit comes from combining assets with low or negative covariance.
+      </div>
+    </div>
+
+    <!-- (b)(iv) Correlation -->
+    <div class="subpart" style="margin-top:1rem;">
+      <div class="subpart-label">(b)(iv) <span class="marks">20 marks</span></div>
+      <div class="q-text">Using your answers to parts (b)(i) and (b)(iii), calculate the <strong>correlation coefficient</strong> between Portfolio A and Portfolio B. Interpret your result and explain what advantage the correlation coefficient has over the covariance when assessing the relationship between two variables.</div>
+      <p class="hint">r = Cov(A,B) / (s<sub>A</sub> · s<sub>B</sub>)</p>
+      <button class="answer-toggle" onclick="toggle(this)">Show model answer</button>
+      <div class="answer-box">
+        <div class="correct">Model answer</div>
+        From previous parts: Cov(A,B) = 9, s<sub>A</sub> = 3.16, s<sub>B</sub> = 3.61<br>
+        r = 9 / (3.16 × 3.61) = 9 / 11.41 = <strong>0.79</strong><br><br>
+        A correlation of <strong>+0.79</strong> indicates a <em>strong positive linear relationship</em> between the two portfolios — they move together closely but not perfectly. This confirms the interpretation from the covariance but adds precision about the <em>strength</em> of the relationship.<br><br>
+        <strong>Advantage of correlation over covariance:</strong> The covariance (9.00) is scale-dependent — its value would change if returns were expressed in different units, making comparison across different pairs of assets meaningless. The correlation coefficient is <em>standardised</em> to always lie between −1 and +1, regardless of the units or scale of the original variables. This makes it directly interpretable: r = +1 is a perfect positive relationship, r = 0 is no linear relationship, and r = −1 is a perfect negative relationship.
+      </div>
+    </div>
+
+  </div><!-- end Q9 -->
+
+  <hr class="divider" style="margin-top:3rem;">
+  <p style="font-family:'Inter',sans-serif; font-size:11px; color:var(--muted); text-align:center;">
+    ES12010 Practice Exam — Lecture 1: Descriptive Statistics &amp; Core Concepts · University of Bath · All calculations verified
+  </p>
+
+</div>
+
+<script>
+function toggle(btn) {
+  const box = btn.nextElementSibling;
+  const isVisible = box.classList.contains('visible');
+  box.classList.toggle('visible', !isVisible);
+  btn.textContent = isVisible ? 'Show answer' : 'Hide answer';
+}
+</script>
+</body>
+</html>

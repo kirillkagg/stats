@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 2 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1714; --ink2: #3d3830; --ink3: #6b6358;
+    --rule: #c8bfb0; --rule2: #e8e0d4;
+    --page: #faf8f4; --cream: #f2ede4;
+    --accent: #8b2500; --gold: #c8921a;
+    --correct: #1a5c2a; --correct-bg: #f0faf2;
+    --mark-bg: #fffbf0; --shadow: rgba(26,23,20,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); color: var(--ink); font-family: 'EB Garamond', Georgia, serif; font-size: 17px; line-height: 1.75; }
+  .page-wrap { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* PROGRESS */
+  .progress-wrap { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 1px solid var(--rule2); padding: 10px 24px; display: flex; align-items: center; gap: 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink3); }
+  .progress-bar { flex: 1; height: 4px; background: var(--rule2); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; width: 0%; }
+  .score-display { font-weight: 500; color: var(--ink); min-width: 110px; text-align: right; }
+
+  /* HEADER */
+  .exam-header { border-top: 3px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 28px 0 22px; margin-bottom: 36px; }
+  .exam-header::after { content: ''; display: block; border-bottom: 3px solid var(--ink); margin-top: 22px; }
+  .header-grid { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+  .uni-name { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink3); margin-bottom: 4px; }
+  .exam-title { font-size: 26px; font-weight: 600; line-height: 1.2; margin-bottom: 2px; }
+  .exam-subtitle { font-size: 15px; color: var(--ink3); font-style: italic; }
+  .exam-meta { text-align: right; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink2); line-height: 1.8; }
+  .meta-badge { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; padding: 2px 10px; border-radius: 2px; margin-bottom: 6px; }
+
+  /* INSTRUCTIONS */
+  .instructions { background: var(--cream); border-left: 3px solid var(--gold); padding: 16px 20px; margin-bottom: 40px; border-radius: 0 4px 4px 0; }
+  .instructions p { font-size: 15px; color: var(--ink2); margin-bottom: 6px; }
+  .instructions p:last-child { margin-bottom: 0; }
+
+  /* SECTION */
+  .section-header { display: flex; align-items: center; gap: 14px; margin: 48px 0 24px; }
+  .section-tab { background: var(--ink); color: white; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 14px; border-radius: 2px; }
+  .section-desc { font-size: 14px; color: var(--ink3); font-style: italic; font-family: 'DM Sans', sans-serif; }
+
+  /* QUESTION CARDS */
+  .q-card { border: 1px solid var(--rule2); border-radius: 4px; margin-bottom: 24px; overflow: hidden; transition: box-shadow 0.2s; }
+  .q-card:hover { box-shadow: 0 4px 16px var(--shadow); }
+  .q-head { display: flex; align-items: center; gap: 12px; padding: 16px 20px 14px; border-bottom: 1px solid var(--rule2); background: white; flex-wrap: wrap; }
+  .q-num { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); min-width: 32px; }
+  .q-marks { margin-left: auto; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--ink3); background: var(--cream); padding: 2px 10px; border-radius: 20px; white-space: nowrap; }
+  .q-body { padding: 18px 20px; background: white; }
+  .q-text { font-size: 16.5px; color: var(--ink); margin-bottom: 16px; line-height: 1.7; }
+
+  /* OPTIONS */
+  .options { list-style: none; }
+  .options li { display: flex; align-items: flex-start; gap: 10px; padding: 8px 14px; margin-bottom: 4px; border: 1px solid var(--rule2); border-radius: 3px; cursor: pointer; transition: background 0.15s, border-color 0.15s; font-size: 16px; line-height: 1.5; }
+  .options li:hover { background: var(--cream); border-color: var(--rule); }
+  .options li.selected { background: #eef4ff; border-color: #4a7fd4; }
+  .options li.correct { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+  .options li.wrong { background: #fff5f5; border-color: #c0392b; color: #c0392b; }
+  .opt-letter { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--ink3); min-width: 22px; padding-top: 2px; flex-shrink: 0; }
+  .options li.correct .opt-letter { color: var(--correct); }
+  .options li.wrong .opt-letter { color: #c0392b; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 18px; border-radius: 3px; border: 1.5px solid; cursor: pointer; transition: all 0.15s; }
+  .btn-check { border-color: #4a7fd4; color: #4a7fd4; background: white; }
+  .btn-check:hover { background: #4a7fd4; color: white; }
+  .btn-reveal { border-color: var(--accent); color: var(--accent); background: white; }
+  .btn-reveal:hover { background: var(--accent); color: white; }
+  .btn-reset { border-color: var(--rule); color: var(--ink3); background: white; }
+  .btn-reset:hover { background: var(--cream); }
+
+  /* SOLUTION BLOCKS */
+  .solution-block { display: none; margin-top: 14px; background: var(--correct-bg); border: 1px solid #b8dfc4; border-radius: 4px; padding: 16px 18px; }
+  .solution-block.visible { display: block; }
+  .solution-title { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--correct); margin-bottom: 10px; }
+  .solution-step { font-size: 15px; color: var(--ink2); line-height: 1.8; margin-bottom: 8px; }
+  .solution-step:last-child { margin-bottom: 0; }
+  .math-block { display: block; font-family: 'DM Mono', monospace; font-size: 13.5px; background: rgba(26,92,42,0.06); border-left: 3px solid var(--correct); padding: 10px 14px; margin: 8px 0; border-radius: 0 3px 3px 0; color: #0f3d1a; white-space: pre-wrap; line-height: 1.9; }
+  .final-ans { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; color: var(--correct); background: rgba(26,92,42,0.1); padding: 4px 10px; border-radius: 3px; display: inline-block; margin-top: 4px; }
+  .mark-note { font-size: 14px; color: var(--ink3); border: 1px dashed var(--gold); padding: 10px 14px; border-radius: 3px; margin-top: 10px; background: var(--mark-bg); line-height: 1.7; }
+
+  /* SECTION B */
+  .part-block { border: 1px solid var(--rule2); border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+  .part-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: var(--cream); border-bottom: 1px solid var(--rule2); }
+  .part-label { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); }
+  .part-body { padding: 16px 20px; background: white; }
+  .part-text { font-size: 16.5px; color: var(--ink); line-height: 1.75; margin-bottom: 12px; }
+  .subpart { padding: 10px 0 4px; border-top: 1px dashed var(--rule2); margin-top: 10px; }
+  .subpart:first-of-type { border-top: none; margin-top: 0; }
+  .subpart-label { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--gold); margin-bottom: 6px; font-weight: 500; }
+  .subpart-text { font-size: 16px; color: var(--ink); line-height: 1.7; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 12px 0; font-family: 'DM Sans', sans-serif; }
+  .data-table th { background: var(--ink); color: white; padding: 8px 14px; text-align: left; font-weight: 500; font-size: 13px; }
+  .data-table td { padding: 8px 14px; border-bottom: 1px solid var(--rule2); color: var(--ink2); }
+  .data-table tr:nth-child(even) td { background: var(--cream); }
+  .data-table .total-row td { font-weight: 600; color: var(--ink); background: var(--cream); border-top: 2px solid var(--rule); }
+
+  /* DIVIDER & FINAL SCORE */
+  .divider { border: none; border-top: 1px solid var(--rule2); margin: 32px 0; }
+  .final-score { display: none; text-align: center; padding: 32px; background: white; border: 1px solid var(--rule2); border-radius: 4px; margin-top: 32px; }
+  .final-score.visible { display: block; }
+  .score-number { font-size: 56px; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 8px; }
+  .score-label { font-size: 18px; color: var(--ink3); font-style: italic; }
+
+  ul.body-list { margin: 10px 0 10px 24px; }
+  ul.body-list li { font-size: 16px; line-height: 2; }
+</style>
+</head>
+<body>
+
+<div class="progress-wrap">
+  <span style="font-weight:500;color:var(--ink)">Section A</span>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="score-display" id="scoreDisplay">0 / 6 answered</span>
+  <button class="btn btn-reset" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="exam-header">
+    <div class="header-grid">
+      <div>
+        <div class="uni-name">University of Bath — Department of Economics</div>
+        <div class="exam-title">ES12010: Statistics for Economics</div>
+        <div class="exam-subtitle">Lecture 2 Practice Exam — Probability &amp; Set Theory</div>
+      </div>
+      <div class="exam-meta">
+        <div class="meta-badge">Practice Paper</div>
+        <div>Suggested time: 2 hours</div>
+        <div>Total marks: 100</div>
+        <div>Calculator permitted</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instructions">
+    <p><strong>Instructions:</strong> Answer all 6 questions in Section A (30 marks MCQ + 3 marks explanation each) and any ONE question in Section B (50 marks).</p>
+    <p>Section A: Select ONE answer per question. Each carries <strong>5 marks</strong> — 2 for the correct option and 3 for a clear written explanation of your reasoning.</p>
+    <p>Section B: Show all working. Numerical answers rounded to two decimal places. Marks for each part shown in brackets.</p>
+    <p style="color:var(--accent);font-style:italic;">Interactive: click an option to select it, then "Check Answer" to reveal feedback. Use "Show worked explanation" for the full mark scheme.</p>
+  </div>
+
+  <!-- ═══ SECTION A ═══ -->
+  <div class="section-header">
+    <span class="section-tab">Section A</span>
+    <span class="section-desc">Multiple-choice — answer all 6 questions</span>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q1</span>
+      <span style="flex:1">Random experiments and sample spaces</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">Which of the following best describes a <em>random experiment</em>?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Experiments &amp; Basic Outcomes (Slides 7–8)</small>
+      </div>
+      <ul class="options" id="opts1">
+        <li onclick="selectOpt(1,'A')"><span class="opt-letter">A.</span>A statistics lecturer always starts the lecture at exactly 9:00 am.</li>
+        <li onclick="selectOpt(1,'B')"><span class="opt-letter">B.</span>A firm increases its advertising budget by 15% and observes whether monthly sales rise or fall.</li>
+        <li onclick="selectOpt(1,'C')"><span class="opt-letter">C.</span>The sum of two plus two equals four.</li>
+        <li onclick="selectOpt(1,'D')"><span class="opt-letter">D.</span>A student revises for six hours and is guaranteed to pass the exam.</li>
+        <li onclick="selectOpt(1,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(1,'B')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol1')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol1">
+        <div class="solution-title">✓ Correct Answer: B — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: B</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> A <em>random experiment</em> has two defining properties: (i) it can be repeated (at least conceptually) under identical conditions, and (ii) its outcome cannot be predicted with certainty in advance. The set of all possible outcomes forms the sample space S.</div>
+        <div class="solution-step">Option B satisfies both: the firm can repeat this activity, and whether sales rise, fall, or stay flat is genuinely uncertain — S = {rise, fall, unchanged}. Options A, C, and D all have predetermined, certain outcomes by construction, so they are deterministic activities, not random experiments.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Many students select "any activity with a result" — always link back to the definition. The key criterion is unpredictability of outcome, not complexity of the activity.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q2</span>
+      <span style="flex:1">Counting methods — permutations vs combinations</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A university economics society has 9 members. It must elect a President, a Treasurer, and a Secretary (three distinct roles, one member per role). How many different ways can these three positions be filled?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Permutations (Slides 23–24)</small>
+      </div>
+      <ul class="options" id="opts2">
+        <li onclick="selectOpt(2,'A')"><span class="opt-letter">A.</span>84</li>
+        <li onclick="selectOpt(2,'B')"><span class="opt-letter">B.</span>504</li>
+        <li onclick="selectOpt(2,'C')"><span class="opt-letter">C.</span>729</li>
+        <li onclick="selectOpt(2,'D')"><span class="opt-letter">D.</span>27</li>
+        <li onclick="selectOpt(2,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(2,'B')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol2')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol2">
+        <div class="solution-title">✓ Correct Answer: B — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: B (504)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> Because the three roles are <em>distinct</em>, the order of assignment matters — electing Alice as President and Bob as Treasurer is a different outcome from Bob as President and Alice as Treasurer. This is a <strong>permutation</strong> problem.</div>
+        <span class="math-block">P(n, r) = n! / (n − r)!
+P(9, 3) = 9! / (9 − 3)! = 9 × 8 × 7 = 504</span>
+        <div class="solution-step">Option A (84) = C(9,3) — this is the answer for a <em>committee</em> with no distinct roles (order irrelevant). The distinction between permutations and combinations is critical here.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Always identify first whether order matters. Named positions with distinct titles → permutations. Committee seats with no hierarchy → combinations.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q3</span>
+      <span style="flex:1">Conditional probability</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">Of the cars on a used car lot, 70% have air conditioning (AC) and 40% have a CD player (CD). 20% of all cars have <em>both</em>. What is the probability that a randomly selected car has a CD player, <em>given that it has air conditioning</em>?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Conditional Probability (Slides 36–38)</small>
+      </div>
+      <ul class="options" id="opts3">
+        <li onclick="selectOpt(3,'A')"><span class="opt-letter">A.</span>0.50</li>
+        <li onclick="selectOpt(3,'B')"><span class="opt-letter">B.</span>0.20</li>
+        <li onclick="selectOpt(3,'C')"><span class="opt-letter">C.</span>0.2857</li>
+        <li onclick="selectOpt(3,'D')"><span class="opt-letter">D.</span>0.40</li>
+        <li onclick="selectOpt(3,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(3,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol3')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol3">
+        <div class="solution-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: C (0.2857)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> Let A = car has AC (P(A) = 0.70), B = car has CD (P(B) = 0.40), P(A ∩ B) = 0.20. We want P(B | A):</div>
+        <span class="math-block">P(B | A) = P(A ∩ B) / P(A) = 0.20 / 0.70 ≈ 0.2857</span>
+        <div class="solution-step">Intuition: conditioning on AC restricts the sample space to the 70% of cars with AC. Of all cars, 20% have both — so 20/70 ≈ 28.57% of the AC group also have a CD player.</div>
+        <div class="solution-step">Option A (0.50) is P(AC | CD) = 0.20/0.40 — the reversed conditioning event. Option D (0.40) is the unconditional P(CD). Never confuse P(A|B) with P(B|A).</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> State the formula before substituting. Reversing the conditioning event — P(A|B) vs P(B|A) — is one of the most common errors in this topic.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q4</span>
+      <span style="flex:1">Addition Rule — probability of a union</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A survey of 400 economics undergraduates finds: 220 study Microeconomics, 160 study Macroeconomics, and 80 study both. What is the probability that a randomly selected student studies <em>at least one</em> of the two subjects?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Addition Rule / Union of Events (Slides 33–34)</small>
+      </div>
+      <ul class="options" id="opts4">
+        <li onclick="selectOpt(4,'A')"><span class="opt-letter">A.</span>0.75</li>
+        <li onclick="selectOpt(4,'B')"><span class="opt-letter">B.</span>0.55</li>
+        <li onclick="selectOpt(4,'C')"><span class="opt-letter">C.</span>0.40</li>
+        <li onclick="selectOpt(4,'D')"><span class="opt-letter">D.</span>0.95</li>
+        <li onclick="selectOpt(4,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(4,'A')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol4')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol4">
+        <div class="solution-title">✓ Correct Answer: A — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: A (0.75)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> "At least one" means one or the other or both — the union (∪). Using the General Addition Rule:</div>
+        <span class="math-block">P(M) = 220/400 = 0.55
+P(K) = 160/400 = 0.40
+P(M ∩ K) = 80/400 = 0.20
+
+P(M ∪ K) = P(M) + P(K) − P(M ∩ K)
+          = 0.55 + 0.40 − 0.20 = 0.75</span>
+        <div class="solution-step">The subtraction of P(M ∩ K) corrects for double-counting the 80 students enrolled in both subjects. Option D (0.95) is the common error of forgetting this subtraction. Option B is simply P(Micro) alone.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Write the formula first. The most common error is forgetting to subtract the intersection — which double-counts individuals belonging to both groups.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q5</span>
+      <span style="flex:1">Statistical independence</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">Events A and B have probabilities P(A) = 0.4, P(B) = 0.3, and P(A ∩ B) = 0.12. Which of the following statements is correct?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Statistical Independence (Slide 42)</small>
+      </div>
+      <ul class="options" id="opts5">
+        <li onclick="selectOpt(5,'A')"><span class="opt-letter">A.</span>Events A and B are mutually exclusive.</li>
+        <li onclick="selectOpt(5,'B')"><span class="opt-letter">B.</span>Events A and B are statistically independent.</li>
+        <li onclick="selectOpt(5,'C')"><span class="opt-letter">C.</span>Events A and B are collectively exhaustive.</li>
+        <li onclick="selectOpt(5,'D')"><span class="opt-letter">D.</span>P(A | B) = 0.12</li>
+        <li onclick="selectOpt(5,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(5,'B')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol5')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol5">
+        <div class="solution-title">✓ Correct Answer: B — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: B — Statistically independent</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> A and B are statistically independent if and only if P(A ∩ B) = P(A) × P(B).</div>
+        <span class="math-block">Check: P(A) × P(B) = 0.4 × 0.3 = 0.12 = P(A ∩ B)  ✓  → Independent</span>
+        <div class="solution-step">Why the others fail:</div>
+        <div class="solution-step">• <strong>A (Mutually exclusive):</strong> Requires P(A ∩ B) = 0. Here 0.12 ≠ 0. ✗</div>
+        <div class="solution-step">• <strong>C (Collectively exhaustive):</strong> Requires P(A ∪ B) = 1. Here P(A ∪ B) = 0.4 + 0.3 − 0.12 = 0.58 ≠ 1. ✗</div>
+        <div class="solution-step">• <strong>D:</strong> P(A|B) = P(A ∩ B)/P(B) = 0.12/0.30 = 0.40 = P(A), which confirms independence — but P(A|B) = 0.40, not 0.12. ✗</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Never confuse independence with mutual exclusivity. If two events with positive probability are mutually exclusive, they <em>cannot</em> be independent — knowing one occurred rules out the other.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q6</span>
+      <span style="flex:1">Bayes' Theorem — medical diagnostics</span>
+      <span class="q-marks">5 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">A medical test detects a disease with 90% sensitivity (correctly identifies disease when present) and 85% specificity (correctly identifies healthy patients). The prevalence of the disease is 5%. A patient tests positive. What is the probability the patient actually has the disease?<br>
+        <small style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);font-style:italic;">Topic: Bayes' Theorem (Slides 49–53)</small>
+      </div>
+      <ul class="options" id="opts6">
+        <li onclick="selectOpt(6,'A')"><span class="opt-letter">A.</span>0.90</li>
+        <li onclick="selectOpt(6,'B')"><span class="opt-letter">B.</span>0.05</li>
+        <li onclick="selectOpt(6,'C')"><span class="opt-letter">C.</span>0.24</li>
+        <li onclick="selectOpt(6,'D')"><span class="opt-letter">D.</span>0.15</li>
+        <li onclick="selectOpt(6,'E')"><span class="opt-letter">E.</span>None of the above.</li>
+      </ul>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="checkAnswer(6,'C')">Check Answer</button>
+        <button class="btn btn-reveal" onclick="toggleSolution('sol6')">Show worked explanation</button>
+      </div>
+      <div class="solution-block" id="sol6">
+        <div class="solution-title">✓ Correct Answer: C — Mark Scheme</div>
+        <div class="solution-step"><strong>2 marks — Correct option: C (0.24)</strong></div>
+        <div class="solution-step"><strong>3 marks — Explanation:</strong> Define D = has disease, D' = healthy, + = positive test.</div>
+        <span class="math-block">Prior:       P(D) = 0.05,  P(D') = 0.95
+Sensitivity: P(+|D)  = 0.90
+False pos:   P(+|D') = 1 − 0.85 = 0.15
+
+Law of Total Probability:
+P(+) = P(+|D)·P(D) + P(+|D')·P(D')
+     = (0.90)(0.05) + (0.15)(0.95)
+     = 0.045 + 0.1425 = 0.1875
+
+Bayes' Theorem:
+P(D|+) = P(+|D) × P(D) / P(+)
+       = 0.045 / 0.1875 = 0.24</span>
+        <div class="solution-step">Despite 90% test sensitivity, only 24% of positive patients actually have the disease — because prevalence is low (5%). This illustrates the importance of base rates: prior probabilities dramatically affect posterior beliefs. This is exactly why Bayes' Theorem matters in economics, finance, and medicine.</div>
+        <div class="mark-note"><strong>Examiner's note:</strong> Show the full Law of Total Probability step before applying Bayes. The counter-intuitive result (high test accuracy yet low posterior probability) is a classic application — discuss the role of the prior (prevalence) for full marks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final score for section A -->
+  <div class="final-score" id="finalScore">
+    <div class="score-number" id="finalScoreNum">—</div>
+    <div class="score-label">Section A MCQ score (options only)</div>
+    <p style="margin-top:16px;font-size:15px;color:var(--ink3);">Each question is worth 5 marks total: 2 for the correct option + 3 for your written explanation. Practice writing out explanations for every question you attempt.</p>
+  </div>
+
+  <!-- ═══ SECTION B ═══ -->
+  <hr class="divider">
+  <div class="section-header">
+    <span class="section-tab">Section B</span>
+    <span class="section-desc">Long-answer questions — answer any ONE of the following two questions</span>
+  </div>
+
+  <!-- ─── B Q7 ─── -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q7</span>
+      <span style="flex:1">Counting Methods, Joint Probabilities &amp; Bayes' Theorem</span>
+      <span class="q-marks">50 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">You must show all calculations and state each formula before substituting values. Marks are awarded for method as well as correct numerical answers.</div>
+
+      <!-- B7a -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(a) Counting Methods</span><span class="q-marks">20 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">An investment bank is forming an analytical team from a pool of 12 analysts: 7 are quantitative specialists and 5 are qualitative specialists.</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [7 marks]</div>
+            <div class="subpart-text">In how many ways can the bank select a team of 4 analysts from the pool of 12, if the order of selection does not matter?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [7 marks]</div>
+            <div class="subpart-text">In how many ways can the team of 4 be formed if it must include exactly 2 quantitative and 2 qualitative specialists?</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [6 marks]</div>
+            <div class="subpart-text">What is the probability that a randomly selected team of 4 contains exactly 2 quantitative and 2 qualitative specialists?</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB7a')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB7a">
+            <div class="solution-title">✓ Worked Solution — Part (a)</div>
+            <div class="solution-step"><strong>(i)</strong> Order does not matter → Combination:</div>
+            <span class="math-block">C(12, 4) = 12! / (4! × 8!)
+          = (12 × 11 × 10 × 9) / (4 × 3 × 2 × 1)
+          = 11880 / 24 = 495</span>
+            <div class="solution-step"><strong>(ii)</strong> Exactly 2 quantitative AND exactly 2 qualitative — apply the multiplication rule for independent choices:</div>
+            <span class="math-block">Choose 2 from 7 quant:  C(7, 2) = 7!/(2! × 5!) = 21
+Choose 2 from 5 qual:   C(5, 2) = 5!/(2! × 3!) = 10
+Total = 21 × 10 = 210</span>
+            <div class="solution-step"><strong>(iii)</strong> Probability:</div>
+            <span class="math-block">P(2 quant, 2 qual) = 210 / 495 ≈ 0.42</span>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Formula 2 + calculation 5 = 7. (ii) Recognise product rule 3 + each combination correct 2 each = 7. (iii) Ratio stated 4 + decimal 2 = 6.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B7b -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(b) Joint and Marginal Probabilities</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A financial firm surveys 500 employees, categorising them by job type and job satisfaction:</div>
+          <table class="data-table">
+            <thead><tr><th>Job Type</th><th>Satisfied</th><th>Neutral</th><th>Dissatisfied</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Front Office</td><td>90</td><td>40</td><td>20</td><td>150</td></tr>
+              <tr><td>Middle Office</td><td>100</td><td>60</td><td>40</td><td>200</td></tr>
+              <tr><td>Back Office</td><td>50</td><td>60</td><td>40</td><td>150</td></tr>
+              <tr class="total-row"><td>Total</td><td>240</td><td>160</td><td>100</td><td>500</td></tr>
+            </tbody>
+          </table>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [5 marks]</div>
+            <div class="subpart-text">Construct a joint probability table. Identify the marginal probabilities for each job type and each satisfaction category.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">Find (a) the probability that a randomly selected employee works in the Back Office and is dissatisfied, and (b) the probability that a randomly selected employee is satisfied.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [5 marks]</div>
+            <div class="subpart-text">Test whether job type and job satisfaction are statistically independent. State the condition for independence and verify it for the cell Front Office ∩ Satisfied.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB7b')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB7b">
+            <div class="solution-title">✓ Worked Solution — Part (b)</div>
+            <div class="solution-step"><strong>(i) Joint probability table</strong> (divide each cell by 500):</div>
+            <table class="data-table" style="margin-top:8px">
+              <thead><tr><th>Job Type</th><th>Satisfied</th><th>Neutral</th><th>Dissatisfied</th><th>Marginal</th></tr></thead>
+              <tbody>
+                <tr><td>Front Office</td><td>0.18</td><td>0.08</td><td>0.04</td><td>0.30</td></tr>
+                <tr><td>Middle Office</td><td>0.20</td><td>0.12</td><td>0.08</td><td>0.40</td></tr>
+                <tr><td>Back Office</td><td>0.10</td><td>0.12</td><td>0.08</td><td>0.30</td></tr>
+                <tr class="total-row"><td>Marginal</td><td>0.48</td><td>0.32</td><td>0.20</td><td>1.00</td></tr>
+              </tbody>
+            </table>
+            <div class="solution-step"><strong>(ii)</strong></div>
+            <span class="math-block">(a) P(Back Office ∩ Dissatisfied) = 40/500 = 0.08
+(b) P(Satisfied) = 240/500 = 0.48  [marginal probability]</span>
+            <div class="solution-step"><strong>(iii) Independence condition:</strong> A and B are independent iff P(A ∩ B) = P(A) × P(B) for all cells.</div>
+            <span class="math-block">Test cell: Front Office ∩ Satisfied
+  Observed joint:           P = 0.18
+  Expected if independent:  P(Front Office) × P(Satisfied)
+                           = 0.30 × 0.48 = 0.144
+  0.18 ≠ 0.144  →  NOT independent</span>
+            <div class="solution-step">Since the independence condition fails for this cell (and would fail for others), we conclude job type and satisfaction are <strong>not statistically independent</strong>. An employee's job type is informative about their satisfaction level.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Method 2 + all cells correct 3 = 5. (ii) Both probabilities 5. (iii) State condition 2 + correct calculation 2 + conclusion 1 = 5.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B7c -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(c) Bayes' Theorem</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A financial analyst assesses whether a company's stock will outperform the market. Historical data shows:</div>
+          <ul class="body-list">
+            <li>35% of stocks outperform the market.</li>
+            <li>A proprietary indicator gives a "positive signal" in 70% of cases when a stock subsequently outperforms.</li>
+            <li>The indicator gives a positive signal in 25% of cases when stocks do <em>not</em> outperform.</li>
+          </ul>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [4 marks]</div>
+            <div class="subpart-text">Define all events. List all prior and conditional probabilities given in the question.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">Using the Law of Total Probability, calculate the probability that the indicator gives a positive signal.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [6 marks]</div>
+            <div class="subpart-text">Given a positive signal, use Bayes' Theorem to find the revised probability of outperformance. Comment on how this compares to the prior and what this illustrates about Bayesian updating.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB7c')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB7c">
+            <div class="solution-title">✓ Worked Solution — Part (c)</div>
+            <div class="solution-step"><strong>(i) Events and probabilities:</strong></div>
+            <span class="math-block">O  = stock outperforms,    P(O)  = 0.35
+O' = does not outperform, P(O') = 0.65
+S  = positive signal
+
+P(S | O)  = 0.70
+P(S | O') = 0.25</span>
+            <div class="solution-step"><strong>(ii) Law of Total Probability:</strong></div>
+            <span class="math-block">P(S) = P(S|O)·P(O) + P(S|O')·P(O')
+     = (0.70)(0.35) + (0.25)(0.65)
+     = 0.245 + 0.1625 = 0.4075</span>
+            <div class="solution-step"><strong>(iii) Bayes' Theorem:</strong></div>
+            <span class="math-block">P(O|S) = P(S|O) × P(O) / P(S)
+       = 0.245 / 0.4075 ≈ 0.60</span>
+            <div class="solution-step"><strong>Interpretation:</strong> The prior probability was 0.35 (35%). After observing a positive signal, the posterior rises to 0.60 (60%) — a 25 percentage point upward revision. This demonstrates Bayesian updating: the indicator provides genuine information (it is not independent of outperformance), which shifts the analyst's beliefs. The stronger the signal's discriminatory power (gap between 0.70 and 0.25), the larger the revision. In financial contexts, such updates are central to portfolio and credit-risk analysis.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Events 2 + all probabilities listed 2 = 4. (ii) Formula 2 + P(S) 3 = 5. (iii) Correct posterior 3 + interpretation 3 = 6.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── B Q8 ─── -->
+  <div class="q-card">
+    <div class="q-head">
+      <span class="q-num">Q8</span>
+      <span style="flex:1">Probability Rules, Set Theory &amp; Independence</span>
+      <span class="q-marks">50 marks</span>
+    </div>
+    <div class="q-body">
+      <div class="q-text">You must show all calculations and provide clear conceptual justification. Marks are awarded for correct reasoning as well as numerical answers.</div>
+
+      <!-- B8a -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(a) Conceptual Foundations</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [5 marks]</div>
+            <div class="subpart-text">Explain, with an example, the difference between mutually exclusive events and statistically independent events. Can two events with positive probability be simultaneously mutually exclusive and independent? Justify your answer mathematically.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">Distinguish between collectively exhaustive events and complementary events. Provide one economic example of each.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [5 marks]</div>
+            <div class="subpart-text">Compare the classical and relative frequency approaches to probability. In what circumstances would a macroeconomist prefer the relative frequency approach? Refer to the 2008 financial crisis in your answer.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB8a')">Show model answer</button>
+          </div>
+          <div class="solution-block" id="solB8a">
+            <div class="solution-title">✓ Model Answer — Part (a)</div>
+            <div class="solution-step"><strong>(i) Mutual exclusivity vs independence:</strong></div>
+            <div class="solution-step"><em>Mutually exclusive (ME):</em> P(A ∩ B) = 0 — both events cannot occur simultaneously. Example: a firm either records a profit or a loss in a quarter (not both). <em>Independent:</em> P(A ∩ B) = P(A)·P(B) — occurrence of one does not affect the probability of the other. Example: whether a UK firm expands is independent of the outcome of an Australian rugby match.</div>
+            <span class="math-block">Can they be both? NO.
+If ME:          P(A ∩ B) = 0
+If independent: P(A ∩ B) = P(A) × P(B) > 0  [since P(A), P(B) > 0]
+These are contradictory → two events with positive probability
+cannot be both mutually exclusive and statistically independent.</span>
+            <div class="solution-step"><strong>(ii) Collectively exhaustive vs complementary:</strong></div>
+            <div class="solution-step"><em>Collectively exhaustive:</em> P(A₁ ∪ … ∪ Aₙ) = 1 — the set of events covers all possible outcomes. Example: GDP growth classified as {expansion, recession, stagnation} covers all states. <em>Complementary:</em> Ā is the complement of A — P(Ā) = 1 − P(A), and {A, Ā} are both ME and collectively exhaustive as a pair. Example: a trade deal is either ratified or it is not. Complementary events are a special case of collectively exhaustive events (with exactly two outcomes).</div>
+            <div class="solution-step"><strong>(iii) Classical vs relative frequency:</strong></div>
+            <div class="solution-step"><em>Classical:</em> assigns probability based on equally likely outcomes and a finite sample space — suitable for symmetric lotteries, fair dice, card games. <em>Relative frequency:</em> assigns probabilities based on observed long-run frequencies from repeated experiments — P(A) = (frequency of A) / (total trials) as n → ∞.</div>
+            <div class="solution-step">A macroeconomist prefers relative frequency when outcomes are not equally likely or when no theoretical prior is available — e.g., estimating default rates on mortgage-backed securities, or the probability of a banking system collapse. The 2008 crisis arose partly because banks used classical (assumed normal) distributions for bundled mortgage risk, ignoring empirical evidence that house prices across regions were correlated — not independent as assumed. Relative frequency data would have revealed much higher joint default probabilities than theory predicted.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> Each sub-part: definition 2 + example 1 + analytical point 2 = 5. Total 15.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B8b -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(b) Card Deck — Probability Rules</span><span class="q-marks">20 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A standard deck of 52 playing cards is shuffled. One card is drawn at random. Let J = "card is a Jack" and H = "card is a Heart".</div>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [4 marks]</div>
+            <div class="subpart-text">Find P(J), P(H), and P(J ∩ H). Briefly explain what P(J ∩ H) represents.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">Find P(J ∪ H) using the General Addition Rule. Interpret this probability in plain language.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [5 marks]</div>
+            <div class="subpart-text">Are J and H mutually exclusive? Are they statistically independent? Provide a mathematical test for each and state your conclusion.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iv) [6 marks]</div>
+            <div class="subpart-text">Find P(J | H) and P(H | J). Why do these two answers differ? What does this illustrate about the symmetry (or lack thereof) of conditional probability?</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB8b')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB8b">
+            <div class="solution-title">✓ Worked Solution — Part (b)</div>
+            <div class="solution-step"><strong>(i)</strong></div>
+            <span class="math-block">P(J) = 4/52 = 1/13 ≈ 0.0769   [4 Jacks in 52 cards]
+P(H) = 13/52 = 1/4 = 0.25    [13 Hearts in 52 cards]
+P(J ∩ H) = 1/52 ≈ 0.0192     [only the Jack of Hearts]</span>
+            <div class="solution-step">P(J ∩ H) is the probability of drawing the single card that is simultaneously a Jack AND a Heart — the Jack of Hearts.</div>
+            <div class="solution-step"><strong>(ii) General Addition Rule:</strong></div>
+            <span class="math-block">P(J ∪ H) = P(J) + P(H) − P(J ∩ H)
+          = 4/52 + 13/52 − 1/52
+          = 16/52 = 4/13 ≈ 0.3077</span>
+            <div class="solution-step">Interpretation: There is approximately a 30.8% probability the drawn card is either a Jack, a Heart, or the Jack of Hearts (i.e., at least one of the two properties).</div>
+            <div class="solution-step"><strong>(iii)</strong></div>
+            <span class="math-block">Mutually exclusive?
+  Condition: P(J ∩ H) = 0
+  Check:     P(J ∩ H) = 1/52 ≠ 0  →  NOT mutually exclusive ✗
+  (The Jack of Hearts belongs to both events simultaneously.)
+
+Independent?
+  Condition: P(J ∩ H) = P(J) × P(H)
+  Check:     P(J) × P(H) = (1/13)(1/4) = 1/52 = P(J ∩ H)  ✓
+  →  J and H ARE statistically independent ✓</span>
+            <div class="solution-step">Intuition: knowing the card is a Heart tells you nothing about whether it is a Jack — there is one Jack among Hearts, just as there is one Jack in any other suit. The suit and the rank are unrelated properties of a playing card.</div>
+            <div class="solution-step"><strong>(iv)</strong></div>
+            <span class="math-block">P(J | H) = P(J ∩ H) / P(H) = (1/52) / (13/52) = 1/13 ≈ 0.077
+P(H | J) = P(J ∩ H) / P(J) = (1/52) / (4/52)  = 1/4  = 0.25</span>
+            <div class="solution-step">These differ because the conditioning events have different sizes: there are 13 Hearts but only 4 Jacks. Conditioning on Hearts (a large subset of 13) makes a Jack rare within that subset (1 in 13). Conditioning on Jacks (a small subset of 4) gives each Jack a 1-in-4 chance of being a Heart. Conditional probability is not symmetric: P(A|B) ≠ P(B|A) in general, and the reversal requires Bayes' Theorem.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) 3 probabilities × 1 + explanation 1 = 4. (ii) Formula 2 + answer 2 + interpretation 1 = 5. (iii) ME test 2 + independence test 3 = 5. (iv) Both calculations 2 each + explanation 2 = 6.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B8c -->
+      <div class="part-block">
+        <div class="part-head"><span class="part-label">(c) Bayes' Theorem — Oil Drilling</span><span class="q-marks">15 marks</span></div>
+        <div class="part-body">
+          <div class="part-text">A drilling company estimates a <strong>40% prior probability</strong> of striking oil at a new well. A geological survey (S) can be commissioned. Historical records show:</div>
+          <ul class="body-list">
+            <li>60% of <em>successful</em> wells had a geological survey scheduled.</li>
+            <li>20% of <em>unsuccessful</em> wells had a geological survey scheduled.</li>
+          </ul>
+          <div class="subpart">
+            <div class="subpart-label">Part (i) [5 marks]</div>
+            <div class="subpart-text">The well has been scheduled for a geological survey. Using Bayes' Theorem, calculate the revised (posterior) probability that the well will be successful.</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (ii) [5 marks]</div>
+            <div class="subpart-text">Construct a probability tree diagram showing all prior probabilities, conditional probabilities, joint probabilities, and the marginal probability P(S).</div>
+          </div>
+          <div class="subpart">
+            <div class="subpart-label">Part (iii) [5 marks]</div>
+            <div class="subpart-text">The company's decision rule is: "Proceed with drilling if P(success | survey scheduled) > 0.50." Based on your answer to (i), should the company proceed? Comment on two limitations of using this rule in isolation.</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-reveal" onclick="toggleSolution('solB8c')">Show worked solution</button>
+          </div>
+          <div class="solution-block" id="solB8c">
+            <div class="solution-title">✓ Worked Solution — Part (c)</div>
+            <div class="solution-step"><strong>(i) Setup and Bayes' Theorem:</strong></div>
+            <span class="math-block">W  = well successful,   P(W)  = 0.40
+W' = well fails,        P(W') = 0.60
+S  = survey scheduled
+
+P(S | W)  = 0.60
+P(S | W') = 0.20
+
+Law of Total Probability:
+P(S) = P(S|W)·P(W) + P(S|W')·P(W')
+     = (0.60)(0.40) + (0.20)(0.60)
+     = 0.24 + 0.12 = 0.36
+
+Bayes' Theorem:
+P(W | S) = [P(S|W) × P(W)] / P(S)
+         = 0.24 / 0.36 = 0.667 ≈ 0.67</span>
+            <div class="solution-step">The survey revises the probability of success from 0.40 (prior) to 0.67 (posterior).</div>
+            <div class="solution-step"><strong>(ii) Probability tree:</strong></div>
+            <span class="math-block">                    ┌─ Survey (S)    P=0.60 → Joint: 0.40 × 0.60 = 0.240
+Start ─ W (0.40) ──┤
+                    └─ No survey     P=0.40 → Joint: 0.40 × 0.40 = 0.160
+
+                    ┌─ Survey (S)    P=0.20 → Joint: 0.60 × 0.20 = 0.120
+      ─ W' (0.60) ─┤
+                    └─ No survey     P=0.80 → Joint: 0.60 × 0.80 = 0.480
+                                                                   ─────
+                                                                   1.000
+
+P(S) = 0.240 + 0.120 = 0.360</span>
+            <div class="solution-step"><strong>(iii)</strong> Since P(W | S) = 0.667 > 0.50, the decision rule recommends <strong>proceeding with drilling</strong>.</div>
+            <div class="solution-step"><strong>Limitations:</strong></div>
+            <div class="solution-step">1. <em>Ignores expected payoffs and costs:</em> Even with 66.7% probability of success, if the cost of a dry well is very high relative to the profit from oil, the expected monetary value (EMV) may be negative. A probability threshold alone cannot substitute for a full expected value analysis.</div>
+            <div class="solution-step">2. <em>Historical priors may not apply:</em> The 40% prior and the conditional probabilities for the survey are based on historical data. If geological conditions at this specific site differ materially from historical wells, or if the survey method has changed, the priors are unreliable. Sensitivity analysis on the priors is essential before committing to a drilling decision.</div>
+            <div class="mark-note"><strong>Mark allocation:</strong> (i) Setup 2 + P(S) 2 + posterior 1 = 5. (ii) Correct tree structure 3 + all joint probabilities 2 = 5. (iii) Decision 1 + each limitation 2 = 5.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+  const answers = {}, checked = {};
+  const correct = { 1:'B', 2:'B', 3:'C', 4:'A', 5:'B', 6:'C' };
+
+  function selectOpt(q, letter) {
+    if (checked[q]) return;
+    document.querySelectorAll('#opts'+q+' li').forEach(o => o.classList.remove('selected'));
+    const idx = ['A','B','C','D','E'].indexOf(letter);
+    document.querySelectorAll('#opts'+q+' li')[idx].classList.add('selected');
+    answers[q] = letter;
+  }
+
+  function checkAnswer(q, ans) {
+    if (!answers[q]) { alert('Please select an answer first.'); return; }
+    checked[q] = true;
+    const opts = document.querySelectorAll('#opts'+q+' li');
+    const letters = ['A','B','C','D','E'];
+    opts.forEach((o, i) => {
+      o.classList.remove('selected');
+      if (letters[i] === ans) o.classList.add('correct');
+      else if (letters[i] === answers[q]) o.classList.add('wrong');
+      o.style.cursor = 'default';
+    });
+    updateProgress();
+  }
+
+  function toggleSolution(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('visible');
+  }
+
+  function updateProgress() {
+    const done = Object.keys(checked).length;
+    const score = Object.keys(checked).filter(q => answers[q] === correct[q]).length;
+    document.getElementById('progressFill').style.width = (done/6*100)+'%';
+    document.getElementById('scoreDisplay').textContent = done+' / 6 answered';
+    if (done === 6) {
+      document.getElementById('finalScore').classList.add('visible');
+      document.getElementById('finalScoreNum').textContent = score+'/6';
+    }
+  }
+
+  function resetAll() {
+    for (const k in answers) delete answers[k];
+    for (const k in checked) delete checked[k];
+    for (let q = 1; q <= 6; q++) {
+      document.querySelectorAll('#opts'+q+' li').forEach(o => {
+        o.classList.remove('selected','correct','wrong');
+        o.style.cursor = 'pointer';
+      });
+      const s = document.getElementById('sol'+q);
+      if (s) s.classList.remove('visible');
+    }
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('scoreDisplay').textContent = '0 / 6 answered';
+    document.getElementById('finalScore').classList.remove('visible');
+  }
+</script>
+</body>
+</html>

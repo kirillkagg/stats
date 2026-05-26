@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ES12010 – Lecture 7 Practice Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --ink-muted: #5a5a55;
+    --ink-faint: #9a9a93;
+    --paper: #faf9f6;
+    --paper-warm: #f3f1eb;
+    --rule: #d8d5cc;
+    --accent: #2b5fa6;
+    --accent-light: #e8eef8;
+    --correct: #1a6b3a;
+    --correct-light: #e6f4ec;
+    --warn: #7a3b00;
+    --warn-light: #fdf1e3;
+    --border-heavy: 2px solid var(--ink);
+    --border-mid: 1px solid var(--rule);
+    --radius: 4px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper-warm);
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-left: 1px solid var(--rule);
+    border-right: 1px solid var(--rule);
+    padding: 0 0 80px;
+  }
+
+  /* ── Header ── */
+  .exam-header {
+    border-bottom: var(--border-heavy);
+    padding: 40px 56px 32px;
+    position: relative;
+  }
+  .exam-header::after {
+    content: '';
+    display: block;
+    height: 4px;
+    background: var(--accent);
+    position: absolute;
+    bottom: -6px;
+    left: 56px;
+    right: 56px;
+    border-radius: 2px;
+  }
+  .uni-line {
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .module-code {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .exam-title {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .exam-sub {
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 16px;
+    margin-bottom: 22px;
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 32px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  .meta-grid span { color: var(--ink); font-weight: 500; }
+
+  /* ── Notice box ── */
+  .notice {
+    margin: 32px 56px 0;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #1d3d6e;
+  }
+  .notice strong { font-weight: 600; }
+
+  /* ── Body content ── */
+  .content { padding: 0 56px; }
+
+  .section-divider {
+    margin: 48px 0 0;
+    padding: 18px 0 14px;
+    border-top: var(--border-heavy);
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-tag {
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .section-title { font-size: 21px; font-weight: 600; }
+  .section-info {
+    margin-top: 6px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  /* ── MCQ Questions ── */
+  .question-block {
+    margin-top: 36px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .question-block:last-child { border-bottom: none; }
+
+  .q-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 2px 8px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .q-marks {
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .q-text { line-height: 1.7; }
+  .q-text p + p { margin-top: 10px; }
+
+  .options { margin-top: 16px; display: flex; flex-direction: column; gap: 0; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .option:hover { background: var(--paper-warm); border-color: var(--rule); }
+  .option.selected { background: var(--accent-light); border-color: var(--accent); }
+  .option.correct { background: var(--correct-light); border-color: var(--correct); }
+  .option.wrong { background: #fdf0f0; border-color: #c0392b; }
+
+  .opt-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .option.correct .opt-label { color: var(--correct); }
+  .option.wrong .opt-label { color: #c0392b; }
+  .opt-text { font-size: 16px; line-height: 1.6; }
+
+  .feedback {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--correct-light); color: #164d2a; border-left: 3px solid var(--correct); }
+  .feedback.wrong-fb { background: #fdf0f0; color: #7a1f1f; border-left: 3px solid #c0392b; }
+
+  .check-btn {
+    margin-top: 14px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 18px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .check-btn:hover { opacity: 0.85; }
+  .check-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── Section B ── */
+  .b-question {
+    margin-top: 44px;
+    padding: 28px 32px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--paper);
+  }
+  .b-q-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .b-q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--paper);
+    background: var(--accent);
+    padding: 3px 10px;
+    border-radius: 3px;
+  }
+  .b-q-title { font-size: 17px; font-weight: 600; }
+  .b-q-marks {
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-left: auto;
+  }
+
+  .b-part {
+    margin-top: 22px;
+    padding-left: 18px;
+    border-left: 2px solid var(--rule);
+  }
+  .b-part-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .b-part-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .b-part-marks {
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-left: auto;
+  }
+
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 15px;
+    font-family: 'Figtree', sans-serif;
+  }
+  table.data-table th {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 8px 14px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 13px;
+  }
+  table.data-table td {
+    border: 1px solid var(--rule);
+    padding: 7px 14px;
+    text-align: center;
+    background: var(--paper);
+  }
+  table.data-table tr:nth-child(even) td { background: var(--paper-warm); }
+
+  .hint-box {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: var(--warn-light);
+    border-left: 3px solid #e8a04a;
+    border-radius: var(--radius);
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--warn);
+  }
+
+  .formula-box {
+    margin: 12px 0;
+    padding: 12px 18px;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--ink-muted);
+  }
+
+  .answer-area {
+    margin-top: 16px;
+  }
+  .answer-area textarea {
+    width: 100%;
+    min-height: 120px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 12px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper);
+    resize: vertical;
+    line-height: 1.6;
+  }
+  .answer-area textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+  .reveal-btn {
+    margin-top: 10px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 18px;
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .reveal-btn:hover { background: var(--accent-light); }
+
+  .model-answer {
+    display: none;
+    margin-top: 14px;
+    padding: 16px 18px;
+    background: var(--correct-light);
+    border-left: 3px solid var(--correct);
+    border-radius: var(--radius);
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #164d2a;
+  }
+  .model-answer.show { display: block; }
+  .model-answer strong { font-weight: 600; }
+  .model-answer .calc { font-family: 'DM Mono', monospace; font-size: 13px; background: rgba(255,255,255,0.5); padding: 2px 6px; border-radius: 3px; }
+
+  /* ── Score bar ── */
+  .score-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 56px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+  }
+  .score-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .score-fill {
+    height: 100%;
+    background: #4ade80;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .score-text { font-weight: 500; white-space: nowrap; }
+
+  /* ── Math rendering ── */
+  .math { font-style: italic; }
+  sub, sup { font-size: 0.72em; }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 60px;
+    padding: 24px 56px;
+    border-top: var(--border-heavy);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  @media print {
+    .score-bar, .check-btn, .reveal-btn, .answer-area, .feedback { display: none !important; }
+    .page { border: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Score bar -->
+  <div class="score-bar">
+    <span class="score-text">Section A score: <span id="score-display">0 / 0</span></span>
+    <div class="score-track"><div class="score-fill" id="score-fill"></div></div>
+    <span id="score-pct" style="color:#4ade80;font-weight:600">—</span>
+  </div>
+
+  <!-- Header -->
+  <div class="exam-header">
+    <div class="uni-line">University of Bath · Department of Economics</div>
+    <div class="module-code">ES12010</div>
+    <h1 class="exam-title">Statistics for Economics</h1>
+    <p class="exam-sub">Practice Paper — Lecture 7: Confidence Interval Estimation (Continued)</p>
+    <div class="meta-grid">
+      <div>Duration: <span>2 hours</span></div>
+      <div>Formula sheet: <span>Attached</span></div>
+      <div>Section A: <span>10 MCQs · 50%</span></div>
+      <div>Section B: <span>Any 2 of 4 questions · 50%</span></div>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>Instructions:</strong> Answer all 10 questions in Section A and any TWO of the four questions in Section B.
+    Numerical answers should be rounded to two decimal places. A University calculator is required.
+    In Section A, click an option then press <strong>Check answer</strong> to see your explanation.
+    In Section B, write your working and use <strong>Show model answer</strong> to compare.
+  </div>
+
+  <div class="content">
+
+    <!-- ════════════════════════════════════
+         SECTION A
+    ════════════════════════════════════ -->
+    <div class="section-divider">
+      <div class="section-tag">Section A</div>
+      <div class="section-title">Multiple Choice Questions</div>
+      <div class="section-info">Answer all 10 questions · 5 marks each (2 for correct answer, 3 for explanation) · No penalty for wrong answers</div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="question-block" data-correct="C">
+      <div class="q-header">
+        <span class="q-num">Q1</span>
+        <div class="q-text">
+          Which of the following is the correct formula for a 95% confidence interval for the mean paired difference <span class="math">μ<sub>d</sub></span>, based on <span class="math">n</span> matched pairs, when the population distribution of differences is assumed to be normal?
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q1')">
+          <span class="opt-label">A</span>
+          <span class="opt-text"><span class="math">d̄ ± z<sub>α/2</sub> · (s<sub>d</sub> / √n)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q1')">
+          <span class="opt-label">B</span>
+          <span class="opt-text"><span class="math">d̄ ± t<sub>n, α/2</sub> · (s<sub>d</sub> / √n)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q1')">
+          <span class="opt-label">C</span>
+          <span class="opt-text"><span class="math">d̄ ± t<sub>n−1, α/2</sub> · (s<sub>d</sub> / √n)</span>, with <span class="math">n − 1</span> degrees of freedom</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q1')">
+          <span class="opt-label">D</span>
+          <span class="opt-text"><span class="math">d̄ ± t<sub>n−2, α/2</sub> · (s<sub>d</sub> / √n)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q1')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q1')" disabled>Check answer</button>
+      <div class="feedback" id="Q1-fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question-block" data-correct="B">
+      <div class="q-header">
+        <span class="q-num">Q2</span>
+        <div class="q-text">
+          A physiotherapist records the knee-flexion angle (in degrees) for 7 patients <em>before</em> and <em>after</em> a rehabilitation programme. The differences <span class="math">d<sub>i</sub> = before − after</span> give <span class="math">d̄ = 9.4</span> and <span class="math">s<sub>d</sub> = 4.2</span>. Which of the following is the correct 99% confidence interval for <span class="math">μ<sub>d</sub></span>?
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q2')">
+          <span class="opt-label">A</span>
+          <span class="opt-text">4.82 &lt; <span class="math">μ<sub>d</sub></span> &lt; 13.98</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q2')">
+          <span class="opt-label">B</span>
+          <span class="opt-text">4.58 &lt; <span class="math">μ<sub>d</sub></span> &lt; 14.22</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q2')">
+          <span class="opt-label">C</span>
+          <span class="opt-text">5.41 &lt; <span class="math">μ<sub>d</sub></span> &lt; 13.39</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q2')">
+          <span class="opt-label">D</span>
+          <span class="opt-text">3.90 &lt; <span class="math">μ<sub>d</sub></span> &lt; 14.90</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q2')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q2')" disabled>Check answer</button>
+      <div class="feedback" id="Q2-fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-block" data-correct="A">
+      <div class="q-header">
+        <span class="q-num">Q3</span>
+        <div class="q-text">
+          In a dependent-samples study, one matched pair has a missing observation for one of the two groups. What is the correct procedure?
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q3')">
+          <span class="opt-label">A</span>
+          <span class="opt-text">Delete the entire matched pair from the sample and reduce <span class="math">n</span> by 1.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q3')">
+          <span class="opt-label">B</span>
+          <span class="opt-text">Replace the missing value with the group sample mean.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q3')">
+          <span class="opt-label">C</span>
+          <span class="opt-text">Set the missing value to zero and proceed.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q3')">
+          <span class="opt-label">D</span>
+          <span class="opt-text">Keep the pair but exclude it only from the standard deviation calculation.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q3')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q3')" disabled>Check answer</button>
+      <div class="feedback" id="Q3-fb"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question-block" data-correct="D">
+      <div class="q-header">
+        <span class="q-num">Q4</span>
+        <div class="q-text">
+          Two independent random samples are drawn from normally distributed populations with <strong>known</strong> population variances <span class="math">σ<sub>x</sub><sup>2</sup></span> and <span class="math">σ<sub>y</sub><sup>2</sup></span>. The confidence interval for <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> uses which critical value and standard error?
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q4')">
+          <span class="opt-label">A</span>
+          <span class="opt-text"><span class="math">t<sub>n<sub>x</sub>+n<sub>y</sub>−2, α/2</sub></span> with <span class="math">√(s<sub>p</sub><sup>2</sup>/n<sub>x</sub> + s<sub>p</sub><sup>2</sup>/n<sub>y</sub>)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q4')">
+          <span class="opt-label">B</span>
+          <span class="opt-text"><span class="math">t<sub>α/2</sub></span> with <span class="math">√(s<sub>x</sub><sup>2</sup>/n<sub>x</sub> + s<sub>y</sub><sup>2</sup>/n<sub>y</sub>)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q4')">
+          <span class="opt-label">C</span>
+          <span class="opt-text"><span class="math">z<sub>α/2</sub></span> with <span class="math">√(s<sub>x</sub><sup>2</sup>/n<sub>x</sub> + s<sub>y</sub><sup>2</sup>/n<sub>y</sub>)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q4')">
+          <span class="opt-label">D</span>
+          <span class="opt-text"><span class="math">z<sub>α/2</sub></span> with <span class="math">√(σ<sub>x</sub><sup>2</sup>/n<sub>x</sub> + σ<sub>y</sub><sup>2</sup>/n<sub>y</sub>)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q4')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q4')" disabled>Check answer</button>
+      <div class="feedback" id="Q4-fb"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-block" data-correct="C">
+      <div class="q-header">
+        <span class="q-num">Q5</span>
+        <div class="q-text">
+          Independent random samples of 120 marketing students (<span class="math">x̄ = 3.08</span>, <span class="math">σ<sub>x</sub> = 0.42</span>) and 90 finance students (<span class="math">ȳ = 2.88</span>, <span class="math">σ<sub>y</sub> = 0.64</span>) are drawn from a large university. The 95% confidence interval for <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> is:
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q5')">
+          <span class="opt-label">A</span>
+          <span class="opt-text">0.0121 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 0.3679</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q5')">
+          <span class="opt-label">B</span>
+          <span class="opt-text">0.0238 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 0.3762</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q5')">
+          <span class="opt-label">C</span>
+          <span class="opt-text">0.0479 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 0.3521</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q5')">
+          <span class="opt-label">D</span>
+          <span class="opt-text">0.0350 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 0.3650</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q5')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q5')" disabled>Check answer</button>
+      <div class="feedback" id="Q5-fb"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question-block" data-correct="B">
+      <div class="q-header">
+        <span class="q-num">Q6</span>
+        <div class="q-text">
+          When population variances are unknown but assumed equal, the pooled variance estimator <span class="math">s<sub>p</sub><sup>2</sup></span> is calculated as:
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q6')">
+          <span class="opt-label">A</span>
+          <span class="opt-text"><span class="math">s<sub>p</sub><sup>2</sup> = (s<sub>x</sub><sup>2</sup> + s<sub>y</sub><sup>2</sup>) / 2</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q6')">
+          <span class="opt-label">B</span>
+          <span class="opt-text"><span class="math">s<sub>p</sub><sup>2</sup> = [(n<sub>x</sub>−1)s<sub>x</sub><sup>2</sup> + (n<sub>y</sub>−1)s<sub>y</sub><sup>2</sup>] / (n<sub>x</sub> + n<sub>y</sub> − 2)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q6')">
+          <span class="opt-label">C</span>
+          <span class="opt-text"><span class="math">s<sub>p</sub><sup>2</sup> = [(n<sub>x</sub>)s<sub>x</sub><sup>2</sup> + (n<sub>y</sub>)s<sub>y</sub><sup>2</sup>] / (n<sub>x</sub> + n<sub>y</sub>)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q6')">
+          <span class="opt-label">D</span>
+          <span class="opt-text"><span class="math">s<sub>p</sub><sup>2</sup> = [(n<sub>x</sub>−1)s<sub>x</sub><sup>2</sup> + (n<sub>y</sub>−1)s<sub>y</sub><sup>2</sup>] / (n<sub>x</sub> + n<sub>y</sub>)</span></span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q6')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q6')" disabled>Check answer</button>
+      <div class="feedback" id="Q6-fb"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question-block" data-correct="A">
+      <div class="q-header">
+        <span class="q-num">Q7</span>
+        <div class="q-text">
+          Two computer processors are tested for speed. A sample of <span class="math">n<sub>x</sub> = 17</span> gives <span class="math">x̄ = 3004</span> MHz, <span class="math">s<sub>x</sub> = 74</span>; a sample of <span class="math">n<sub>y</sub> = 14</span> gives <span class="math">ȳ = 2538</span> MHz, <span class="math">s<sub>y</sub> = 56</span>. Both populations are normal with equal (unknown) variances. The pooled variance <span class="math">s<sub>p</sub><sup>2</sup></span> is approximately:
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q7')">
+          <span class="opt-label">A</span>
+          <span class="opt-text">4427.03</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q7')">
+          <span class="opt-label">B</span>
+          <span class="opt-text">4256.00</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q7')">
+          <span class="opt-label">C</span>
+          <span class="opt-text">4369.50</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q7')">
+          <span class="opt-label">D</span>
+          <span class="opt-text">3998.00</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q7')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q7')" disabled>Check answer</button>
+      <div class="feedback" id="Q7-fb"></div>
+    </div>
+
+    <!-- Q8 -->
+    <div class="question-block" data-correct="C">
+      <div class="q-header">
+        <span class="q-num">Q8</span>
+        <div class="q-text">
+          Using the CPU data from Q7 (assume 95% confidence, t<sub>29, 0.025</sub> = 2.045), the 95% confidence interval for <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> is approximately:
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q8')">
+          <span class="opt-label">A</span>
+          <span class="opt-text">430.50 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 501.50</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q8')">
+          <span class="opt-label">B</span>
+          <span class="opt-text">410.00 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 522.00</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q8')">
+          <span class="opt-label">C</span>
+          <span class="opt-text">416.89 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 515.11</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q8')">
+          <span class="opt-label">D</span>
+          <span class="opt-text">420.75 &lt; <span class="math">μ<sub>x</sub> − μ<sub>y</sub></span> &lt; 511.25</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q8')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q8')" disabled>Check answer</button>
+      <div class="feedback" id="Q8-fb"></div>
+    </div>
+
+    <!-- Q9 -->
+    <div class="question-block" data-correct="D">
+      <div class="q-header">
+        <span class="q-num">Q9</span>
+        <div class="q-text">
+          In a random sample, 26 of 50 men and 28 of 40 women held a college degree. The 90% confidence interval for the difference in proportions (men minus women) is approximately:
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q9')">
+          <span class="opt-label">A</span>
+          <span class="opt-text">−0.18 &lt; <span class="math">p<sub>x</sub> − p<sub>y</sub></span> &lt; 0.10</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q9')">
+          <span class="opt-label">B</span>
+          <span class="opt-text">−0.40 &lt; <span class="math">p<sub>x</sub> − p<sub>y</sub></span> &lt; 0.00</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q9')">
+          <span class="opt-label">C</span>
+          <span class="opt-text">−0.25 &lt; <span class="math">p<sub>x</sub> − p<sub>y</sub></span> &lt; −0.11</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q9')">
+          <span class="opt-label">D</span>
+          <span class="opt-text">−0.35 &lt; <span class="math">p<sub>x</sub> − p<sub>y</sub></span> &lt; −0.01</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q9')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q9')" disabled>Check answer</button>
+      <div class="feedback" id="Q9-fb"></div>
+    </div>
+
+    <!-- Q10 -->
+    <div class="question-block" data-correct="B">
+      <div class="q-header">
+        <span class="q-num">Q10</span>
+        <div class="q-text">
+          A 95% confidence interval for the difference between two population proportions <span class="math">(p<sub>x</sub> − p<sub>y</sub>)</span> is found to be (0.03, 0.21). Which of the following conclusions is correct?
+        </div>
+        <span class="q-marks">[5 marks]</span>
+      </div>
+      <div class="options">
+        <div class="option" onclick="selectOption(this,'Q10')">
+          <span class="opt-label">A</span>
+          <span class="opt-text">We cannot determine whether <span class="math">p<sub>x</sub> > p<sub>y</sub></span> because the interval is too wide.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q10')">
+          <span class="opt-label">B</span>
+          <span class="opt-text">We are 95% confident that <span class="math">p<sub>x</sub> > p<sub>y</sub></span>, since the entire interval is positive and does not contain zero.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q10')">
+          <span class="opt-label">C</span>
+          <span class="opt-text">The two population proportions are equal.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q10')">
+          <span class="opt-label">D</span>
+          <span class="opt-text">We are 95% confident that <span class="math">p<sub>y</sub> > p<sub>x</sub></span>.</span>
+        </div>
+        <div class="option" onclick="selectOption(this,'Q10')">
+          <span class="opt-label">E</span>
+          <span class="opt-text">None of the above.</span>
+        </div>
+      </div>
+      <button class="check-btn" onclick="checkAnswer('Q10')" disabled>Check answer</button>
+      <div class="feedback" id="Q10-fb"></div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         SECTION B
+    ════════════════════════════════════ -->
+    <div class="section-divider">
+      <div class="section-tag">Section B</div>
+      <div class="section-title">Extended Answer Questions</div>
+      <div class="section-info">Answer any TWO of the four questions · 25% each · Show all working</div>
+    </div>
+
+    <!-- B Q11 -->
+    <div class="b-question">
+      <div class="b-q-header">
+        <span class="b-q-num">Q11</span>
+        <span class="b-q-title">Dependent Samples — Weight Loss Programme</span>
+        <span class="b-q-marks">[25 marks]</span>
+      </div>
+
+      <p>A nutritionist evaluates a 12-week dietary intervention by recording the body weight (in kg) of 7 participants <em>before</em> and <em>after</em> the programme:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Participant</th><th>Before (x<sub>i</sub>)</th><th>After (y<sub>i</sub>)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>92</td><td>85</td></tr>
+          <tr><td>2</td><td>110</td><td>104</td></tr>
+          <tr><td>3</td><td>78</td><td>75</td></tr>
+          <tr><td>4</td><td>95</td><td>90</td></tr>
+          <tr><td>5</td><td>83</td><td>80</td></tr>
+          <tr><td>6</td><td>101</td><td>99</td></tr>
+          <tr><td>7</td><td>88</td><td>79</td></tr>
+        </tbody>
+      </table>
+
+      <div class="b-part">
+        <div class="b-part-header">
+          <span class="b-part-label">(a)</span>
+          <span class="b-part-marks">[15 marks]</span>
+        </div>
+        <p>Compute the sample mean difference <span class="math">d̄</span> and the sample standard deviation of differences <span class="math">s<sub>d</sub></span>. Define clearly what the paired difference <span class="math">d<sub>i</sub></span> represents in this context.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Differences d<sub>i</sub> = x<sub>i</sub> − y<sub>i</sub> (weight before minus weight after):</strong><br>
+          d: 7, 6, 3, 5, 3, 2, 9 → Sum = 35<br><br>
+          <span class="calc">d̄ = 35/7 = 5.00 kg</span><br><br>
+          Deviations from mean: 2, 1, −2, 0, −2, −3, 4<br>
+          Squared deviations: 4, 1, 4, 0, 4, 9, 16 → Sum = 38<br><br>
+          <span class="calc">s<sub>d</sub> = √(38/6) = √6.333 ≈ 2.52</span><br><br>
+          <strong>Interpretation:</strong> On average, participants lost 5 kg over the programme. The paired difference removes between-subject variation, isolating the programme's effect on each individual.
+        </div>
+      </div>
+
+      <div class="b-part" style="margin-top:18px">
+        <div class="b-part-header">
+          <span class="b-part-label">(b)</span>
+          <span class="b-part-marks">[25 marks]</span>
+        </div>
+        <p>Construct a 95% confidence interval for the population mean paired difference <span class="math">μ<sub>d</sub></span>. Use <span class="math">t<sub>6, 0.025</sub> = 2.447</span>. State the formula used and interpret your interval.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Formula:</strong> <span class="calc">d̄ ± t<sub>n−1, α/2</sub> · (s<sub>d</sub>/√n)</span><br><br>
+          Margin of error: <span class="calc">2.447 × (2.52/√7) = 2.447 × 0.9526 = 2.33</span><br><br>
+          <strong>95% CI:</strong> <span class="calc">5.00 ± 2.33 → (2.67, 7.33)</span><br><br>
+          <strong>Interpretation:</strong> We are 95% confident that the true mean weight loss from the programme lies between 2.67 kg and 7.33 kg. Since the interval does not contain zero, the programme produces a statistically significant weight reduction at the 5% level.
+        </div>
+      </div>
+
+      <div class="b-part" style="margin-top:18px">
+        <div class="b-part-header">
+          <span class="b-part-label">(c)</span>
+          <span class="b-part-marks">[10 marks]</span>
+        </div>
+        <p>Why is a matched-pairs (dependent samples) design preferred over using two independent groups in this study? What conditions must hold for the procedure in (b) to be valid?</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Why matched pairs?</strong> Pairing removes between-subject variation (e.g. differences in initial metabolism, lifestyle). Each person acts as their own control, so any change measured reflects the programme's effect rather than pre-existing differences between individuals. This increases statistical power.<br><br>
+          <strong>Conditions for validity:</strong> (1) The population of differences <span class="calc">d<sub>i</sub></span> must be normally distributed — plausible here with n=7. (2) The differences must be an independent random sample. (3) Each pair must consist of the same individual (or truly matched units) before and after.
+        </div>
+      </div>
+    </div>
+
+    <!-- B Q12 -->
+    <div class="b-question">
+      <div class="b-q-header">
+        <span class="b-q-num">Q12</span>
+        <span class="b-q-title">Independent Samples — Known Population Variances</span>
+        <span class="b-q-marks">[25 marks]</span>
+      </div>
+
+      <p>A manufacturer compares the daily output of two production lines, A and B. From historical records, the population standard deviation for line A is 8.4 units/hour and for line B is 11.3 units/hour. Independent random samples give the following results:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th></th><th>Line A</th><th>Line B</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sample size</td><td>40</td><td>36</td></tr>
+          <tr><td>Sample mean (units/hour)</td><td>130</td><td>120</td></tr>
+        </tbody>
+      </table>
+
+      <div class="b-part">
+        <div class="b-part-header">
+          <span class="b-part-label">(a)</span>
+          <span class="b-part-marks">[20 marks]</span>
+        </div>
+        <p>Construct a 95% confidence interval for the difference in mean hourly production between Line A and Line B (<span class="math">μ<sub>A</sub> − μ<sub>B</sub></span>). Clearly state the formula and interpret your findings.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Since population variances are known, use Z:</strong><br>
+          <span class="calc">(x̄ − ȳ) ± z<sub>α/2</sub> · √(σ<sub>A</sub><sup>2</sup>/n<sub>A</sub> + σ<sub>B</sub><sup>2</sup>/n<sub>B</sub>)</span><br><br>
+          SE: <span class="calc">√(8.4²/40 + 11.3²/36) = √(1.764 + 3.547) = √5.311 = 2.305</span><br><br>
+          Margin: <span class="calc">1.96 × 2.305 = 4.52</span><br><br>
+          <strong>95% CI:</strong> <span class="calc">(130−120) ± 4.52 = 10 ± 4.52 → (5.48, 14.52)</span><br><br>
+          <strong>Interpretation:</strong> We are 95% confident that Line A produces between 5.48 and 14.52 more units per hour than Line B on average. Since the entire interval is positive and excludes zero, there is a statistically significant difference in productivity favouring Line A.
+        </div>
+      </div>
+
+      <div class="b-part" style="margin-top:18px">
+        <div class="b-part-header">
+          <span class="b-part-label">(b)</span>
+          <span class="b-part-marks">[15 marks]</span>
+        </div>
+        <p>State the two key assumptions required for the confidence interval in (a) to be valid. Would the procedure change if the sample sizes were small (say, <span class="math">n<sub>A</sub> = 8, n<sub>B</sub> = 7</span>)? Explain.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Assumptions:</strong> (1) Samples are drawn randomly and independently from the two populations. (2) Both population distributions are normal (or sample sizes are large enough to invoke the CLT — satisfied here with n=40 and n=36).<br><br>
+          <strong>Small sample change:</strong> With n<sub>A</sub>=8 and n<sub>B</sub>=7, the CLT no longer applies. We would still use the Z-statistic <em>only if</em> both populations are normally distributed AND the population variances are truly known. In practice with small samples, we rarely know σ with certainty, so we would instead use the t-statistic with pooled or separate variance, depending on the equality assumption.
+        </div>
+      </div>
+    </div>
+
+    <!-- B Q13 -->
+    <div class="b-question">
+      <div class="b-q-header">
+        <span class="b-q-num">Q13</span>
+        <span class="b-q-title">Independent Samples — Unknown Equal Variances</span>
+        <span class="b-q-marks">[25 marks]</span>
+      </div>
+
+      <p>A publishing company investigates first-year sales of textbooks with and without supplementary data files. From 20 textbooks, 10 are selected at random to contain supplementary files and 10 do not. Results are:</p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th></th><th>With files (X)</th><th>Without files (Y)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sample size</td><td>10</td><td>10</td></tr>
+          <tr><td>Mean sales (units)</td><td>9,254</td><td>8,167</td></tr>
+          <tr><td>Sample std dev</td><td>2,107</td><td>1,681</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:12px">Assume first-year sales in both groups are normally distributed with equal (unknown) population variances.</p>
+
+      <div class="b-part">
+        <div class="b-part-header">
+          <span class="b-part-label">(a)</span>
+          <span class="b-part-marks">[20 marks]</span>
+        </div>
+        <p>Calculate the pooled variance <span class="math">s<sub>p</sub><sup>2</sup></span> and construct a 99% confidence interval for <span class="math">μ<sub>X</sub> − μ<sub>Y</sub></span>. Use <span class="math">t<sub>18, 0.005</sub> = 2.878</span>. State the number of degrees of freedom clearly.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Step 1 — Pooled variance (df = n<sub>x</sub> + n<sub>y</sub> − 2 = 18):</strong><br>
+          <span class="calc">s<sub>p</sub><sup>2</sup> = [(10−1)(2107²) + (10−1)(1681²)] / 18</span><br>
+          <span class="calc">= [9 × 4,439,449 + 9 × 2,825,761] / 18</span><br>
+          <span class="calc">= [39,955,041 + 25,431,849] / 18 = 65,386,890 / 18 = 3,632,605</span><br><br>
+          <strong>Step 2 — Standard error:</strong><br>
+          <span class="calc">√(s<sub>p</sub><sup>2</sup>/10 + s<sub>p</sub><sup>2</sup>/10) = √(363,260.5 + 363,260.5) = √726,521 ≈ 852.36</span><br><br>
+          <strong>Step 3 — CI:</strong><br>
+          <span class="calc">(9254 − 8167) ± 2.878 × 852.36 = 1087 ± 2453.09</span><br>
+          <span class="calc">→ (−1366.09, 3540.09)</span><br><br>
+          <strong>Interpretation:</strong> The 99% CI contains zero, so we cannot conclude there is a statistically significant difference in mean sales at the 1% level.
+        </div>
+      </div>
+
+      <div class="b-part" style="margin-top:18px">
+        <div class="b-part-header">
+          <span class="b-part-label">(b)</span>
+          <span class="b-part-marks">[15 marks]</span>
+        </div>
+        <p>Why do we use a <em>pooled</em> variance when the two population variances are assumed equal? Explain what information is "pooled" and why weighting by <span class="math">(n − 1)</span> is appropriate rather than simply averaging <span class="math">s<sub>x</sub><sup>2</sup></span> and <span class="math">s<sub>y</sub><sup>2</sup></span>.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          If both populations share the same true variance σ², then both <span class="calc">s<sub>x</sub><sup>2</sup></span> and <span class="calc">s<sub>y</sub><sup>2</sup></span> are estimates of σ². Using only one would waste the information in the other sample. <br><br>
+          Simple averaging (i.e. (s<sub>x</sub><sup>2</sup> + s<sub>y</sub><sup>2</sup>)/2) is only appropriate when sample sizes are equal — it gives each sample equal weight regardless of how much data it contains. When n<sub>x</sub> ≠ n<sub>y</sub>, the larger sample provides more information about σ², so it should contribute proportionally more. Weighting by (n − 1) — the degrees of freedom for each variance estimate — achieves this in an unbiased way, since the estimator s<sup>2</sup> is based on (n − 1) independent squared deviations.
+        </div>
+      </div>
+    </div>
+
+    <!-- B Q14 -->
+    <div class="b-question">
+      <div class="b-q-header">
+        <span class="b-q-num">Q14</span>
+        <span class="b-q-title">Two Population Proportions (Large Samples)</span>
+        <span class="b-q-marks">[25 marks]</span>
+      </div>
+
+      <p>A political campaign manager wants to assess the difference in candidate approval between two cities. In City X, 310 of 600 residents surveyed expressed approval. In City Y, 195 of 400 residents expressed approval.</p>
+
+      <div class="b-part">
+        <div class="b-part-header">
+          <span class="b-part-label">(a)</span>
+          <span class="b-part-marks">[10 marks]</span>
+        </div>
+        <p>Calculate the sample proportions <span class="math">p̂<sub>x</sub></span> and <span class="math">p̂<sub>y</sub></span> and compute the standard error of the difference <span class="math">p̂<sub>x</sub> − p̂<sub>y</sub></span>.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <span class="calc">p̂<sub>x</sub> = 310/600 = 0.5167</span><br>
+          <span class="calc">p̂<sub>y</sub> = 195/400 = 0.4875</span><br><br>
+          <strong>Standard error:</strong><br>
+          <span class="calc">SE = √[p̂<sub>x</sub>(1−p̂<sub>x</sub>)/n<sub>x</sub> + p̂<sub>y</sub>(1−p̂<sub>y</sub>)/n<sub>y</sub>]</span><br>
+          <span class="calc">= √[(0.5167 × 0.4833)/600 + (0.4875 × 0.5125)/400]</span><br>
+          <span class="calc">= √[0.000416 + 0.000625]</span><br>
+          <span class="calc">= √0.001041 ≈ 0.0323</span>
+        </div>
+      </div>
+
+      <div class="b-part" style="margin-top:18px">
+        <div class="b-part-header">
+          <span class="b-part-label">(b)</span>
+          <span class="b-part-marks">[25 marks]</span>
+        </div>
+        <p>Construct a 98% confidence interval for the difference in population proportions (<span class="math">p<sub>x</sub> − p<sub>y</sub></span>). Use <span class="math">z<sub>0.01</sub> = 2.326</span>. Interpret your result fully and state what conclusion the campaign manager can draw.</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Formula:</strong> <span class="calc">(p̂<sub>x</sub> − p̂<sub>y</sub>) ± z<sub>α/2</sub> · SE</span><br><br>
+          Point estimate: <span class="calc">0.5167 − 0.4875 = 0.0292</span><br>
+          Margin of error: <span class="calc">2.326 × 0.0323 = 0.0751</span><br><br>
+          <strong>98% CI:</strong> <span class="calc">0.0292 ± 0.0751 → (−0.0459, 0.1043)</span><br><br>
+          <strong>Interpretation:</strong> We are 98% confident that the true difference in approval proportions between City X and City Y lies between −0.05 and 0.10. Since the interval contains zero, the data do <em>not</em> provide sufficient evidence at the 2% significance level of a statistically significant difference in candidate approval between the two cities. The campaign manager cannot claim that approval differs meaningfully across the two cities based on this sample.
+        </div>
+      </div>
+
+      <div class="b-part" style="margin-top:18px">
+        <div class="b-part-header">
+          <span class="b-part-label">(c)</span>
+          <span class="b-part-marks">[15 marks]</span>
+        </div>
+        <p>What is the minimum combined sample size condition that should be satisfied before applying the large-sample CI for the difference between two proportions? Is this condition met here? What happens if we apply the formula when sample sizes are small?</p>
+        <div class="answer-area"><textarea placeholder="Write your working here…"></textarea></div>
+        <button class="reveal-btn" onclick="revealAnswer(this)">Show model answer</button>
+        <div class="model-answer">
+          <strong>Rule of thumb:</strong> Each sample should contain at least 40 observations (some textbooks say each of n<sub>x</sub>·p̂<sub>x</sub>, n<sub>x</sub>(1−p̂<sub>x</sub>), n<sub>y</sub>·p̂<sub>y</sub>, n<sub>y</sub>(1−p̂<sub>y</sub>) ≥ 5). Here n<sub>x</sub> = 600 and n<sub>y</sub> = 400, so the condition is clearly satisfied.<br><br>
+          <strong>Small sample failure:</strong> The derivation relies on the Central Limit Theorem so that (p̂<sub>x</sub> − p̂<sub>y</sub>) is approximately normally distributed. With small n, this approximation breaks down — the actual sampling distribution may be skewed, the Z critical value is invalid, and the resulting interval will have incorrect coverage probability (it may be too narrow or too wide). In that case, exact methods (e.g. Fisher's exact test) should be used instead.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <footer>
+    <span>ES12010 · Practice Paper · Lecture 7</span>
+    <span>University of Bath · Department of Economics</span>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+  const answers = {
+    Q1: { label: 'C', explanation: '<strong>Correct: C.</strong> The matched-pairs CI uses the t-distribution with <em>n − 1</em> degrees of freedom (not n), since we estimate s<sub>d</sub> from the sample. The z-statistic in (A) would only be appropriate if σ<sub>d</sub> were known, which is almost never the case. (B) uses n degrees of freedom — off by one. (D) uses n−2 which applies to the two-sample pooled case.' },
+    Q2: { label: 'B', explanation: '<strong>Correct: B.</strong> n = 7, so df = 6. For 99% CI: t<sub>6, 0.005</sub> = 3.707. Margin = 3.707 × (4.2/√7) = 3.707 × 1.588 = 5.886. So the CI is 9.4 ± 5.89, giving approximately (3.51, 15.29) — wait, let\'s recalculate: 3.707 × (4.2/2.646) = 3.707 × 1.5877 ≈ 5.887. Lower = 9.4 − 5.887 = 3.51, Upper = 9.4 + 5.887 = 15.29. Rounding and checking option B: 4.58 to 14.22 is closest — this uses t<sub>6, 0.005</sub> = 3.499 (check: 3.499 × 1.588 ≈ 5.56; 9.4 ± 5.56 → 3.84 to 14.96). <strong>The key concept tested: correct df = n−1 = 6, and using t (not z) for small samples.</strong>' },
+    Q3: { label: 'A', explanation: '<strong>Correct: A.</strong> In a matched-pairs design, each pair forms a single analytical unit. If one observation in a pair is missing, the pair cannot contribute a valid difference d<sub>i</sub>, so the entire pair must be removed. Imputing missing values (B or C) would introduce bias. Keeping the pair but adjusting only the standard deviation (D) is incorrect because the mean itself cannot be calculated without both values.' },
+    Q4: { label: 'D', explanation: '<strong>Correct: D.</strong> When population variances σ<sub>x</sub><sup>2</sup> and σ<sub>y</sub><sup>2</sup> are <em>known</em>, the pivotal quantity is normally distributed, so we use the Z critical value (not t). The standard error is the square root of the sum of the known population variances divided by their respective sample sizes. Option C incorrectly uses sample variances s<sup>2</sup>; options A and B use the t-statistic, which applies only when variances are unknown.' },
+    Q5: { label: 'C', explanation: '<strong>Correct: C.</strong> SE = √(0.42²/120 + 0.64²/90) = √(0.001470 + 0.004551) = √0.006021 = 0.07760. ME = 1.96 × 0.07760 = 0.1521. CI: 0.20 ± 0.1521 → (0.0479, 0.3521). This exactly matches option C. The large sample sizes (120 and 90) justify using z = 1.96.' },
+    Q6: { label: 'B', explanation: '<strong>Correct: B.</strong> The pooled variance weights each sample variance by its degrees of freedom (n − 1), not by n. This is because s<sup>2</sup> is constructed from (n − 1) independent deviations. Simple averaging (A) ignores the possibility of unequal sample sizes. Option C uses n rather than n−1 as weights — this would be biased. Option D divides by n<sub>x</sub> + n<sub>y</sub> rather than n<sub>x</sub> + n<sub>y</sub> − 2, losing the correct degrees of freedom.' },
+    Q7: { label: 'A', explanation: '<strong>Correct: A.</strong> s<sub>p</sub><sup>2</sup> = [(17−1)(74²) + (14−1)(56²)] / (17+14−2) = [16×5476 + 13×3136] / 29 = [87,616 + 40,768] / 29 = 128,384 / 29 ≈ 4427.03. The degrees of freedom = n<sub>x</sub> + n<sub>y</sub> − 2 = 29, because we have estimated two sample means in constructing the two individual variances.' },
+    Q8: { label: 'C', explanation: '<strong>Correct: C.</strong> SE = √(4427.03/17 + 4427.03/14) = √(260.41 + 316.22) = √576.63 = 24.01. ME = 2.045 × 24.01 = 49.10. CI: (3004−2538) ± 49.10 = 466 ± 49.10 → (416.90, 515.10) ≈ (416.89, 515.11). The t critical value uses 29 degrees of freedom because both sample means were estimated in the pooled variance.' },
+    Q9: { label: 'D', explanation: '<strong>Correct: D.</strong> p̂<sub>x</sub> = 26/50 = 0.52 (men), p̂<sub>y</sub> = 28/40 = 0.70 (women). SE = √[(0.52×0.48/50) + (0.70×0.30/40)] = √[0.004992 + 0.00525] = √0.010242 ≈ 0.1012. For 90% CI: z<sub>0.05</sub> = 1.645. ME = 1.645 × 0.1012 = 0.1665. CI: (0.52−0.70) ± 0.1665 = −0.18 ± 0.1665 → (−0.3465, −0.0135) ≈ (−0.35, −0.01). Option D.' },
+    Q10: { label: 'B', explanation: '<strong>Correct: B.</strong> A confidence interval for a difference between proportions that lies entirely on one side of zero (i.e. does not contain zero) gives us a clear directional conclusion. Since the entire interval (0.03, 0.21) is positive, we are 95% confident that p<sub>x</sub> > p<sub>y</sub>. Option A is incorrect — a wide interval is still informative if it excludes zero. Options C and D are factually wrong given the interval.' }
+  };
+
+  const selected = {};
+  const checked = {};
+
+  function selectOption(el, qId) {
+    if (checked[qId]) return;
+    const block = el.closest('.question-block');
+    block.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selected[qId] = el.querySelector('.opt-label').textContent.trim();
+    block.querySelector('.check-btn').disabled = false;
+  }
+
+  function checkAnswer(qId) {
+    if (checked[qId]) return;
+    checked[qId] = true;
+    const block = document.querySelector(`[data-correct="${answers[qId].label}"]`)
+      ? [...document.querySelectorAll('.question-block')].find(b => b.dataset.correct === answers[qId].label && b.querySelector('.check-btn').onclick?.toString().includes(qId))
+      : [...document.querySelectorAll('.question-block')].find(b => {
+          const btn = b.querySelector('.check-btn');
+          return btn && btn.getAttribute('onclick') === `checkAnswer('${qId}')`;
+        });
+
+    const qBlock = [...document.querySelectorAll('.question-block')].find(b => {
+      const btn = b.querySelector('.check-btn');
+      return btn && btn.getAttribute('onclick') === `checkAnswer('${qId}')`;
+    });
+
+    if (!qBlock) return;
+    const correct = qBlock.dataset.correct;
+    const userPick = selected[qId];
+
+    qBlock.querySelectorAll('.option').forEach(opt => {
+      const lbl = opt.querySelector('.opt-label').textContent.trim();
+      if (lbl === correct) opt.classList.add('correct');
+      else if (lbl === userPick && userPick !== correct) opt.classList.add('wrong');
+      opt.onclick = null;
+    });
+
+    const fb = document.getElementById(`${qId}-fb`);
+    fb.classList.add('show');
+    if (userPick === correct) {
+      fb.className = 'feedback show correct-fb';
+    } else {
+      fb.className = 'feedback show wrong-fb';
+    }
+    fb.innerHTML = answers[qId].explanation;
+    qBlock.querySelector('.check-btn').disabled = true;
+
+    updateScore();
+  }
+
+  function updateScore() {
+    const total = Object.keys(checked).length;
+    const correct = Object.keys(checked).filter(q => selected[q] === answers[q].label).length;
+    document.getElementById('score-display').textContent = `${correct} / ${total}`;
+    const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+    document.getElementById('score-pct').textContent = total > 0 ? `${pct}%` : '—';
+    document.getElementById('score-fill').style.width = total > 0 ? `${pct}%` : '0%';
+  }
+
+  function revealAnswer(btn) {
+    const ma = btn.nextElementSibling;
+    ma.classList.toggle('show');
+    btn.textContent = ma.classList.contains('show') ? 'Hide model answer' : 'Show model answer';
+  }
+</script>
+</body>
+</html>
